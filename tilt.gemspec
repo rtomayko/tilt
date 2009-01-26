@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
 
   s.name = 'tilt'
   s.version = '0.1'
-  s.date = '2009-01-25'
+  s.date = '2009-01-26'
 
   s.description = "A TemplateFactoryBuilderFactory"
   s.summary     = "A TemplateFactoryBuilderFactory"
@@ -14,15 +14,20 @@ Gem::Specification.new do |s|
 
   # = MANIFEST =
   s.files = %w[
+    COPYING
     README.md
     Rakefile
     lib/tilt.rb
     test/.bacon
     test/spec_tilt.rb
-    test/spec_tilt_abstracttemplate.rb
+    test/spec_tilt_buildertemplate.rb
     test/spec_tilt_erbtemplate.rb
     test/spec_tilt_hamltemplate.rb
+    test/spec_tilt_liquid_template.rb
+    test/spec_tilt_sasstemplate.rb
     test/spec_tilt_stringtemplate.rb
+    test/spec_tilt_template.rb
+    tilt.gemspec
   ]
   # = MANIFEST =
 
