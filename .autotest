@@ -1,0 +1,13 @@
+require 'rubygems'
+require 'bacon'
+require 'autotest/bacon'
+
+class Autotest::Bacon < Autotest
+  undef make_test_cmd
+  def make_test_cmd(files_to_test)
+    args = files_to_test.keys.flatten.join(' ')
+    args = '-a' if args.empty?
+    # TODO : make regex to pass to -n using values
+    "#{ruby} -S bacon -I#{libs} -o TestUnit #{args}"
+  end
+end
