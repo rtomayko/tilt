@@ -194,4 +194,21 @@ module Tilt
     end
   end
   register 'builder', BuilderTemplate
+
+  # Liquid template implementation. See:
+  # http://liquid.rubyforge.org/
+  #
+  # LiquidTemplate does not support scopes or yield blocks.
+  class LiquidTemplate < AbstractTemplate
+    def compile!
+      require 'liquid' unless defined?(::Liquid)
+      @engine = ::Liquid::Template.parse(data)
+    end
+
+    def evaluate(scope, locals, &block)
+      locals = locals.inject({}) { |hash,(k,v)| hash[k.to_s] = v ; hash }
+      @engine.render(locals)
+    end
+  end
+  register 'liquid', LiquidTemplate
 end
