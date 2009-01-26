@@ -31,8 +31,7 @@ module Tilt
   # Base class for template implementations. Subclasses must implement
   # the #compile! method and one of the #evaluate or #template_source
   # methods.
-
-  class AbstractTemplate
+  class Template
     # Raw template data loaded from a file or given directly.
     attr_reader :data
 
@@ -106,7 +105,7 @@ module Tilt
 
   # The template source is evaluated as a Ruby string. The #{} interpolation
   # syntax can be used to generated dynamic output.
-  class StringTemplate < AbstractTemplate
+  class StringTemplate < Template
     def compile!
       @code = "%Q{#{data}}"
     end
@@ -119,7 +118,7 @@ module Tilt
 
   # ERB template implementation. See:
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html
-  class ERBTemplate < AbstractTemplate
+  class ERBTemplate < Template
     def compile!
       require 'erb' unless defined?(::ERB)
       @engine = ::ERB.new(data)
@@ -133,7 +132,7 @@ module Tilt
 
   # Haml template implementation. See:
   # http://haml.hamptoncatlin.com/
-  class HamlTemplate < AbstractTemplate
+  class HamlTemplate < Template
     def compile!
       require 'haml' unless defined?(::Haml)
       @engine = ::Haml::Engine.new(data, haml_options)
@@ -154,7 +153,7 @@ module Tilt
   # http://haml.hamptoncatlin.com/
   #
   # Sass templates do not support object scopes, locals, or yield.
-  class SassTemplate < AbstractTemplate
+  class SassTemplate < Template
     def compile!
       require 'sass' unless defined?(::Sass)
       @engine = ::Sass::Engine.new(data, sass_options)
@@ -173,7 +172,7 @@ module Tilt
 
   # Builder template implementation. See:
   # http://builder.rubyforge.org/
-  class BuilderTemplate < AbstractTemplate
+  class BuilderTemplate < Template
     def compile!
       require 'builder' unless defined?(::Builder)
     end
@@ -199,7 +198,7 @@ module Tilt
   # http://liquid.rubyforge.org/
   #
   # LiquidTemplate does not support scopes or yield blocks.
-  class LiquidTemplate < AbstractTemplate
+  class LiquidTemplate < Template
     def compile!
       require 'liquid' unless defined?(::Liquid)
       @engine = ::Liquid::Template.parse(data)

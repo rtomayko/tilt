@@ -1,45 +1,45 @@
 require 'bacon'
 require 'tilt'
 
-describe "Tilt::AbstractTemplate" do
+describe "Tilt::Template" do
   it "raises ArgumentError when a file or block not given" do
-    lambda { Tilt::AbstractTemplate.new }.should.raise ArgumentError
+    lambda { Tilt::Template.new }.should.raise ArgumentError
   end
 
   it "can be constructed with a file" do
-    inst = Tilt::AbstractTemplate.new('foo.erb')
+    inst = Tilt::Template.new('foo.erb')
     inst.file.should.equal 'foo.erb'
   end
 
   it "can be constructed with a file and line" do
-    inst = Tilt::AbstractTemplate.new('foo.erb', 55)
+    inst = Tilt::Template.new('foo.erb', 55)
     inst.file.should.equal 'foo.erb'
     inst.line.should.equal 55
   end
 
   it "uses the filename provided for #eval_file" do
-    inst = Tilt::AbstractTemplate.new('foo.erb', 55)
+    inst = Tilt::Template.new('foo.erb', 55)
     inst.eval_file.should.equal 'foo.erb'
   end
 
   it "uses a default filename for #eval_file when no file provided" do
-    inst = Tilt::AbstractTemplate.new { 'Hi' }
+    inst = Tilt::Template.new { 'Hi' }
     inst.eval_file.should.not.be.nil
     inst.eval_file.should.not.include "\n"
   end
 
   it "can be constructed with a data loading block" do
     lambda {
-      Tilt::AbstractTemplate.new { |template| "Hello World!" }
+      Tilt::Template.new { |template| "Hello World!" }
     }.should.not.raise
   end
 
   it "raises NotImplementedError when #compile! not defined" do
-    inst = Tilt::AbstractTemplate.new { |template| "Hello World!" }
+    inst = Tilt::Template.new { |template| "Hello World!" }
     lambda { inst.render }.should.raise NotImplementedError
   end
 
-  class CompilingMockTemplate < Tilt::AbstractTemplate
+  class CompilingMockTemplate < Tilt::Template
     def compile!
       data.should.not.be.nil
       @compiled = true
