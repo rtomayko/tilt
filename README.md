@@ -1,19 +1,35 @@
 Tilt
 ====
 
-Tilt wraps multiple template engines and makes them available through a simple
-generic interface.
+Tilt provides a thin interface over a bunch of different template engines to
+make their usage as generic possible. This is useful for web frameworks,
+static site generators, and other systems that support multiple template
+engines but don't want to code for each of them explicitly.
 
- * Custom scope, locals, and yield support
+The following features are supported for all template engines (assuming the
+feature is relevant to the engine):
+
+ * Custom template evaluation scopes / bindings
+ * Ability to pass locals to template evaluation
+ * Support for passing a block to template evaluation for "yield"
  * Backtraces with correct filenames and line numbers
- * Template compilation/caching
- * Template reloading
+ * Template compilation caching and reloading
+
+These template engines are currently supported with (many) more on the way:
+
+ * ERB
+ * Interpolated Ruby String
+ * Haml (with the `haml` gem/library)
+ * Sass (with the `haml` gem/library)
+ * Builder (with the `builder` gem/library)
+ * Liquid (with the `liquid` gem/library)
 
 Usage
 -----
 
 All supported templates have an implementation class under the `Tilt` module.
-Each template implementation follows the exact same interface:
+Each template implementation follows the exact same interface for creation
+and rendering:
 
     template = Tilt::HamlTemplate.new('templates/foo.haml')
     output = template.render
@@ -44,19 +60,3 @@ The block passed to the `render` method is invoked on `yield`:
     template = Tilt::ERBTemplate.new('foo.erb')
     template.render { 'Joe' }
     # => "Hey Joe!"
-
-
-Supported Template Engines
---------------------------
-
-The following template engines are supported:
-
- * ERB
- * Interpolated Ruby String
- * Haml (with the `haml` gem/library)
- * Sass (with the `haml` gem/library)
- * Builder (with the `builder` gem/library)
- * Liquid (with the `liquid` gem/library)
- * Markdown (with the `rdiscount` gem)
- * Maruku (with the `maruku` gem)
- * Textile (with the `redcloth` gem)
