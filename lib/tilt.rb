@@ -86,7 +86,7 @@ module Tilt
     def evaluate(scope, locals, &block)
       source, offset = local_assignment_code(locals)
       source = [source, template_source].join("\n")
-      scope.instance_eval source, eval_file, (line - offset)
+      scope.instance_eval source, eval_file, line - offset
     end
 
     # Return a string containing the (Ruby) source code for the template. The
@@ -126,6 +126,17 @@ module Tilt
 
     def template_source
       @engine.src
+    end
+
+  private
+
+    # ERB generates a line to specify the character coding of the generated
+    # source in 1.9. Account for this in the line offset.
+    if RUBY_VERSION >= '1.9.0'
+      def local_assignment_code(locals)
+        source, offset = super
+        [source, offset + 1]
+      end
     end
   end
   %w[erb rhtml].each { |ext| register ext, ERBTemplate }
