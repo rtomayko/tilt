@@ -32,4 +32,46 @@ describe "Tilt::StringTemplate" do
     template = Tilt::StringTemplate.new { "Hello\nWorld!\n" }
     template.render.should.equal "Hello\nWorld!\n"
   end
+
+  it "reports the file and line properly in backtraces without locals" do
+    data = File.read(__FILE__).split("\n__END__\n").last
+    fail unless data[0] == ?<
+    template = Tilt::StringTemplate.new('test.str', 11) { data }
+    begin
+      template.render
+      flunk 'should have raised an exception'
+    rescue => boom
+      boom.should.be.kind_of NameError
+      line = boom.backtrace.first
+      file, line, meth = line.split(":")
+      file.should.equal 'test.str'
+      line.should.equal '13'
+    end
+  end
+
+  it "reports the file and line properly in backtraces with locals" do
+    data = File.read(__FILE__).split("\n__END__\n").last
+    fail unless data[0] == ?<
+    template = Tilt::StringTemplate.new('test.str', 1) { data }
+    begin
+      template.render(nil, :name => 'Joe', :foo => 'bar')
+      flunk 'should have raised an exception'
+    rescue => boom
+      boom.should.be.kind_of RuntimeError
+      line = boom.backtrace.first
+      file, line, meth = line.split(":")
+      file.should.equal 'test.str'
+      line.should.equal '6'
+    end
+  end
 end
+
+__END__
+<html>
+<body>
+  <h1>Hey #{name}!</h1>
+
+
+  <p>#{fail}</p>
+</body>
+</html>
