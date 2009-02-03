@@ -221,4 +221,18 @@ module Tilt
     end
   end
   register 'liquid', LiquidTemplate
+
+  # Discount Markdown implementation.
+  class RDiscountTemplate < Template
+    def compile!
+      require 'rdiscount' unless defined?(::RDiscount)
+      @engine = RDiscount.new(data)
+    end
+
+    def evaluate(scope, locals, &block)
+      @engine.to_html
+    end
+  end
+  register 'markdown', RDiscountTemplate
+
 end
