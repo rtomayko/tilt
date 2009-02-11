@@ -60,3 +60,16 @@ The block passed to the `render` method is invoked on `yield`:
     template = Tilt::ERBTemplate.new('foo.erb')
     template.render { 'Joe' }
     # => "Hey Joe!"
+
+There's also a lightweight file extension to template engine mapping layer.
+You can pass a filename or extension to `Tilt::[]` to retrieve the
+corresponding implementation class:
+
+    Tilt['hello.erb']
+    # => Tilt::ERBTemplate
+
+The `Tilt.new` works similarly but returns a new instance of the underlying
+implementation class:
+
+    template = Tilt.new('templates/foo.erb')
+    output = template.render
