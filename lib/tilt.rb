@@ -32,7 +32,7 @@ module Tilt
   # the #compile! method and one of the #evaluate or #template_source
   # methods.
   class Template
-    # Raw template data loaded from a file or given directly.
+    # Template source; loaded from a file or given directly.
     attr_reader :data
 
     # The name of the file where the template data was loaded from.
@@ -63,7 +63,7 @@ module Tilt
     # +yield+.
     def render(scope=Object.new, locals={}, &block)
       if @data.nil?
-        @data = @reader.call(self) 
+        @data = @reader.call(self)
         compile!
       end
       evaluate scope, locals || {}, &block
@@ -75,8 +75,11 @@ module Tilt
     end
 
   protected
-    # Do whatever preparation is necessary to "compile" the template. Subclasses
-    # must provide an implementation of this method.
+    # Do whatever preparation is necessary to "compile" the template.
+    # Called immediately after template #data is loaded. Instance variables
+    # set in this method are available when #evaluate is called.
+    #
+    # Subclasses must provide an implementation of this method.
     def compile!
       raise NotImplementedError
     end
@@ -90,7 +93,8 @@ module Tilt
     end
 
     # Return a string containing the (Ruby) source code for the template. The
-    # default Abstract#evaluate method requires this method be defined
+    # default Template#evaluate implementation requires this method be
+    # defined.
     def template_source
       raise NotImplementedError
     end
