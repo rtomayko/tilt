@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'tilt'
-  s.version = '0.1'
-  s.date = '2009-01-26'
+  s.version = '0.2'
+  s.date = '2009-06-07'
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
     test/spec_tilt_erbtemplate.rb
     test/spec_tilt_hamltemplate.rb
     test/spec_tilt_liquid_template.rb
+    test/spec_tilt_rdiscount.rb
     test/spec_tilt_sasstemplate.rb
     test/spec_tilt_stringtemplate.rb
     test/spec_tilt_template.rb
