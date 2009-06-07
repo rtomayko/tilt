@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.version = '0.1'
   s.date = '2009-01-26'
 
-  s.description = "A TemplateFactoryBuilderFactory"
-  s.summary     = "A TemplateFactoryBuilderFactory"
+  s.description = "Generic interface to multiple Ruby template engines"
+  s.summary     = s.description
 
   s.authors = ["Ryan Tomayko"]
   s.email = "r@tomayko.com"
