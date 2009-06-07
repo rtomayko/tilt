@@ -74,6 +74,12 @@ module Tilt
       @file || '(__TEMPLATE__)'
     end
 
+    def require_template_library(name)
+      warn "WARN: loading '#{name}' library in a non thread-safe way; " +
+           "explicit require '#{name}' suggested."
+      require name
+    end
+
   protected
     # Do whatever preparation is necessary to "compile" the template.
     # Called immediately after template #data is loaded. Instance variables
@@ -122,9 +128,12 @@ module Tilt
 
   # ERB template implementation. See:
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html
+  #
+  # It's suggested that your program require 'erb' at load
+  # time when using this template engine.
   class ERBTemplate < Template
     def compile!
-      require 'erb' unless defined?(::ERB)
+      require_template_library 'erb' unless defined?(::ERB)
       @engine = ::ERB.new(data)
     end
 
@@ -147,9 +156,12 @@ module Tilt
 
   # Haml template implementation. See:
   # http://haml.hamptoncatlin.com/
+  #
+  # It's suggested that your program require 'haml' at load
+  # time when using this template engine.
   class HamlTemplate < Template
     def compile!
-      require 'haml' unless defined?(::Haml)
+      require_template_library 'haml' unless defined?(::Haml::Engine)
       @engine = ::Haml::Engine.new(data, haml_options)
     end
 
@@ -168,9 +180,12 @@ module Tilt
   # http://haml.hamptoncatlin.com/
   #
   # Sass templates do not support object scopes, locals, or yield.
+  #
+  # It's suggested that your program require 'sass' at load
+  # time when using this template engine.
   class SassTemplate < Template
     def compile!
-      require 'sass' unless defined?(::Sass)
+      require_template_library 'sass' unless defined?(::Sass::Engine)
       @engine = ::Sass::Engine.new(data, sass_options)
     end
 
@@ -187,9 +202,12 @@ module Tilt
 
   # Builder template implementation. See:
   # http://builder.rubyforge.org/
+  #
+  # It's suggested that your program require 'builder' at load
+  # time when using this template engine.
   class BuilderTemplate < Template
     def compile!
-      require 'builder' unless defined?(::Builder)
+      require_template_library 'builder' unless defined?(::Builder)
     end
 
     def evaluate(scope, locals, &block)
@@ -213,9 +231,12 @@ module Tilt
   # http://liquid.rubyforge.org/
   #
   # LiquidTemplate does not support scopes or yield blocks.
+  #
+  # It's suggested that your program require 'liquid' at load
+  # time when using this template engine.
   class LiquidTemplate < Template
     def compile!
-      require 'liquid' unless defined?(::Liquid)
+      require_template_library 'liquid' unless defined?(::Liquid::Template)
       @engine = ::Liquid::Template.parse(data)
     end
 
