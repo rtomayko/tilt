@@ -113,6 +113,24 @@ module Tilt
     end
   end
 
+  # Extremely simple template cache implementation.
+  class Cache
+    def initialize
+      @cache = {}
+    end
+
+    def fetch(*key)
+      key = key.map { |part| part.to_s }.join(":")
+      @cache[key] ||= yield
+    end
+
+    def clear
+      @cache = {}
+    end
+  end
+
+  # Template Implementations ================================================
+
   # The template source is evaluated as a Ruby string. The #{} interpolation
   # syntax can be used to generated dynamic output.
   class StringTemplate < Template
