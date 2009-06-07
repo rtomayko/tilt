@@ -20,7 +20,7 @@ module Tilt
   # Lookup a template class given for the given filename or file
   # extension. Return nil when no implementation is found.
   def self.[](filename)
-    ext = filename.downcase
+    ext = filename.to_s.downcase
     until ext.empty?
       return @template_mappings[ext]  if @template_mappings.key?(ext)
       ext = ext.sub(/^[^.]*\.?/, '')
