@@ -74,12 +74,6 @@ module Tilt
       @file || '(__TEMPLATE__)'
     end
 
-    def require_template_library(name)
-      warn "WARN: loading '#{name}' library in a non thread-safe way; " +
-           "explicit require '#{name}' suggested."
-      require name
-    end
-
   protected
     # Do whatever preparation is necessary to "compile" the template.
     # Called immediately after template #data is loaded. Instance variables
@@ -110,6 +104,12 @@ module Tilt
       return ['', 1] if locals.empty?
       source = locals.collect { |k,v| "#{k} = locals[:#{k}]" }
       [source.join("\n"), source.length]
+    end
+
+    def require_template_library(name)
+      warn "WARN: loading '#{name}' library in a non thread-safe way; " +
+           "explicit require '#{name}' suggested."
+      require name
     end
   end
 
