@@ -50,8 +50,8 @@ end
 desc 'Upload gem and tar.gz distributables to rubyforge'
 task :release => [package('.gem'), package('.tar.gz')] do |t|
   sh <<-SH
-    rubyforge add_release wink tilt #{$spec.version} #{package('.gem')} &&
-    rubyforge add_file    wink tilt #{$spec.version} #{package('.tar.gz')}
+    rubyforge add_release sinatra tilt #{$spec.version} #{package('.gem')} &&
+    rubyforge add_file    sinatra tilt #{$spec.version} #{package('.tar.gz')}
   SH
 end
 
