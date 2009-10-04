@@ -188,6 +188,20 @@ module Tilt
   end
   %w[erb rhtml].each { |ext| register ext, ERBTemplate }
 
+  # Erubis template implementation. See:
+  # http://www.kuwata-lab.com/erubis/
+  #
+  # It's suggested that your program require 'erubis' at load
+  # time when using this template engine.
+  class ErubisTemplate < ERBTemplate
+    def compile!
+      require_template_library 'erubis' unless defined?(::Erubis)
+      Erubis::Eruby.class_eval(%Q{def add_preamble(src) src << "@_out_buf = _buf = '';" end})
+      @engine = ::Erubis::Eruby.new(data)
+    end
+  end
+  register 'erubis', ErubisTemplate
+
   # Haml template implementation. See:
   # http://haml.hamptoncatlin.com/
   #
