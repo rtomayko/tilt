@@ -308,4 +308,24 @@ module Tilt
   end
   register 'markdown', RDiscountTemplate
 
+  # Mustache template implementation. See:
+  # http://github.com/defunkt/mustache
+  class MustacheTemplate < Template
+    def compile!
+      require_template_library 'mustache' unless defined?(::Mustache)
+      @engine = Mustache.new
+      @engine.template = data
+    end
+
+    def evaluate(scope, locals, &block)
+      locals.each do |local, value|
+        @engine[local] = value
+      end
+
+      @engine[:yield] = block.call if block
+      @engine.to_html
+    end
+  end
+  register 'mustache', MustacheTemplate
+
 end
