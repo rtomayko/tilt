@@ -3,7 +3,7 @@ module Tilt
 
   # Register a template implementation by file extension.
   def self.register(ext, template_class)
-    ext = ext.sub(/^\./, '')
+    ext = ext.to_s.sub(/^\./, '')
     @template_mappings[ext.downcase] = template_class
   end
 
