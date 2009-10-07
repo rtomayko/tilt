@@ -1,6 +1,7 @@
 require 'bacon'
 require 'tilt'
 require 'erb'
+require 'builder'
 
 describe "Tilt::BuilderTemplate" do
   it "is registered for '.builder' files" do

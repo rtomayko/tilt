@@ -3,6 +3,8 @@ require 'tilt'
 
 begin
   require 'haml'
+  require 'sass'
+
   describe "Tilt::SassTemplate" do
     it "is registered for '.sass' files" do
       Tilt['test.sass'].should.equal Tilt::SassTemplate
