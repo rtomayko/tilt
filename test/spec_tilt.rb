@@ -13,7 +13,7 @@ describe "Tilt" do
   it "registers template implementation classes by file extension" do
     lambda { Tilt.register('mock', MockTemplate) }.should.not.raise
   end
-  
+
   it "registers template implementation classes by a file extension given as a symbol" do
     lambda { Tilt.register(:mock, MockTemplate) }.should.not.raise
   end
