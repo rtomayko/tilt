@@ -3,7 +3,7 @@ require 'tilt'
 require 'erb'
 require 'builder'
 
-describe "Tilt::BuilderTemplate" do
+describe Tilt::BuilderTemplate do
   it "is registered for '.builder' files" do
     Tilt['test.builder'].should.equal Tilt::BuilderTemplate
     Tilt['test.xml.builder'].should.equal Tilt::BuilderTemplate

@@ -5,7 +5,7 @@ begin
   require 'mustache'
   raise LoadError, "mustache version must be > 0.2.2" if !Mustache.respond_to?(:compiled?)
 
-  describe "Tilt::MustacheTemplate" do
+  describe Tilt::MustacheTemplate do
     it "is registered for '.mustache' files" do
       Tilt['test.mustache'].should.equal Tilt::MustacheTemplate
     end

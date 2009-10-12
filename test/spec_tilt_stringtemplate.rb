@@ -1,7 +1,7 @@
 require 'bacon'
 require 'tilt'
 
-describe "Tilt::StringTemplate" do
+describe Tilt::StringTemplate do
   it "is registered for '.str' files" do
     Tilt['test.str'].should.equal Tilt::StringTemplate
   end

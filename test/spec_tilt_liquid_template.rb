@@ -3,7 +3,7 @@ require 'tilt'
 
 begin
   require 'liquid'
-  describe "Tilt::LiquidTemplate" do
+  describe Tilt::LiquidTemplate do
     it "is registered for '.liquid' files" do
       Tilt['test.liquid'].should.equal Tilt::LiquidTemplate
     end

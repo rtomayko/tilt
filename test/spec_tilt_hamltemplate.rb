@@ -6,7 +6,7 @@ begin
   end
 
   require 'haml'
-  describe "Tilt::HamlTemplate" do
+  describe Tilt::HamlTemplate do
     it "is registered for '.haml' files" do
       Tilt['test.haml'].should.equal Tilt::HamlTemplate
     end

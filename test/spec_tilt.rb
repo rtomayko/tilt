@@ -1,7 +1,7 @@
 require 'bacon'
 require 'tilt'
 
-describe "Tilt" do
+describe Tilt do
   class MockTemplate
     attr_reader :args, :block
     def initialize(*args, &block)

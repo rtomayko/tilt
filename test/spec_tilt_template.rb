@@ -1,7 +1,7 @@
 require 'bacon'
 require 'tilt'
 
-describe "Tilt::Template" do
+describe Tilt::Template do
   it "raises ArgumentError when a file or block not given" do
     lambda { Tilt::Template.new }.should.raise ArgumentError
   end

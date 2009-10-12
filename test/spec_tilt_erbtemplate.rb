@@ -2,7 +2,7 @@ require 'bacon'
 require 'tilt'
 require 'erb'
 
-describe "Tilt::ERBTemplate" do
+describe Tilt::ERBTemplate do
   it "is registered for '.erb' files" do
     Tilt['test.erb'].should.equal Tilt::ERBTemplate
     Tilt['test.html.erb'].should.equal Tilt::ERBTemplate

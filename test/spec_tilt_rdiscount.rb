@@ -3,7 +3,7 @@ require 'tilt'
 
 begin
   require 'rdiscount'
-  describe "Tilt::RDiscountTemplate" do
+  describe Tilt::RDiscountTemplate do
     it "is registered for '.markdown' files" do
       Tilt['test.markdown'].should.equal Tilt::RDiscountTemplate
     end
