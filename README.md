@@ -1,10 +1,10 @@
 Tilt
 ====
 
-Tilt provides a thin interface over a bunch of different template engines to
-make their usage as generic possible. This is useful for web frameworks,
-static site generators, and other systems that support multiple template
-engines but don't want to code for each of them explicitly.
+Tilt is a thin interface over a bunch of different Ruby template engines in
+an attempt to make their usage as generic possible. This is useful for web
+frameworks, static site generators, and other systems that support multiple
+template engines but don't want to code for each of them individually.
 
 The following features are supported for all template engines (assuming the
 feature is relevant to the engine):
@@ -15,61 +15,129 @@ feature is relevant to the engine):
  * Backtraces with correct filenames and line numbers
  * Template compilation caching and reloading
 
-These template engines are currently supported with (many) more on the way:
+The primary goal is to get all of the things listed above right for all
+template engines included in the distribution.
 
- * ERB
- * Interpolated Ruby String
- * Haml (with the `haml` gem/library)
- * Sass (with the `haml` gem/library)
- * Builder (with the `builder` gem/library)
- * Liquid (with the `liquid` gem/library)
+Support for these template engines is included with the package:
 
-Usage
------
+    ENGINE                     FILE EXTENSIONS   REQUIRED LIBRARIES
+    -------------------------- ----------------- ----------------------------
+    ERB                        .erb              none (included ruby stdlib)
+    Interpolated String        .str              none (included ruby core)
+    Haml                       .haml             haml
+    Sass                       .sass             haml
+    Builder                    .builder          builder
+    Liquid                     .liquid           liquid
+    RDiscount                  .markdown         rdiscount
 
-All supported templates have an implementation class under the `Tilt` module.
-Each template implementation follows the exact same interface for creation
-and rendering:
+Basic Usage
+-----------
+
+Instant gratification:
+
+    require 'erb'
+    require 'tilt'
+    template = Tilt.new('templates/foo.erb')
+    => #<Tilt::ERBTemplate @file="templates/foo.rb" ...>
+    output = template.render
+    => "Hello world!"
+
+It's recommended that calling programs explicitly require template engine
+libraries (like 'erb' above) at load time. Tilt attempts to lazy require the
+template engine library the first time a template is created but this is
+prone to error in threaded environments.
+
+The `Tilt` module contains generic implementation classes for all supported
+template engines. Each template class adheres to the same interface for
+creation and rendering. In the instant gratification example, we let Tilt
+determine the template implementation class based on the filename, but
+`Tilt::Template` implementations can also be used directly:
 
     template = Tilt::HamlTemplate.new('templates/foo.haml')
     output = template.render
 
 The `render` method takes an optional evaluation scope and locals hash
-arguments. In the following example, the template is evaluated within the
-context of the person object and can access the locals `x` and `y`:
+arguments. Here, the template is evaluated within the context of the
+`Person` object with locals `x` and `y`:
 
     template = Tilt::ERBTemplate.new('templates/foo.erb')
     joe = Person.find('joe')
     output = template.render(joe, :x => 35, :y => 42)
 
-The `render` method may be called multiple times without creating a new
-template object. Continuing the previous example, we can render in Jane's
-scope with a different set of locals:
+If no scope is provided, the template is evaluated within the context of an
+object created with `Object.new`.
+
+A single `Template` instance's `render` method may be called multiple times
+with different scope and locals arguments. Continuing the previous example,
+we render the same compiled template but this time in jane's scope:
 
     jane = Person.find('jane')
     output = template.render(jane, :x => 22, :y => nil)
 
-Blocks can be passed to the render method for templates that support running
-arbitrary ruby code and using `yield`. Assuming the following was in a file
-named `foo.erb`:
+Blocks can be passed to `render` for templates that support running
+arbitrary ruby code (usually with some form of `yield`). For instance,
+assuming the following in `foo.erb`:
 
     Hey <%= yield %>!
 
-The block passed to the `render` method is invoked on `yield`:
+The block passed to `render` is called on `yield`:
 
     template = Tilt::ERBTemplate.new('foo.erb')
     template.render { 'Joe' }
     # => "Hey Joe!"
 
-There's also a lightweight file extension to template engine mapping layer.
-You can pass a filename or extension to `Tilt::[]` to retrieve the
-corresponding implementation class:
+Template Mappings
+-----------------
 
-    Tilt['hello.erb']
-    # => Tilt::ERBTemplate
+The `Tilt` module includes methods for associating template implementation
+classes with filename patterns and for locating/instantiating template
+classes based on those associations.
 
-The `Tilt.new` works similarly but returns a new instance of the underlying
-implementation class:
+The `Tilt::register` method associates a filename pattern with a specific
+template implementation. To use ERB for files ending in a `.bar` extension:
 
-    template = Tilt.new('templates/foo.erb')
-    output = template.render
+     >> Tilt.register 'bar', Tilt::ERBTemplate
+     >> Tilt.new('views/foo.bar')
+     => #<Tilt::ERBTemplate @file="views/foo.bar" ...>
+
+Retrieving the template class for a file or file extension:
+
+     >> Tilt['foo.bar']
+     => Tilt::ERBTemplate
+     >> Tilt['haml']
+     => Tilt::HamlTemplate
+
+It's also possible to register template file mappings that are more specific
+than a file extension. To use Erubis for `bar.erb` but ERB for all other `.erb`
+files:
+
+     >> Tilt.register 'bar.erb', Tilt::ErubisTemplate
+     >> Tilt.new('views/foo.erb')
+     => Tilt::ERBTemplate
+     >> Tilt.new('views/bar.erb')
+     => Tilt::ErubisTemplate
+
+The template class is determined by searching for a series of decreasingly
+specific name patterns. When creating a new template with
+`Tilt.new('views/foo.html.erb')`, we check for the following template
+mappings:
+
+  1. `views/foo.html.erb`
+  2. `foo.html.erb`
+  3. `html.erb`
+  4. `erb`
+
+`Tilt::register` can also be used to select between alternative template
+engines. To use Erubis instead of ERB for `.erb` files:
+
+    Tilt.register 'erb', Tilt::ErubisTemplate
+
+Or, use BlueCloth for markdown instead of RDiscount:
+
+    Tilt.register 'markdown', Tilt::BlueClothTemplate
+
+LICENSE
+-------
+
+Tilt is Copyright (c) 2009 [Ryan Tomayko](http://tomayko.com/about) and
+distributed under the MIT license. See the COPYING file for more info.
