@@ -180,7 +180,7 @@ module Tilt
   class ERBTemplate < Template
     def compile!
       require_template_library 'erb' unless defined?(::ERB)
-      @engine = ::ERB.new(data, nil, nil, '@_out_buf')
+      @engine = ::ERB.new(data, options[:safe], options[:trim], '@_out_buf')
     end
 
     def template_source

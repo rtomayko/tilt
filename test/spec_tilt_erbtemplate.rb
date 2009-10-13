@@ -65,6 +65,21 @@ describe Tilt::ERBTemplate do
       line.should.equal '6'
     end
   end
+
+  it "renders erb templates with new lines by default" do
+    template = Tilt.new('test.erb', 1) { "\n<%= 1 + 1 %>\n" }
+    template.render.should.equal "\n2\n"
+  end
+
+  it "strips new lines explicitly when :trim option is set to '-'" do
+    template = Tilt.new('test.erb', 1, :trim => '-') { "\n<%= 1 + 1 -%>\n" }
+    template.render.should.equal "\n2"
+  end
+
+  it "processes lines start with % when :trim option is set to '%'" do
+    template = Tilt.new('test.erb', 1, :trim => '%') { "\n% if true\nhello\n%end\n" }
+    template.render.should.equal "\nhello\n"
+  end
 end
 
 __END__
