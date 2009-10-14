@@ -28,6 +28,16 @@ describe "Tilt::Template" do
     inst.eval_file.should.not.include "\n"
   end
 
+  it "responds to #basename with the file's basename" do
+    inst = Tilt::Template.new('/tmp/templates/foo.html.erb')
+    inst.basename.should.equal 'foo.html.erb'
+  end
+
+  it "responds to #name with the file's basename minus file extensions" do
+    inst = Tilt::Template.new('/tmp/templates/foo.html.erb')
+    inst.name.should.equal 'foo'
+  end
+
   it "can be constructed with a data loading block" do
     lambda {
       Tilt::Template.new { |template| "Hello World!" }

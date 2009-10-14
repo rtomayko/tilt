@@ -77,6 +77,16 @@ module Tilt
       evaluate scope, locals || {}, &block
     end
 
+    # The basename of the template file.
+    def basename(suffix='')
+      File.basename(file, suffix) if file
+    end
+
+    # The template file's basename with all extensions chomped off.
+    def name
+      basename.split('.', 2).first if basename
+    end
+
     # The filename used in backtraces to describe the template.
     def eval_file
       @file || '(__TEMPLATE__)'
