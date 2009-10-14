@@ -66,14 +66,21 @@ module Tilt
       @reader = block || lambda { |t| File.read(file) }
     end
 
-    # Render the template in the given scope with the locals specified. If a
-    # block is given, it is typically available within the template via
-    # +yield+.
-    def render(scope=Object.new, locals={}, &block)
+    # Load template source and compile the template. The template is
+    # loaded and compiled the first time this method is called; subsequent
+    # calls are no-ops.
+    def compile
       if @data.nil?
         @data = @reader.call(self)
         compile!
       end
+    end
+
+    # Render the template in the given scope with the locals specified. If a
+    # block is given, it is typically available within the template via
+    # +yield+.
+    def render(scope=Object.new, locals={}, &block)
+      compile
       evaluate scope, locals || {}, &block
     end
 
