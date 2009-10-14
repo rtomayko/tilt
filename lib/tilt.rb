@@ -342,6 +342,11 @@ module Tilt
   #
   # Mustache templates support the following options:
   #
+  # * :view - The Mustache subclass that should be used a the view. When
+  #   this option is specified, the template file will be determined from
+  #   the view class, and the :namespace and :mustaches options are
+  #   irrelevant.
+  #
   # * :namespace - The class or module where View classes are located.
   #   If you have Hurl::App::Views, namespace should be Hurl:App. This
   #   defaults to Object, causing ::Views to be searched for classes.
@@ -370,11 +375,13 @@ module Tilt
       @view_name = Mustache.classify(name.to_s)
       @namespace = options[:namespace] || Object
 
-
       # Figure out which Mustache class to use.
       @engine =
-        if @namespace.const_defined?(:Views) &&
-           @namespace::Views.const_defined?(@view_name)
+        if options[:view]
+          @view_name = options[:view].name
+          options[:view]
+        elsif @namespace.const_defined?(:Views) &&
+          @namespace::Views.const_defined?(@view_name)
           @namespace::Views.const_get(@view_name)
         elsif load_mustache_view
           engine = @namespace::Views.const_get(@view_name)
@@ -386,6 +393,7 @@ module Tilt
 
       # set options on the view class
       options.each do |key, value|
+        next if %w[view namespace mustaches].include?(key.to_s)
         @engine.send("#{key}=", value) if @engine.respond_to? "#{key}="
       end
     end
