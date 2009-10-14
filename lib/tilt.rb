@@ -96,7 +96,7 @@ module Tilt
 
     # The filename used in backtraces to describe the template.
     def eval_file
-      @file || '(__TEMPLATE__)'
+      file || '(__TEMPLATE__)'
     end
 
   protected
