@@ -10,7 +10,7 @@ module Tilt
   # Create a new template for the given file using the file's extension
   # to determine the the template mapping.
   def self.new(file, line=nil, options={}, &block)
-    if template_class = self[File.basename(file)]
+    if template_class = self[file]
       template_class.new(file, line, options, &block)
     else
       fail "No template engine registered for #{File.basename(file)}"
@@ -19,13 +19,21 @@ module Tilt
 
   # Lookup a template class given for the given filename or file
   # extension. Return nil when no implementation is found.
-  def self.[](filename)
-    ext = filename.to_s.downcase
-    until ext.empty?
-      return @template_mappings[ext]  if @template_mappings.key?(ext)
-      ext = ext.sub(/^[^.]*\.?/, '')
+  def self.[](file)
+    if @template_mappings.key?(pattern = file.to_s.downcase)
+      @template_mappings[pattern]
+    elsif @template_mappings.key?(pattern = File.basename(pattern))
+      @template_mappings[pattern]
+    else
+      while !pattern.empty?
+        if @template_mappings.key?(pattern)
+          return @template_mappings[pattern]
+        else
+          pattern = pattern.sub(/^[^.]*\.?/, '')
+        end
+      end
+      nil
     end
-    nil
   end
 
   # Base class for template implementations. Subclasses must implement
