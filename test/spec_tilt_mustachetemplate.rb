@@ -22,18 +22,41 @@ begin
       template = Tilt::MustacheTemplate.new { "<p>Hey {{yield}}!</p>" }
       template.render { 'Joe' }.should.equal "<p>Hey Joe!</p>"
     end
+
+    module Views
+      class Foo < Mustache
+        attr_reader :foo
+      end
+    end
+
+    it "locates views defined at the top-level by default" do
+      template = Tilt::MustacheTemplate.new('foo.mustache') { "<p>Hey {{foo}}!</p>" }
+      template.compile
+      template.engine.should.equal Views::Foo
+    end
+
+    module Bar
+      module Views
+        class Bizzle < Mustache
+        end
+      end
+    end
+
+    it "locates views defined in a custom namespace" do
+      template = Tilt::MustacheTemplate.new('bizzle.mustache', :namespace => Bar) { "<p>Hello World!</p>" }
+      template.compile
+      template.engine.should.equal Bar::Views::Bizzle
+      template.render.should.equal "<p>Hello World!</p>"
+    end
+
+    it "copies instance variables from scope object" do
+      template = Tilt::MustacheTemplate.new('foo.mustache') { "<p>Hey {{foo}}!</p>" }
+      scope = Object.new
+      scope.instance_variable_set(:@foo, 'Jane!')
+      template.render(scope).should.equal "<p>Hey Jane!!</p>"
+    end
   end
 
 rescue LoadError => boom
   warn "Tilt::MustacheTemplate (disabled)\n"
 end
-
-__END__
-<html>
- <body>
-  <h1>Hey {{name}}</h1>
-
-  <p>{{fail}}</p>
-  <p>we never get here</p>
- </body>
-</html>

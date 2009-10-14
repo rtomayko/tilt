@@ -334,24 +334,97 @@ module Tilt
   end
   register 'markdown', RDiscountTemplate
 
-  # Mustache template implementation. See:
+  # Mustache is written and maintained by Chris Wanstrath. See:
   # http://github.com/defunkt/mustache
+  #
+  # It's suggested that your program require 'mustache' at load
+  # time when using this template engine.
+  #
+  # Mustache templates support the following options:
+  #
+  # * :namespace - The class or module where View classes are located.
+  #   If you have Hurl::App::Views, namespace should be Hurl:App. This
+  #   defaults to Object, causing ::Views to be searched for classes.
+  #
+  # * :mustaches - Where mustache views (.rb files) are located, or nil
+  #   disable auto-requiring of views based on template names. By default,
+  #   the view file is assumed to be in the same directory as the template
+  #   file.
+  #
+  # All other options are assumed to be attribute writer's on the Mustache
+  # class and are set when a template is compiled. They are:
+  #
+  # * :path - The base path where mustache templates (.html files) are
+  #   located. This defaults to the current working directory.
+  #
+  # * :template_extension - The file extension used on mustache templates.
+  #   The default is 'html'.
+  #
   class MustacheTemplate < Template
+    attr_reader :engine
+
+    # Locates and compiles the Mustache object used to create new views. The
     def compile!
       require_template_library 'mustache' unless defined?(::Mustache)
-      @engine = Mustache.new
-      @engine.template = data
+
+      @view_name = Mustache.classify(name.to_s)
+      @namespace = options[:namespace] || Object
+
+
+      # Figure out which Mustache class to use.
+      @engine =
+        if @namespace.const_defined?(:Views) &&
+           @namespace::Views.const_defined?(@view_name)
+          @namespace::Views.const_get(@view_name)
+        elsif load_mustache_view
+          engine = @namespace::Views.const_get(@view_name)
+          engine.template = data
+          engine
+        else
+          Mustache
+        end
+
+      # set options on the view class
+      options.each do |key, value|
+        @engine.send("#{key}=", value) if @engine.respond_to? "#{key}="
+      end
     end
 
-    def evaluate(scope, locals, &block)
-      locals.each do |local, value|
-        @engine[local] = value
+    def evaluate(scope=nil, locals={}, &block)
+      # Create a new instance for playing with
+      instance = @engine.new
+
+      # Copy instance variables from scope to the view
+      scope.instance_variables.each do |name|
+        instance.instance_variable_set(name, scope.instance_variable_get(name))
       end
 
-      @engine[:yield] = block.call if block
-      @engine.to_html
+      # Locals get added to the view's context
+      locals.each do |local, value|
+        instance[local] = value
+      end
+
+      # If we're passed a block it's a subview. Sticking it in yield
+      # lets us use {{yield}} in layout.html to render the actual page.
+      instance[:yield] = block.call if block
+
+      instance.template = data unless instance.compiled?
+
+      instance.to_html
+    end
+
+    # Require the mustache view lib if it exists.
+    def load_mustache_view
+      return if name.nil?
+      path = "#{options[:mustaches]}/#{name}.rb"
+      if options[:mustaches] && File.exist?(path)
+        require path.chomp('.rb')
+        path
+      elsif File.exist?(path = file.sub(/\.[^\/]+$/, '.rb'))
+        require path.chomp('.rb')
+        path
+      end
     end
   end
   register 'mustache', MustacheTemplate
-
 end
