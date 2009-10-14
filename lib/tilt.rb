@@ -60,6 +60,7 @@ module Tilt
     # file is nil, a block is required.
     def initialize(file=nil, line=1, options={}, &block)
       raise ArgumentError, "file or block required" if file.nil? && block.nil?
+      options, line = line, 1 if line.is_a?(Hash)
       @file = file
       @line = line || 1
       @options = options || {}
