@@ -133,8 +133,10 @@ module Tilt
     end
 
     def require_template_library(name)
-      warn "WARN: loading '#{name}' library in a non thread-safe way; " +
-           "explicit require '#{name}' suggested."
+      if Thread.list.size > 1
+        warn "WARN: tilt autoloading '#{name}' in a non thread-safe way; " +
+             "explicit require '#{name}' suggested."
+      end
       require name
     end
   end
