@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+require 'ostruct'
+require 'optparse'
+require 'tilt'
+
+usage = <<EOF
+Usage: tilt [OPTIONS] [FILE]
+Process template FILE and generate output. With no FILE or when FILE
+is '-', read template from stdin and use the --type option to determine
+the template's type.
+
+Options
+  -l, --list           List supported template engines + file patterns and exit.
+  -t, --type=PATTERN   Use this template engine; required when FILE is stdin.
+
+  -h, --help           Show this help message.
+
+Convert markdown to HTML:
+  $ tilt foo.markdown > foo.html
+
+Process ERB template:
+  $ echo "Answer: <%= 2 + 2 %>" | tilt -t erb
+  Answer: 4
+EOF
+
+script_name = File.basename($0)
+pattern = nil
+layout = nil
+
+ARGV.options do |o|
+  o.program_name = script_name
+
+  # list all available template engines
+  o.on("-l", "--list") do
+    groups = {}
+    Tilt.mappings.each do |pattern,engine|
+      key = engine.name.split('::').last.sub(/Template$/, '')
+      (groups[key] ||= []) << pattern
+    end
+    groups.sort { |(k1,v1),(k2,v2)| k1 <=> k2 }.each do |engine,files|
+      printf "%-15s %s\n", engine, files.sort.join(', ')
+    end
+    exit
+  end
+
+  # the template type / pattern
+  o.on("-t", "--type=PATTERN") do |val|
+    fail "unknown template type: #{val}" if Tilt[val].nil?
+    pattern = val
+  end
+
+  # pass template output into the specified layout template
+  o.on("-y", "--layout=FILE")  do |file|
+    paths = [file, "~/.tilt/#{file}", "/etc/tilt/#{file}"]
+    layout = paths.
+      map  { |p| File.expand_path(p) }.
+      find { |p| File.exist?(p) }
+    fail "no such layout: #{file}" if layout.nil?
+  end
+
+  o.on_tail("-h", "--help") { puts usage; exit }
+
+  o.parse!
+end
+
+file = ARGV.first || '-'
+pattern = file if pattern.nil?
+template =
+  Tilt[pattern].new(file) {
+    if file == '-'
+      $stdin.read
+    else
+      File.read(file)
+    end
+  }
+output = template.render
+
+# process layout
+output = Tilt.new(layout).render { output } if layout
+
+$stdout.write(output)
