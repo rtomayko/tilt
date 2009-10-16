@@ -1,10 +1,16 @@
 module Tilt
   @template_mappings = {}
 
+  # Hash of template path pattern => template implementation
+  # class mappings.
+  def self.mappings
+    @template_mappings
+  end
+
   # Register a template implementation by file extension.
   def self.register(ext, template_class)
     ext = ext.to_s.sub(/^\./, '')
-    @template_mappings[ext.downcase] = template_class
+    mappings[ext.downcase] = template_class
   end
 
   # Create a new template for the given file using the file's extension

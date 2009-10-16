@@ -40,6 +40,11 @@ describe Tilt do
     Tilt['none'].should.be.nil
   end
 
+  it "exposes the file pattern -> template class Hash at Tilt::mappings" do
+    Tilt.should.respond_to :mappings
+    Tilt.mappings.should.respond_to :[]
+  end
+
   it "creates a new template instance given a filename" do
     template = Tilt.new('foo.mock', 1, :key => 'val') { 'Hello World!' }
     template.args.should.equal ['foo.mock', 1, {:key => 'val'}]
