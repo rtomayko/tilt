@@ -341,6 +341,7 @@ module Tilt
     end
   end
   register 'markdown', RDiscountTemplate
+  register 'md', RDiscountTemplate
 
   # Mustache is written and maintained by Chris Wanstrath. See:
   # http://github.com/defunkt/mustache
