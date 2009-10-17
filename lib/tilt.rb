@@ -44,6 +44,7 @@ module Tilt
     end
   end
 
+
   # Base class for template implementations. Subclasses must implement
   # the #compile! method and one of the #evaluate or #template_source
   # methods.
@@ -165,7 +166,9 @@ module Tilt
     end
   end
 
+
   # Template Implementations ================================================
+
 
   # The template source is evaluated as a Ruby string. The #{} interpolation
   # syntax can be used to generated dynamic output.
@@ -180,11 +183,9 @@ module Tilt
   end
   register 'str', StringTemplate
 
+
   # ERB template implementation. See:
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html
-  #
-  # It's suggested that your program require 'erb' at load
-  # time when using this template engine.
   class ERBTemplate < Template
     def compile!
       require_template_library 'erb' unless defined?(::ERB)
@@ -224,11 +225,9 @@ module Tilt
   end
   %w[erb rhtml].each { |ext| register ext, ERBTemplate }
 
+
   # Erubis template implementation. See:
   # http://www.kuwata-lab.com/erubis/
-  #
-  # It's suggested that your program require 'erubis' at load
-  # time when using this template engine.
   class ErubisTemplate < ERBTemplate
     def compile!
       require_template_library 'erubis' unless defined?(::Erubis)
@@ -238,11 +237,9 @@ module Tilt
   end
   register 'erubis', ErubisTemplate
 
+
   # Haml template implementation. See:
   # http://haml.hamptoncatlin.com/
-  #
-  # It's suggested that your program require 'haml' at load
-  # time when using this template engine.
   class HamlTemplate < Template
     def compile!
       require_template_library 'haml' unless defined?(::Haml::Engine)
@@ -260,13 +257,11 @@ module Tilt
   end
   register 'haml', HamlTemplate
 
+
   # Sass template implementation. See:
   # http://haml.hamptoncatlin.com/
   #
   # Sass templates do not support object scopes, locals, or yield.
-  #
-  # It's suggested that your program require 'sass' at load
-  # time when using this template engine.
   class SassTemplate < Template
     def compile!
       require_template_library 'sass' unless defined?(::Sass::Engine)
@@ -284,11 +279,9 @@ module Tilt
   end
   register 'sass', SassTemplate
 
+
   # Builder template implementation. See:
   # http://builder.rubyforge.org/
-  #
-  # It's suggested that your program require 'builder' at load
-  # time when using this template engine.
   class BuilderTemplate < Template
     def compile!
       require_template_library 'builder' unless defined?(::Builder)
@@ -311,6 +304,7 @@ module Tilt
   end
   register 'builder', BuilderTemplate
 
+
   # Liquid template implementation. See:
   # http://liquid.rubyforge.org/
   #
@@ -331,6 +325,7 @@ module Tilt
   end
   register 'liquid', LiquidTemplate
 
+
   # Discount Markdown implementation.
   class RDiscountTemplate < Template
     def compile!
@@ -345,37 +340,13 @@ module Tilt
   register 'markdown', RDiscountTemplate
   register 'md', RDiscountTemplate
 
+
   # Mustache is written and maintained by Chris Wanstrath. See:
   # http://github.com/defunkt/mustache
   #
-  # It's suggested that your program require 'mustache' at load
-  # time when using this template engine.
-  #
-  # Mustache templates support the following options:
-  #
-  # * :view - The Mustache subclass that should be used a the view. When
-  #   this option is specified, the template file will be determined from
-  #   the view class, and the :namespace and :mustaches options are
-  #   irrelevant.
-  #
-  # * :namespace - The class or module where View classes are located.
-  #   If you have Hurl::App::Views, namespace should be Hurl:App. This
-  #   defaults to Object, causing ::Views to be searched for classes.
-  #
-  # * :mustaches - Where mustache views (.rb files) are located, or nil
-  #   disable auto-requiring of views based on template names. By default,
-  #   the view file is assumed to be in the same directory as the template
-  #   file.
-  #
-  # All other options are assumed to be attribute writer's on the Mustache
-  # class and are set when a template is compiled. They are:
-  #
-  # * :path - The base path where mustache templates (.html files) are
-  #   located. This defaults to the current working directory.
-  #
-  # * :template_extension - The file extension used on mustache templates.
-  #   The default is 'html'.
-  #
+  # When a scope argument is provided to MustacheTemplate#render, the
+  # instance variables are copied from the scope object to the Mustache
+  # view.
   class MustacheTemplate < Template
     attr_reader :engine
 
