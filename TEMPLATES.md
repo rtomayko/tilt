@@ -10,7 +10,6 @@ documentation on each supported template engine is provided below.
  * [Haml](#haml)
  * [Mustache](#mustache)
 
-----
 
 <a name='erb'></a>
 ERB (`erb`, `rhtml`)
@@ -63,7 +62,6 @@ separate thread with `$SAFE` set to the provided level.
 
   * [ERB documentation](http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html)
 
-----
 
 <a name='erubis'></a>
 Erubis (`erubis`)
@@ -89,7 +87,6 @@ using this template engine within a threaded environment.
   * [Erubis Home](http://www.kuwata-lab.com/erubis/)
   * [Erubis User's Guide](http://www.kuwata-lab.com/erubis/users-guide.html)
 
-----
 
 <a name='haml'></a>
 Haml (`haml`)
@@ -208,8 +205,6 @@ Defaults to `Encoding.default_internal` or, if that's not set, `"utf-8"`.
   * [Haml Reference](http://haml-lang.com/docs/yardoc/HAML_REFERENCE.md.html)
   * [Whitespace Preservation](http://haml-lang.com/docs/yardoc/HAML_REFERENCE.md.html#whitespace_preservation)
 
-
-----
 
 <a name='mustache'></a>
 Mustache (`mustache`)
