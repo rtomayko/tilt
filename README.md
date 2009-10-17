@@ -28,6 +28,7 @@ Support for these template engines is included with the package:
     Sass                       .sass             haml
     Builder                    .builder          builder
     Liquid                     .liquid           liquid
+    Mustache                   .mustache         mustache
     RDiscount                  .markdown         rdiscount
 
 Basic Usage
