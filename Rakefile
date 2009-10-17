@@ -6,6 +6,7 @@ desc 'Generate test coverage report'
 task :rcov do
   sh "rcov -Ilib:test test/*_test.rb"
 end
+
 desc 'Run specs with unit test style output'
 task :test do |t|
   sh 'bacon -qa'
@@ -18,11 +19,8 @@ end
 
 # PACKAGING =================================================================
 
-# load gemspec like github's gem builder to surface any SAFE issues.
-Thread.new do
-  require 'rubygems/specification'
-  $spec = eval("$SAFE=3\n#{File.read('tilt.gemspec')}")
-end.join
+require 'rubygems/specification'
+$spec ||= eval(File.read('tilt.gemspec'))
 
 def package(ext='')
   "dist/tilt-#{$spec.version}" + ext
@@ -58,8 +56,12 @@ end
 # GEMSPEC ===================================================================
 
 file 'tilt.gemspec' => FileList['{lib,test}/**','Rakefile'] do |f|
+  # read version from tilt.rb
+  version = File.read('lib/tilt.rb')[/VERSION = '(.*)'/] && $1
   # read spec file and split out manifest section
-  spec = File.read(f.name)
+  spec = File.
+    read(f.name).
+    sub(/s\.version\s*=\s*'.*'/, "s.version = '#{version}'")
   parts = spec.split("  # = MANIFEST =\n")
   # determine file list from git ls-files
   files = `git ls-files`.

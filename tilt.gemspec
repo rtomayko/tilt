@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'tilt'
-  s.version = '0.2'
-  s.date = '2009-06-07'
+  s.version = '0.3'
+  s.date = '2009-10-16'
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
@@ -17,13 +17,17 @@ Gem::Specification.new do |s|
     COPYING
     README.md
     Rakefile
+    TEMPLATES.md
+    bin/tilt
     lib/tilt.rb
     test/.bacon
     test/spec_tilt.rb
     test/spec_tilt_buildertemplate.rb
     test/spec_tilt_erbtemplate.rb
+    test/spec_tilt_erubistemplate.rb
     test/spec_tilt_hamltemplate.rb
     test/spec_tilt_liquid_template.rb
+    test/spec_tilt_mustachetemplate.rb
     test/spec_tilt_rdiscount.rb
     test/spec_tilt_sasstemplate.rb
     test/spec_tilt_stringtemplate.rb

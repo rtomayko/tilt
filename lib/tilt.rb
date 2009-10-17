@@ -1,4 +1,6 @@
 module Tilt
+  VERSION = '0.3'
+
   @template_mappings = {}
 
   # Hash of template path pattern => template implementation
