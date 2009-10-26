@@ -77,6 +77,16 @@ the extensions as follows:
     Tilt.register 'erb', Tilt::ErubisTemplate
     Tilt.register 'rhtml', Tilt::ErubisTemplate
 
+### Options
+
+#### `:trim => true` 
+
+Delete spaces around '<% %>'. (But, spaces around '<%= %>' are preserved.)
+
+#### `:pattern => '<% %>'`
+
+Set pattern for embedded Ruby code.
+
 See the [ERB](#erb) template documentation for examples, usage, and options.
 
 __NOTE:__ It's suggested that your program `require 'erubis'` at load time when
