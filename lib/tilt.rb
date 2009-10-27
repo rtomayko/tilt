@@ -358,13 +358,7 @@ module Tilt
       Mustache.view_namespace = options[:namespace]
 
       # Figure out which Mustache class to use.
-      @engine =
-        if options[:view]
-          @view_name = options[:view].name
-          options[:view]
-        else
-          Mustache.view_class(name)
-        end
+      @engine = options[:view] || Mustache.view_class(name)
 
       # set options on the view class
       options.each do |key, value|
