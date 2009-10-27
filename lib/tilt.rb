@@ -354,23 +354,16 @@ module Tilt
     def compile!
       require_template_library 'mustache' unless defined?(::Mustache)
 
-      @view_name = Mustache.classify(name.to_s)
-      @namespace = options[:namespace] || Object
+      # Set the Mustache view namespace if we can
+      Mustache.view_namespace = options[:namespace]
 
       # Figure out which Mustache class to use.
       @engine =
         if options[:view]
           @view_name = options[:view].name
           options[:view]
-        elsif @namespace.const_defined?(:Views) &&
-          @namespace::Views.const_defined?(@view_name)
-          @namespace::Views.const_get(@view_name)
-        elsif load_mustache_view
-          engine = @namespace::Views.const_get(@view_name)
-          engine.template = data
-          engine
         else
-          Mustache
+          Mustache.view_class(name)
         end
 
       # set options on the view class
@@ -401,19 +394,6 @@ module Tilt
       instance.template = data unless instance.compiled?
 
       instance.to_html
-    end
-
-    # Require the mustache view lib if it exists.
-    def load_mustache_view
-      return if name.nil?
-      path = "#{options[:mustaches]}/#{name}.rb"
-      if options[:mustaches] && File.exist?(path)
-        require path.chomp('.rb')
-        path
-      elsif File.exist?(path = file.sub(/\.[^\/]+$/, '.rb'))
-        require path.chomp('.rb')
-        path
-      end
     end
   end
   register 'mustache', MustacheTemplate
