@@ -62,6 +62,13 @@ begin
         line.should.equal '6'
       end
     end
+
+    it "passes options to erubis" do
+      template = Tilt::ErubisTemplate.new(nil, :pattern => '\{% %\}') { 'Hey {%= @name %}!' }
+      scope = Object.new
+      scope.instance_variable_set :@name, 'Joe'
+      template.render(scope).should.equal "Hey Joe!"
+    end
   end
 rescue LoadError => boom
   warn "Tilt::ErubisTemplate (disabled)\n"

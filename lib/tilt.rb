@@ -232,7 +232,7 @@ module Tilt
     def compile!
       require_template_library 'erubis' unless defined?(::Erubis)
       Erubis::Eruby.class_eval(%Q{def add_preamble(src) src << "@_out_buf = _buf = '';" end})
-      @engine = ::Erubis::Eruby.new(data)
+      @engine = ::Erubis::Eruby.new(data, options)
     end
   end
   register 'erubis', ErubisTemplate
