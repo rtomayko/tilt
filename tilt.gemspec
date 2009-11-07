@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
 
   s.name = 'tilt'
   s.version = '0.3'
-  s.date = '2009-10-16'
+  s.date = '2009-11-06'
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
@@ -37,6 +37,13 @@ Gem::Specification.new do |s|
   # = MANIFEST =
 
   s.test_files = s.files.select {|path| path =~ /^test\/spec_.*.rb/}
+  s.add_development_dependency 'bacon'
+  s.add_development_dependency 'builder'
+  s.add_development_dependency 'erubis'
+  s.add_development_dependency 'haml'
+  s.add_development_dependency 'mustache'
+  s.add_development_dependency 'rdiscount'
+  s.add_development_dependency 'liquid'
 
   s.extra_rdoc_files = %w[COPYING]
 
