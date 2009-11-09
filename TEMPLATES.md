@@ -5,23 +5,16 @@ While all Tilt templates use the same basic interface for template loading and
 evaluation, each varies in its capabilities and available options. Detailed
 documentation on each supported template engine is provided below.
 
- * [ERB](#erb)
- * [Erubis](#erubis)
- * [Haml](#haml)
- * [Mustache](#mustache)
+ * [ERB](#erb) - `Tilt::ERBTemplate`
+ * [Erubis](#erubis) - `Tilt::ErubisTemplate`
+ * [Haml](#haml) - `Tilt::HamlTemplate`
+ * [Mustache](#mustache) - `Tilt::MustachTemplate`
 
-Some engines, for example Markdown engines, do not execute pieces of
-embedded Ruby code and do not have features common to most high-level
-programming languages, such as variables, loops, etc.
-Such engines could not be used as a base of template systems.
+Tilt includes support for simple text formats in addition to
+programmable template languages. These typically do not support
+scope or locals but often support rendering options.
 
-To avoid confusion, templates run with such engines are separated and
-are included here because they usefulness.
-
-Plain text to HTML converters:
-
- * [Markdown](#markdown)
-
+ * [Markdown](#markdown) - `Tilt::RDiscountTemplate`
 
 <a name='erb'></a>
 ERB (`erb`, `rhtml`)
@@ -91,7 +84,7 @@ the extensions as follows:
 
 ### Options
 
-#### `:trim => true` 
+#### `:trim => true`
 
 Delete spaces around '<% %>'. (But, spaces around '<%= %>' are preserved.)
 
@@ -281,12 +274,11 @@ Markdown (`markdown`)
 
 Markdown is a lightweight markup language, created by John Gruber and
 Aaron Swartz. For any markup that is not covered by Markdown’s syntax,
-HTML is used.
-Marking up plain text with Markdown markup is easy and Markdown
-formatted texts are readable.
+HTML is used.  Marking up plain text with Markdown markup is easy and
+Markdown formatted texts are readable.
 
-Markdown formatted texts are converted to HTML with 
-[RDiscount] [] engine, which is a Ruby extension of [Discount] [].
+Markdown formatted texts are converted to HTML with the [RDiscount][]
+engine, which is a Ruby extension over the fast [Discount][] C library.
 
 ### Example
 
@@ -295,7 +287,7 @@ To wrap a Markdown formatted document with a layout:
     require 'erubis'
     require 'rdiscount'
     layout = Tilt::ErubisTemplate.new(nil, :pattern => '\{% %\}') do
-        "<!doctype html><title></title>{%= yield %}" 
+        "<!doctype html><title></title>{%= yield %}"
     end
     data = Tilt::RDiscountTemplate.new { "# hello tilt" }
     layout.render { data.render }
