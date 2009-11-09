@@ -10,6 +10,18 @@ documentation on each supported template engine is provided below.
  * [Haml](#haml)
  * [Mustache](#mustache)
 
+Some engines, for example Markdown engines, do not execute pieces of
+embedded Ruby code and do not have features common to most high-level
+programming languages, such as variables, loops, etc.
+Such engines could not be used as a base of template systems.
+
+To avoid confusion, templates run with such engines are separated and
+are included here because they usefulness.
+
+Plain text to HTML converters:
+
+ * [Markdown](#markdown)
+
 
 <a name='erb'></a>
 ERB (`erb`, `rhtml`)
@@ -261,3 +273,39 @@ specified, the template file will be determined from the view class, and the
 
   * [Mustache Docs](http://defunkt.github.com/mustache/)
   * [defunkt/mustache](http://github.com/defunkt/mustache) on GitHub
+
+
+<a name='markdown'></a>
+Markdown (`markdown`)
+---------------------
+
+Markdown is a lightweight markup language, created by John Gruber and
+Aaron Swartz. For any markup that is not covered by Markdown’s syntax,
+HTML is used.
+Marking up plain text with Markdown markup is easy and Markdown
+formatted texts are readable.
+
+Markdown formatted texts are converted to HTML with 
+[RDiscount] [] engine, which is a Ruby extension of [Discount] [].
+
+### Example
+
+To wrap a Markdown formatted document with a layout:
+
+    require 'erubis'
+    require 'rdiscount'
+    layout = Tilt::ErubisTemplate.new(nil, :pattern => '\{% %\}') do
+        "<!doctype html><title></title>{%= yield %}" 
+    end
+    data = Tilt::RDiscountTemplate.new { "# hello tilt" }
+    layout.render { data.render }
+    # => "<!doctype html><title></title><h1>hello tilt</h1>\n"
+
+
+### See also
+
+ * Daring Fireball: [Markdown Syntax Documentation] [markdown syntax]
+
+[discount]: http://www.pell.portland.or.us/~orc/Code/discount/ "Discount"
+[rdiscount]: http://github.com/rtomayko/rdiscount/ "RDiscount"
+[markdown syntax]: (http://daringfireball.net/projects/markdown/syntax/) "Markdown Syntax"
