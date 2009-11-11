@@ -317,7 +317,13 @@ module Tilt
   # Liquid template implementation. See:
   # http://liquid.rubyforge.org/
   #
-  # LiquidTemplate does not support scopes or yield blocks.
+  # Liquid is designed to be a *safe* template system and threfore
+  # does not provide direct access to execuatable scopes. In order to
+  # support a +scope+, the +scope+ must be able to represent itself
+  # as a hash by responding to #to_h. If the +scope+ does not respond
+  # to #to_h it will be ignored.
+  #
+  # LiquidTemplate does not support yield blocks.
   #
   # It's suggested that your program require 'liquid' at load
   # time when using this template engine.
@@ -328,7 +334,13 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      locals = locals.inject({}) { |hash,(k,v)| hash[k.to_s] = v ; hash }
+      locals = locals.inject({}){ |h,(k,v)| h[k.to_s] = v ; h }
+      if scope.respond_to?(:to_h)
+        scope  = scope.to_h.inject({}){ |h,(k,v)| h[k.to_s] = v ; h }
+        locals = scope.merge(locals)
+      end
+      # TODO: Is it possible to lazy yield ?
+      # locals['yield'] = promise{ block.call } if block_given?
       @engine.render(locals)
     end
   end
