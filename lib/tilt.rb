@@ -412,4 +412,30 @@ module Tilt
     end
   end
   register 'mustache', MustacheTemplate
+
+  # RDoc template. See:
+  # http://rdoc.rubyforge.org/
+  #
+  # It's suggested that your program require:
+  #
+  #   require 'rdoc/markup'
+  #   require 'rdoc/markup/to_html'
+  #
+  # at load time when using this template engine.
+  class RDocTemplate < Template
+    def compile!
+      unless defined?(::RDoc::Markup)
+        require_template_library 'rdoc/markup'
+        require_template_library 'rdoc/markup/to_html'
+      end
+      markup = RDoc::Markup::ToHtml.new
+      @engine = markup.convert(data)
+    end
+
+    def evaluate(scope, locals, &block)
+      @engine.to_s
+    end
+  end
+  register 'rdoc', RDocTemplate
+
 end
