@@ -16,6 +16,7 @@ programmable template languages. These typically do not support
 scope or locals but often support rendering options.
 
  * [Markdown](#markdown) - `Tilt::RDiscountTemplate`
+ * [RDoc](#rdoc) - `Tilt::RDocTemplate`
 
 <a name='erb'></a>
 ERB (`erb`, `rhtml`)
@@ -327,8 +328,8 @@ specified, the template file will be determined from the view class, and the
 
 
 <a name='markdown'></a>
-Markdown (`markdown`)
----------------------
+Markdown (`markdown`, `md`, `mkd`)
+----------------------------------
 
 Markdown is a lightweight markup language, created by John Gruber and
 Aaron Swartz. For any markup that is not covered by Markdown’s syntax,
@@ -340,6 +341,13 @@ engine, which is a Ruby extension over the fast [Discount][] C library.
 
 ### Example
 
+    Hello Markdown Templates
+    ========================
+
+    Hello World. This is a paragraph.
+
+### Usage
+
 To wrap a Markdown formatted document with a layout:
 
     require 'erubis'
@@ -350,6 +358,9 @@ To wrap a Markdown formatted document with a layout:
     data = Tilt::RDiscountTemplate.new { "# hello tilt" }
     layout.render { data.render }
     # => "<!doctype html><title></title><h1>hello tilt</h1>\n"
+
+__NOTE:__ It's suggested that your program `require 'mustache'` at load time
+when using this template engine in a threaded environment.
 
 ### Options
 
@@ -373,3 +384,27 @@ literal text by escaping `<` characters.
 [discount]: http://www.pell.portland.or.us/~orc/Code/discount/ "Discount"
 [rdiscount]: http://github.com/rtomayko/rdiscount/ "RDiscount"
 [markdown syntax]: (http://daringfireball.net/projects/markdown/syntax/) "Markdown Syntax"
+
+
+<a name='rdoc'></a>
+RDoc (`rdoc`)
+-------------
+
+RDoc is the simple text markup system that comes with Ruby's standard
+library.
+
+### Usage
+
+__NOTE:__ It's suggested that your program `require 'rdoc/markup'` and
+`require 'rdoc/markup/to_html'` at load time when using this template
+engine in a threaded environment.
+
+### Example
+
+    = Hello RDoc Templates
+
+    Hello World. This is a paragraph.
+
+### See also
+
+ * [RDoc](http://rdoc.sourceforge.net/doc/index.html)
