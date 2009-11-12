@@ -44,9 +44,30 @@ describe Tilt::Template do
     }.should.not.raise
   end
 
-  it "raises NotImplementedError when #compile! not defined" do
-    inst = Tilt::Template.new { |template| "Hello World!" }
-    lambda { inst.render }.should.raise NotImplementedError
+  class InitializingMockTemplate < Tilt::Template
+    @@initialized_count = 0
+    def self.initialized_count
+      @@initialized_count
+    end
+
+    def initialize_engine
+      @@initialized_count += 1
+    end
+
+    def compile!
+    end
+  end
+
+  it "calls #initialize_engine the very first time " do
+    InitializingMockTemplate.engine_initialized.should.be.nil
+    InitializingMockTemplate.initialized_count.should.equal 0
+
+    InitializingMockTemplate.new { "Hello World!" }
+    InitializingMockTemplate.engine_initialized.should.equal true
+    InitializingMockTemplate.initialized_count.should.equal 1
+
+    InitializingMockTemplate.new { "Hello World!" }
+    InitializingMockTemplate.initialized_count.should.equal 1
   end
 
   class CompilingMockTemplate < Tilt::Template
@@ -55,6 +76,11 @@ describe Tilt::Template do
       @compiled = true
     end
     def compiled? ; @compiled ; end
+  end
+
+  it "raises NotImplementedError when #compile! not defined" do
+    inst = Tilt::Template.new { |template| "Hello World!" }
+    lambda { inst.render }.should.raise NotImplementedError
   end
 
   it "raises NotImplementedError when #evaluate or #template_source not defined" do

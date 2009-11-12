@@ -67,6 +67,9 @@ module Tilt
     # default, template data is read from the file specified. When a block
     # is given, it should read template data and return as a String. When
     # file is nil, a block is required.
+    #
+    # The #initialize_engine method is called if this is the very first
+    # time this template subclass has been initialized.
     def initialize(file=nil, line=1, options={}, &block)
       raise ArgumentError, "file or block required" if file.nil? && block.nil?
       options, line = line, 1 if line.is_a?(Hash)
@@ -74,7 +77,21 @@ module Tilt
       @line = line || 1
       @options = options || {}
       @reader = block || lambda { |t| File.read(file) }
+
+      if !self.class.engine_initialized
+        initialize_engine
+        self.class.engine_initialized = true
+      end
     end
+
+    # Called once and only once for each template subclass the first time
+    # the template class is initialized. This should be used to require the
+    # underlying template library and perform any initial setup.
+    def initialize_engine
+    end
+    @engine_initialized = false
+    class << self ; attr_accessor :engine_initialized ; end
+
 
     # Load template source and compile the template. The template is
     # loaded and compiled the first time this method is called; subsequent
@@ -192,8 +209,11 @@ module Tilt
       @template_procs = {}
     end
 
+    def initialize_engine
+      require_template_library 'erb' unless defined? ::ERB
+    end
+
     def compile!
-      require_template_library 'erb' unless defined?(::ERB)
       @engine = ::ERB.new(data, options[:safe], options[:trim], '@_out_buf')
     end
 
@@ -238,8 +258,11 @@ module Tilt
   # Erubis template implementation. See:
   # http://www.kuwata-lab.com/erubis/
   class ErubisTemplate < ERBTemplate
+    def initialize_engine
+      require_template_library 'erubis' unless defined? ::Erubis
+    end
+
     def compile!
-      require_template_library 'erubis' unless defined?(::Erubis)
       Erubis::Eruby.class_eval(%Q{def add_preamble(src) src << "@_out_buf = _buf = '';" end})
       @engine = ::Erubis::Eruby.new(data, options)
     end
@@ -250,8 +273,11 @@ module Tilt
   # Haml template implementation. See:
   # http://haml.hamptoncatlin.com/
   class HamlTemplate < Template
+    def initialize_engine
+      require_template_library 'haml' unless defined? ::Haml::Engine
+    end
+
     def compile!
-      require_template_library 'haml' unless defined?(::Haml::Engine)
       @engine = ::Haml::Engine.new(data, haml_options)
     end
 
@@ -272,8 +298,11 @@ module Tilt
   #
   # Sass templates do not support object scopes, locals, or yield.
   class SassTemplate < Template
+    def initialize_engine
+      require_template_library 'sass' unless defined? ::Sass::Engine
+    end
+
     def compile!
-      require_template_library 'sass' unless defined?(::Sass::Engine)
       @engine = ::Sass::Engine.new(data, sass_options)
     end
 
@@ -292,8 +321,11 @@ module Tilt
   # Builder template implementation. See:
   # http://builder.rubyforge.org/
   class BuilderTemplate < Template
-    def compile!
+    def initialize_engine
       require_template_library 'builder' unless defined?(::Builder)
+    end
+
+    def compile!
     end
 
     def evaluate(scope, locals, &block)
@@ -328,8 +360,11 @@ module Tilt
   # It's suggested that your program require 'liquid' at load
   # time when using this template engine.
   class LiquidTemplate < Template
+    def initialize_engine
+      require_template_library 'liquid' unless defined? ::Liquid::Template
+    end
+
     def compile!
-      require_template_library 'liquid' unless defined?(::Liquid::Template)
       @engine = ::Liquid::Template.parse(data)
     end
 
@@ -358,8 +393,11 @@ module Tilt
       [:smart, :filter_html].select { |flag| options[flag] }
     end
 
+    def initialize_engine
+      require_template_library 'rdiscount' unless defined? ::RDiscount
+    end
+
     def compile!
-      require_template_library 'rdiscount' unless defined?(::RDiscount)
       @engine = RDiscount.new(data, *flags)
     end
 
@@ -381,17 +419,13 @@ module Tilt
   class MustacheTemplate < Template
     attr_reader :engine
 
-    # Locates and compiles the Mustache object used to create new views. The
+    def initialize_engine
+      require_template_library 'mustache' unless defined? ::Mustache
+    end
+
     def compile!
-      require_template_library 'mustache' unless defined?(::Mustache)
-
-      # Set the Mustache view namespace if we can
       Mustache.view_namespace = options[:namespace]
-
-      # Figure out which Mustache class to use.
       @engine = options[:view] || Mustache.view_class(name)
-
-      # set options on the view class
       options.each do |key, value|
         next if %w[view namespace mustaches].include?(key.to_s)
         @engine.send("#{key}=", value) if @engine.respond_to? "#{key}="
@@ -399,20 +433,19 @@ module Tilt
     end
 
     def evaluate(scope=nil, locals={}, &block)
-      # Create a new instance for playing with
       instance = @engine.new
 
-      # Copy instance variables from scope to the view
+      # copy instance variables from scope to the view
       scope.instance_variables.each do |name|
         instance.instance_variable_set(name, scope.instance_variable_get(name))
       end
 
-      # Locals get added to the view's context
+      # locals get added to the view's context
       locals.each do |local, value|
         instance[local] = value
       end
 
-      # If we're passed a block it's a subview. Sticking it in yield
+      # if we're passed a block it's a subview. Sticking it in yield
       # lets us use {{yield}} in layout.html to render the actual page.
       instance[:yield] = block.call if block
 
@@ -426,18 +459,18 @@ module Tilt
   # RDoc template. See:
   # http://rdoc.rubyforge.org/
   #
-  # It's suggested that your program require:
-  #
-  #   require 'rdoc/markup'
-  #   require 'rdoc/markup/to_html'
-  #
-  # at load time when using this template engine.
+  # It's suggested that your program require 'rdoc/markup' and
+  # 'rdoc/markup/to_html' at load time when using this template
+  # engine.
   class RDocTemplate < Template
-    def compile!
+    def initialize_engine
       unless defined?(::RDoc::Markup)
         require_template_library 'rdoc/markup'
         require_template_library 'rdoc/markup/to_html'
       end
+    end
+
+    def compile!
       markup = RDoc::Markup::ToHtml.new
       @engine = markup.convert(data)
     end
@@ -447,5 +480,4 @@ module Tilt
     end
   end
   register 'rdoc', RDocTemplate
-
 end
