@@ -8,6 +8,7 @@ documentation on each supported template engine is provided below.
  * [ERB](#erb) - `Tilt::ERBTemplate`
  * [Erubis](#erubis) - `Tilt::ErubisTemplate`
  * [Haml](#haml) - `Tilt::HamlTemplate`
+ * [Liquid](#liquid) - `Tilt::LiquidTemplate`
  * [Mustache](#mustache) - `Tilt::MustachTemplate`
 
 Tilt includes support for simple text formats in addition to
@@ -221,16 +222,73 @@ Defaults to `Encoding.default_internal` or, if that's not set, `"utf-8"`.
   * [Whitespace Preservation](http://haml-lang.com/docs/yardoc/HAML_REFERENCE.md.html#whitespace_preservation)
 
 
+<a name='liquid'></a>
+Liquid (`liquid`)
+-----------------
+
+Liquid is for rendering safe templates which cannot affect the security
+of the server they are rendered on.
+
+### Example
+
+    <html>
+      <head>
+        <title>{{ title }}</title>
+      </head>
+      <body>
+        <h1>Hello {{ world }}!</h1>
+      </body>
+    </html>
+
+### Usage
+
+`Tilt::LiquidTemplate` is registered for all files ending in `.liquid` by
+default. Liquid templates support locals and objects that respond to
+`#to_h` as scopes:
+
+    >> require 'liquid'
+    >> require 'tilt'
+    >> template = Tilt.new('hello.liquid')
+    => #<Tilt::LiquidTemplate @file='hello.liquid'>
+    >> scope = { :title => "Hello Liquid Templates" }
+    >> template.render(nil, :world => "Liquid")
+    => "
+    <html>
+      <head>
+        <title>Hello Liquid Templates</title>
+      </head>
+      <body>
+        <h1>Hello Liquid!</h1>
+      </body>
+    </html>"
+
+Or, use `Tilt::LiquidTemplate` directly to process strings:
+
+    >> require 'haml'
+    >> template = Tilt::HamlTemplate.new { "<h1>Hello Liquid!</h1>" }
+    => #<Tilt::LiquidTemplate @file=nil ...>
+    >> template.render
+    => "<h1>Hello Liquid!</h1>"
+
+__NOTE:__ It's suggested that your program `require 'liquid'` at load
+time when using this template engine within a threaded environment.
+
+### See also
+
+  * [Liquid for Programmers](http://wiki.github.com/tobi/liquid/liquid-for-programmers)
+  * [Liquid Docs](http://liquid.rubyforge.org/)
+  * GitHub: [tobi/liquid](http://github.com/tobi/liquid/)
+
 <a name='mustache'></a>
 Mustache (`mustache`)
 ---------------------
 
 Mustache is a framework-agnostic way to render logic-free views.
 
-### Options
-
 __NOTE:__ It's suggested that your program `require 'mustache'` at load time
 when using this template engine in a threaded environment.
+
+### Options
 
 #### `:path => Dir.pwd`
 
@@ -265,7 +323,7 @@ specified, the template file will be determined from the view class, and the
 ### See also
 
   * [Mustache Docs](http://defunkt.github.com/mustache/)
-  * [defunkt/mustache](http://github.com/defunkt/mustache) on GitHub
+  * GitHub: [defunkt/mustache](http://github.com/defunkt/mustache)
 
 
 <a name='markdown'></a>
