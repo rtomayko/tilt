@@ -347,11 +347,20 @@ module Tilt
   register 'liquid', LiquidTemplate
 
 
-  # Discount Markdown implementation.
+  # Discount Markdown implementation. See:
+  # http://github.com/rtomayko/rdiscount
+  #
+  # RDiscount is a simple text filter. It does not support +scope+ or
+  # +locals+. The +:smart+ and +:filter_html+ options may be set true
+  # to enable those flags on the underlying RDiscount object.
   class RDiscountTemplate < Template
+    def flags
+      [:smart, :filter_html].select { |flag| options[flag] }
+    end
+
     def compile!
       require_template_library 'rdiscount' unless defined?(::RDiscount)
-      @engine = RDiscount.new(data)
+      @engine = RDiscount.new(data, *flags)
     end
 
     def evaluate(scope, locals, &block)
@@ -359,6 +368,7 @@ module Tilt
     end
   end
   register 'markdown', RDiscountTemplate
+  register 'mkd', RDiscountTemplate
   register 'md', RDiscountTemplate
 
 

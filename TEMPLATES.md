@@ -351,10 +351,24 @@ To wrap a Markdown formatted document with a layout:
     layout.render { data.render }
     # => "<!doctype html><title></title><h1>hello tilt</h1>\n"
 
+### Options
+
+RDiscount supports a variety of flags that control its behavior:
+
+#### `:smart => true|false`
+
+Set `true` to enable [Smarty Pants](http://daringfireball.net/projects/smartypants/)
+style punctuation replacement.
+
+#### `:filter_html => true|false`
+
+Set `true` disallow raw HTML in Markdown contents. HTML is converted to
+literal text by escaping `<` characters.
 
 ### See also
 
- * Daring Fireball: [Markdown Syntax Documentation] [markdown syntax]
+ * [Markdown Syntax Documentation][markdown syntax]
+ * GitHub: [rtomayko/rdiscount][rdiscount]
 
 [discount]: http://www.pell.portland.or.us/~orc/Code/discount/ "Discount"
 [rdiscount]: http://github.com/rtomayko/rdiscount/ "RDiscount"
