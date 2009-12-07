@@ -30,6 +30,7 @@ Support for these template engines is included with the package:
     Liquid                     .liquid           liquid
     Mustache                   .mustache         mustache
     RDiscount                  .markdown         rdiscount
+    RedCloth                   .textile          redcloth
 
 Basic Usage
 -----------

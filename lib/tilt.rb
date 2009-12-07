@@ -410,6 +410,24 @@ module Tilt
   register 'md', RDiscountTemplate
 
 
+# RedCloth implementation. See:
+# http://redcloth.org/
+class RedClothTemplate < Template
+  def initialize_engine
+    require_template_library 'redcloth' unless defined? ::RedCloth
+  end
+
+  def compile!
+    @engine = RedCloth.new(data)
+  end
+
+  def evaluate(scope, locals, &block)
+    @engine.to_html
+  end
+end
+register 'textile', RedClothTemplate
+
+
   # Mustache is written and maintained by Chris Wanstrath. See:
   # http://github.com/defunkt/mustache
   #
