@@ -57,6 +57,15 @@ begin
       scope = ExampleIgnoredLiquidScope.new
       template.render(scope).should.equal "Whisky"
     end
+
+    it "supports yield in templates" do
+      template =
+        Tilt::LiquidTemplate.new {
+          'Beer is {{ yield }} but Whisky is {{ content }}ter.'
+        }
+      template.render({}) { 'wet' }.
+        should.equal "Beer is wet but Whisky is wetter."
+    end
   end
 
 rescue LoadError => boom
