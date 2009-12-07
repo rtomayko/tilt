@@ -375,7 +375,8 @@ module Tilt
         locals = scope.merge(locals)
       end
       # TODO: Is it possible to lazy yield ?
-      # locals['yield'] = promise{ block.call } if block_given?
+      locals['yield'] = block.nil? ? '' : yield
+      locals['content'] = block.nil? ? '' : yield
       @engine.render(locals)
     end
   end
