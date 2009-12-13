@@ -262,6 +262,17 @@ module Tilt
       Erubis::Eruby.class_eval(%Q{def add_preamble(src) src << "@_out_buf = _buf = '';" end})
       @engine = ::Erubis::Eruby.new(data, options)
     end
+
+  private
+
+    # Erubis doesn't have ERB's line-off-by-one under 1.9 problem. Override
+    # and adjust back.
+    if RUBY_VERSION >= '1.9.0'
+      def local_assignment_code(locals)
+        source, offset = super
+        [source, offset - 1]
+      end
+    end
   end
   register 'erubis', ErubisTemplate
 
