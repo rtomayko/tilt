@@ -209,11 +209,6 @@ module Tilt
   # ERB template implementation. See:
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html
   class ERBTemplate < Template
-    def initialize(*args)
-      super
-      @template_procs = {}
-    end
-
     def initialize_engine
       require_template_library 'erb' unless defined? ::ERB
     end
@@ -227,11 +222,14 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
+      source, offset = local_assignment_code(locals)
+      source = [source, template_source].join("\n")
+
       original_out_buf =
         scope.instance_variables.any? { |var| var.to_sym == :@_out_buf } &&
         scope.instance_variable_get(:@_out_buf)
 
-      scope.instance_eval(&template_proc(locals))
+      scope.instance_eval source, eval_file, line - offset
 
       output = scope.instance_variable_get(:@_out_buf)
       scope.instance_variable_set(:@_out_buf, original_out_buf)
@@ -240,13 +238,6 @@ module Tilt
     end
 
   private
-    def template_proc(locals)
-      @template_procs[locals] ||= begin
-        source, offset = local_assignment_code(locals)
-        source = [source, template_source].join("\n")
-        instance_eval("proc { #{source} }", eval_file, line - offset)
-      end
-    end
 
     # ERB generates a line to specify the character coding of the generated
     # source in 1.9. Account for this in the line offset.
