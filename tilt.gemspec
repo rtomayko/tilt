@@ -37,7 +37,7 @@ Gem::Specification.new do |s|
   # = MANIFEST =
 
   s.test_files = s.files.select {|path| path =~ /^test\/spec_.*.rb/}
-  s.add_development_dependency 'bacon'
+  s.add_development_dependency 'contest'
   s.add_development_dependency 'builder'
   s.add_development_dependency 'erubis'
   s.add_development_dependency 'haml'

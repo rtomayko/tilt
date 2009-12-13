@@ -1,4 +1,4 @@
-require 'bacon'
+require 'contest'
 require 'tilt'
 
 begin
@@ -7,34 +7,34 @@ begin
 
   require 'haml'
 
-  describe Tilt::HamlTemplate do
-    it "is registered for '.haml' files" do
-      Tilt['test.haml'].should.equal Tilt::HamlTemplate
+  class HamlTemplateTest < Test::Unit::TestCase
+    test "registered for '.haml' files" do
+      assert_equal Tilt::HamlTemplate, Tilt['test.haml']
     end
 
-    it "compiles and evaluates the template on #render" do
+    test "compiling and evaluating templates on #render" do
       template = Tilt::HamlTemplate.new { |t| "%p Hello World!" }
-      template.render.should.equal "<p>Hello World!</p>\n"
+      assert_equal "<p>Hello World!</p>\n", template.render
     end
 
-    it "supports locals" do
+    test "passing locals" do
       template = Tilt::HamlTemplate.new { "%p= 'Hey ' + name + '!'" }
-      template.render(Object.new, :name => 'Joe').should.equal "<p>Hey Joe!</p>\n"
+      assert_equal "<p>Hey Joe!</p>\n", template.render(Object.new, :name => 'Joe')
     end
 
-    it "is evaluated in the object scope provided" do
+    test "evaluating in an object scope" do
       template = Tilt::HamlTemplate.new { "%p= 'Hey ' + @name + '!'" }
       scope = Object.new
       scope.instance_variable_set :@name, 'Joe'
-      template.render(scope).should.equal "<p>Hey Joe!</p>\n"
+      assert_equal "<p>Hey Joe!</p>\n", template.render(scope)
     end
 
-    it "evaluates template_source with yield support" do
+    test "passing a block for yield" do
       template = Tilt::HamlTemplate.new { "%p= 'Hey ' + yield + '!'" }
-      template.render { 'Joe' }.should.equal "<p>Hey Joe!</p>\n"
+      assert_equal "<p>Hey Joe!</p>\n", template.render { 'Joe' }
     end
 
-    it "reports the file and line properly in backtraces without locals" do
+    test "backtrace file and line reporting without locals" do
       data = File.read(__FILE__).split("\n__END__\n").last
       fail unless data[0] == ?%
       template = Tilt::HamlTemplate.new('test.haml', 10) { data }
@@ -42,26 +42,26 @@ begin
         template.render
         fail 'should have raised an exception'
       rescue => boom
-        boom.should.be.kind_of NameError
+        assert_kind_of NameError, boom
         line = boom.backtrace.first
         file, line, meth = line.split(":")
-        file.should.equal 'test.haml'
-        line.should.equal '12'
+        assert_equal 'test.haml', file
+        assert_equal '12', line
       end
     end
 
-    it "reports the file and line properly in backtraces with locals" do
+    test "backtrace file and line reporting with locals" do
       data = File.read(__FILE__).split("\n__END__\n").last
       fail unless data[0] == ?%
       template = Tilt::HamlTemplate.new('test.haml') { data }
       begin
         res = template.render(Object.new, :name => 'Joe', :foo => 'bar')
       rescue => boom
-        boom.should.be.kind_of ::MockError
+        assert_kind_of MockError, boom
         line = boom.backtrace.first
         file, line, meth = line.split(":")
-        file.should.equal 'test.haml'
-        line.should.equal '5'
+        assert_equal 'test.haml', file
+        assert_equal '5', line
       end
     end
   end

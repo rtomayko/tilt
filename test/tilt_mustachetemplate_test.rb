@@ -1,40 +1,40 @@
-require 'bacon'
+require 'contest'
 require 'tilt'
 
 begin
   require 'mustache'
   raise LoadError, "mustache version must be > 0.2.2" if !Mustache.respond_to?(:compiled?)
 
-  describe Tilt::MustacheTemplate do
-    it "is registered for '.mustache' files" do
-      Tilt['test.mustache'].should.equal Tilt::MustacheTemplate
+  module Views
+    class Foo < Mustache
+      attr_reader :foo
+    end
+  end
+
+  class MustacheTemplateTest < Test::Unit::TestCase
+    test "registered for '.mustache' files" do
+      assert_equal Tilt::MustacheTemplate, Tilt['test.mustache']
     end
 
-    it "compiles and evaluates the template on #render" do
+    test "compiling and evaluating templates on #render" do
       template = Tilt::MustacheTemplate.new { |t| "Hello World!" }
-      template.render.should.equal "Hello World!"
+      assert_equal "Hello World!", template.render
     end
 
-    it "supports locals" do
+    test "passing locals" do
       template = Tilt::MustacheTemplate.new { "<p>Hey {{name}}!</p>" }
-      template.render(nil, :name => 'Joe').should.equal "<p>Hey Joe!</p>"
+      assert_equal "<p>Hey Joe!</p>", template.render(nil, :name => 'Joe')
     end
 
-    it "evaluates template_source with yield support" do
+    test "passing a block for yield" do
       template = Tilt::MustacheTemplate.new { "<p>Hey {{yield}}!</p>" }
-      template.render { 'Joe' }.should.equal "<p>Hey Joe!</p>"
+      assert_equal "<p>Hey Joe!</p>", template.render { 'Joe' }
     end
 
-    module Views
-      class Foo < Mustache
-        attr_reader :foo
-      end
-    end
-
-    it "locates views defined at the top-level by default" do
+    test "locating views defined at the top-level" do
       template = Tilt::MustacheTemplate.new('foo.mustache') { "<p>Hey {{foo}}!</p>" }
       template.compile
-      template.engine.should.equal Views::Foo
+      assert_equal Views::Foo, template.engine
     end
 
     module Bar
@@ -44,18 +44,18 @@ begin
       end
     end
 
-    it "locates views defined in a custom namespace" do
+    test "locating views defined in a custom namespace" do
       template = Tilt::MustacheTemplate.new('bizzle.mustache', :namespace => Bar) { "<p>Hello World!</p>" }
       template.compile
-      template.engine.should.equal Bar::Views::Bizzle
-      template.render.should.equal "<p>Hello World!</p>"
+      assert_equal Bar::Views::Bizzle, template.engine
+      assert_equal "<p>Hello World!</p>", template.render
     end
 
-    it "copies instance variables from scope object" do
+    test "copying instance variables from scope object" do
       template = Tilt::MustacheTemplate.new('foo.mustache') { "<p>Hey {{foo}}!</p>" }
       scope = Object.new
       scope.instance_variable_set(:@foo, 'Jane!')
-      template.render(scope).should.equal "<p>Hey Jane!!</p>"
+      assert_equal "<p>Hey Jane!!</p>", template.render(scope)
     end
   end
 

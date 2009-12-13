@@ -1,4 +1,4 @@
-task :default => :spec
+task :default => :test
 
 # SPECS =====================================================================
 
@@ -9,12 +9,11 @@ end
 
 desc 'Run specs with unit test style output'
 task :test do |t|
-  sh 'bacon -qa'
-end
-
-desc 'Run specs with story style output'
-task :spec do |t|
-  sh 'bacon -a'
+  if system('type turn >/dev/null 2>&1')
+    sh 'turn -Ilib test/*_test.rb'
+  else
+    sh 'testrb -Ilib -rubygems test/*_test.rb'
+  end
 end
 
 # PACKAGING =================================================================

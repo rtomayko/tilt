@@ -1,67 +1,67 @@
-require 'bacon'
+require 'contest'
 require 'tilt'
 
-describe Tilt::StringTemplate do
-  it "is registered for '.str' files" do
-    Tilt['test.str'].should.equal Tilt::StringTemplate
+class StringTemplateTest < Test::Unit::TestCase
+  test "registered for '.str' files" do
+    assert_equal Tilt::StringTemplate, Tilt['test.str']
   end
 
-  it "compiles and evaluates the template on #render" do
+  test "compiling and evaluating templates on #render" do
     template = Tilt::StringTemplate.new { |t| "Hello World!" }
-    template.render.should.equal "Hello World!"
+    assert_equal "Hello World!", template.render
   end
 
-  it "supports locals" do
+  test "passing locals" do
     template = Tilt::StringTemplate.new { 'Hey #{name}!' }
-    template.render(Object.new, :name => 'Joe').should.equal "Hey Joe!"
+    assert_equal "Hey Joe!", template.render(Object.new, :name => 'Joe')
   end
 
-  it "is evaluated in the object scope provided" do
+  test "evaluating in an object scope" do
     template = Tilt::StringTemplate.new { 'Hey #{@name}!' }
     scope = Object.new
     scope.instance_variable_set :@name, 'Joe'
-    template.render(scope).should.equal "Hey Joe!"
+    assert_equal "Hey Joe!", template.render(scope)
   end
 
-  it "evaluates template_source with yield support" do
+  test "passing a block for yield" do
     template = Tilt::StringTemplate.new { 'Hey #{yield}!' }
-    template.render { 'Joe' }.should.equal "Hey Joe!"
+    assert_equal "Hey Joe!", template.render { 'Joe' }
   end
 
-  it "renders multiline templates" do
+  test "multiline templates" do
     template = Tilt::StringTemplate.new { "Hello\nWorld!\n" }
-    template.render.should.equal "Hello\nWorld!\n"
+    assert_equal "Hello\nWorld!\n", template.render
   end
 
-  it "reports the file and line properly in backtraces without locals" do
+  test "backtrace file and line reporting without locals" do
     data = File.read(__FILE__).split("\n__END__\n").last
     fail unless data[0] == ?<
     template = Tilt::StringTemplate.new('test.str', 11) { data }
     begin
       template.render
-      flunk 'should have raised an exception'
+      fail 'should have raised an exception'
     rescue => boom
-      boom.should.be.kind_of NameError
+      assert_kind_of NameError, boom
       line = boom.backtrace.first
       file, line, meth = line.split(":")
-      file.should.equal 'test.str'
-      line.should.equal '13'
+      assert_equal 'test.str', file
+      assert_equal '13', line
     end
   end
 
-  it "reports the file and line properly in backtraces with locals" do
+  test "backtrace file and line reporting with locals" do
     data = File.read(__FILE__).split("\n__END__\n").last
     fail unless data[0] == ?<
     template = Tilt::StringTemplate.new('test.str', 1) { data }
     begin
       template.render(nil, :name => 'Joe', :foo => 'bar')
-      flunk 'should have raised an exception'
+      fail 'should have raised an exception'
     rescue => boom
-      boom.should.be.kind_of RuntimeError
+      assert_kind_of RuntimeError, boom
       line = boom.backtrace.first
       file, line, meth = line.split(":")
-      file.should.equal 'test.str'
-      line.should.equal '6'
+      assert_equal 'test.str', file
+      assert_equal '6', line
     end
   end
 end
