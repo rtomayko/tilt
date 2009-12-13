@@ -2,6 +2,8 @@ require 'contest'
 require 'tilt'
 
 begin
+  require 'rdoc/markup'
+  require 'rdoc/markup/to_html'
   class RDocTemplateTest < Test::Unit::TestCase
     test "is registered for '.rdoc' files" do
       assert_equal Tilt::RDocTemplate, Tilt['test.rdoc']
