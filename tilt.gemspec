@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'tilt'
-  s.version = '0.3'
-  s.date = '2009-11-06'
+  s.version = '0.4'
+  s.date = '2009-12-13'
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
@@ -20,18 +20,20 @@ Gem::Specification.new do |s|
     TEMPLATES.md
     bin/tilt
     lib/tilt.rb
-    test/.bacon
-    test/spec_tilt.rb
-    test/spec_tilt_buildertemplate.rb
-    test/spec_tilt_erbtemplate.rb
-    test/spec_tilt_erubistemplate.rb
-    test/spec_tilt_hamltemplate.rb
-    test/spec_tilt_liquid_template.rb
-    test/spec_tilt_mustachetemplate.rb
-    test/spec_tilt_rdiscount.rb
-    test/spec_tilt_sasstemplate.rb
-    test/spec_tilt_stringtemplate.rb
-    test/spec_tilt_template.rb
+    test/tilt_buildertemplate_test.rb
+    test/tilt_cache_test.rb
+    test/tilt_erbtemplate_test.rb
+    test/tilt_erubistemplate_test.rb
+    test/tilt_hamltemplate_test.rb
+    test/tilt_liquidtemplate_test.rb
+    test/tilt_mustachetemplate_test.rb
+    test/tilt_rdiscounttemplate_test.rb
+    test/tilt_rdoctemplate_test.rb
+    test/tilt_redclothtemplate_test.rb
+    test/tilt_sasstemplate_test.rb
+    test/tilt_stringtemplate_test.rb
+    test/tilt_template_test.rb
+    test/tilt_test.rb
     tilt.gemspec
   ]
   # = MANIFEST =
