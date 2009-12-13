@@ -167,14 +167,19 @@ module Tilt
     end
   end
 
-  # Extremely simple template cache implementation.
+  # Extremely simple template cache implementation. Calling applications
+  # create a Tilt::Cache instance and use #fetch with any set of hashable
+  # arguments (such as those to Tilt.new):
+  #   cache = Tilt::Cache.new
+  #   cache.fetch(path, line, options) { Tilt.new(path, line, options) }
+  #
+  # Subsequent invocations return the already compiled template object.
   class Cache
     def initialize
       @cache = {}
     end
 
     def fetch(*key)
-      key = key.map { |part| part.to_s }.join(":")
       @cache[key] ||= yield
     end
 
