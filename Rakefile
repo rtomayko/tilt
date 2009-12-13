@@ -1,3 +1,4 @@
+require 'rake/testtask'
 task :default => :test
 
 # SPECS =====================================================================
@@ -7,13 +8,10 @@ task :rcov do
   sh "rcov -Ilib:test test/*_test.rb"
 end
 
-desc 'Run specs with unit test style output'
-task :test do |t|
-  if system('type turn >/dev/null 2>&1')
-    sh 'turn -Ilib test/*_test.rb'
-  else
-    sh 'testrb -Ilib -rubygems test/*_test.rb'
-  end
+desc 'Run tests (default)'
+Rake::TestTask.new(:test) do |t|
+  t.test_files = FileList['test/*_test.rb']
+  t.ruby_opts = ['-rubygems'] if defined? Gem
 end
 
 # PACKAGING =================================================================
