@@ -536,4 +536,21 @@ register 'textile', RedClothTemplate
     end
   end
   register 'rdoc', RDocTemplate
+
+  # CoffeeScript info:
+  # http://jashkenas.github.com/coffee-script/
+  class CoffeeTemplate < Template
+    def initialize_engine
+      require_template_library 'coffee-script' unless defined? ::CoffeeScript
+    end
+
+    def compile!
+      @engine = ::CoffeeScript::Parser.new.parse(data)
+    end
+
+    def evaluate(scope, locals, &block)
+      @engine.compile
+    end
+  end
+  register 'coffee', CoffeeTemplate
 end
