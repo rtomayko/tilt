@@ -343,7 +343,7 @@ module Tilt
     end
   end
   register 'less', LessTemplate
-  
+
   # Builder template implementation. See:
   # http://builder.rubyforge.org/
   class BuilderTemplate < Template
