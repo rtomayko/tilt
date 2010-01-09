@@ -26,6 +26,7 @@ Support for these template engines is included with the package:
     Interpolated String        .str              none (included ruby core)
     Haml                       .haml             haml
     Sass                       .sass             haml
+    Less CSS                   .less             less
     Builder                    .builder          builder
     Liquid                     .liquid           liquid
     Mustache                   .mustache         mustache

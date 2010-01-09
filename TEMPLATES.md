@@ -10,11 +10,13 @@ documentation on each supported template engine is provided below.
  * [Haml](#haml) - `Tilt::HamlTemplate`
  * [Liquid](#liquid) - `Tilt::LiquidTemplate`
  * [Mustache](#mustache) - `Tilt::MustachTemplate`
+ 
+Tilt includes support for CSS processors like [lesscss](http://lesscss.org)
+and [sass](http://sass-lang.com/), in addition, it also supports simple 
+text formats. 
 
-Tilt includes support for simple text formats in addition to
-programmable template languages. These typically do not support
-scope or locals but often support rendering options.
-
+ * Less - `Tilt::LessTemplate`
+ * Sass - `Tilt::SassTemplate`
  * [Markdown](#markdown) - `Tilt::RDiscountTemplate`
  * [RDoc](#rdoc) - `Tilt::RDocTemplate`
 
