@@ -545,11 +545,11 @@ register 'textile', RedClothTemplate
     end
 
     def compile!
-      @engine = ::CoffeeScript::Parser.new.parse(data)
+      @engine = ::CoffeeScript::compile(data, options)
     end
 
     def evaluate(scope, locals, &block)
-      @engine.compile
+      @engine
     end
   end
   register 'coffee', CoffeeTemplate
