@@ -92,7 +92,6 @@ module Tilt
     @engine_initialized = false
     class << self ; attr_accessor :engine_initialized ; end
 
-
     # Load template source and compile the template. The template is
     # loaded and compiled the first time this method is called; subsequent
     # calls are no-ops.
@@ -204,6 +203,18 @@ module Tilt
     end
   end
   register 'str', StringTemplate
+
+
+  # HTML pass-thru template.
+  class HTMLTemplate < Template
+    def compile!
+    end
+
+    def evaluate(scope, locals, &block)
+      data
+    end
+  end
+  register 'html', HTMLTemplate
 
 
   # ERB template implementation. See:
