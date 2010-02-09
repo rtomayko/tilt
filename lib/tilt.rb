@@ -77,6 +77,7 @@ module Tilt
       @line = line || 1
       @options = options || {}
       @reader = block || lambda { |t| File.read(file) }
+      @data = nil
 
       if !self.class.engine_initialized
         initialize_engine
