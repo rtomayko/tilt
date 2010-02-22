@@ -308,9 +308,9 @@ The class or module where View classes are located. If you have
 `Hurl::App::Views`, namespace should be `Hurl:App`. This defaults to `Object`,
 causing `::Views` to be searched for classes.
 
-#### `:mustaches => nil`
+#### `:mustaches => nil` or `:view_path => nil`
 
-Where mustache views (.rb files) are located, or nil to disable auto-requiring
+Where mustache views (`.rb` files) are located, or `nil` to disable auto-requiring
 of views based on template names. By default, the view file is assumed to be in
 the same directory as the template file.
 
