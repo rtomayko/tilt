@@ -412,9 +412,8 @@ module Tilt
         scope  = scope.to_h.inject({}){ |h,(k,v)| h[k.to_s] = v ; h }
         locals = scope.merge(locals)
       end
-      # TODO: Is it possible to lazy yield ?
       locals['yield'] = block.nil? ? '' : yield
-      locals['content'] = block.nil? ? '' : yield
+      locals['content'] = locals['yield']
       @engine.render(locals)
     end
   end
