@@ -481,9 +481,10 @@ module Tilt
 
     def compile!
       Mustache.view_namespace = options[:namespace]
+      Mustache.view_path = options[:view_path] || options[:mustaches]
       @engine = options[:view] || Mustache.view_class(name)
       options.each do |key, value|
-        next if %w[view namespace mustaches].include?(key.to_s)
+        next if %w[view view_path namespace mustaches].include?(key.to_s)
         @engine.send("#{key}=", value) if @engine.respond_to? "#{key}="
       end
     end

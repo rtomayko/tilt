@@ -51,6 +51,15 @@ begin
       assert_equal "<p>Hello World!</p>", template.render
     end
 
+    test "locating views in files" do
+      view_path = File.expand_path('../tilt_mustache_views', __FILE__)
+      template = Tilt::MustacheTemplate.new('external.mustache', :view_path => view_path) { "<p>{{hello}}!</p>" }
+      template.compile
+      assert defined?(Views::External), "external.rb should have been required"
+      assert_equal Views::External, template.engine
+      assert_equal "<p>Stached!</p>", template.render
+    end
+
     test "copying instance variables from scope object" do
       template = Tilt::MustacheTemplate.new('foo.mustache') { "<p>Hey {{foo}}!</p>" }
       scope = Object.new
