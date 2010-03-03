@@ -26,6 +26,7 @@ class StringTemplateTest < Test::Unit::TestCase
   test "passing a block for yield" do
     template = Tilt::StringTemplate.new { 'Hey #{yield}!' }
     assert_equal "Hey Joe!", template.render { 'Joe' }
+    assert_equal "Hey Moe!", template.render { 'Moe' }
   end
 
   test "multiline templates" do
@@ -92,6 +93,7 @@ class CompiledStringTemplateTest < Test::Unit::TestCase
   test "passing locals" do
     template = Tilt::StringTemplate.new { 'Hey #{name}!' }
     assert_equal "Hey Joe!", template.render(Scope.new, :name => 'Joe')
+    assert_equal "Hey Moe!", template.render(Scope.new, :name => 'Moe')
   end
 
   test "evaluating in an object scope" do
@@ -99,11 +101,14 @@ class CompiledStringTemplateTest < Test::Unit::TestCase
     scope = Scope.new
     scope.instance_variable_set :@name, 'Joe'
     assert_equal "Hey Joe!", template.render(scope)
+    scope.instance_variable_set :@name, 'Moe'
+    assert_equal "Hey Moe!", template.render(scope)
   end
 
   test "passing a block for yield" do
     template = Tilt::StringTemplate.new { 'Hey #{yield}!' }
     assert_equal "Hey Joe!", template.render(Scope.new) { 'Joe' }
+    assert_equal "Hey Moe!", template.render(Scope.new) { 'Moe' }
   end
 
   test "multiline templates" do
