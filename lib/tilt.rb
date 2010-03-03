@@ -78,6 +78,7 @@ module Tilt
       @options = options || {}
       @reader = block || lambda { |t| File.read(file) }
       @data = nil
+      @procs = {}
 
       if !self.class.engine_initialized
         initialize_engine
@@ -92,7 +93,6 @@ module Tilt
     end
     @engine_initialized = false
     class << self ; attr_accessor :engine_initialized ; end
-
 
     # Load template source and compile the template. The template is
     # loaded and compiled the first time this method is called; subsequent
@@ -138,18 +138,27 @@ module Tilt
     end
 
     # Process the template and return the result. Subclasses should override
-    # this method unless they implement the #template_source.
+    # this method unless they implement either the #template_source or
+    # template_proc method.
     def evaluate(scope, locals, &block)
-      source, offset = local_assignment_code(locals)
-      source = [source, template_source].join("\n")
-      scope.instance_eval source, eval_file, line - offset
+      scope.instance_eval(&template_proc(locals))
     end
 
     # Return a string containing the (Ruby) source code for the template. The
-    # default Template#evaluate implementation requires this method be
-    # defined.
+    # default Template#evaluate implementation requires either this method or
+    # #template_proc be implemented.
     def template_source
       raise NotImplementedError
+    end
+
+    # Return a compiled template source Proc for the given locals Hash. The
+    # proc returned must be suitable for instance_eval in the context object.
+    def template_proc(locals)
+      @procs[locals.keys] ||= begin
+        source, offset = local_assignment_code(locals)
+        source = [source, template_source].join("\n")
+        instance_eval("proc { #{source} }", eval_file, line - offset)
+      end
     end
 
   private
@@ -210,11 +219,6 @@ module Tilt
   # ERB template implementation. See:
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html
   class ERBTemplate < Template
-    def initialize(*args)
-      super
-      @template_procs = {}
-    end
-
     def initialize_engine
       require_template_library 'erb' unless defined? ::ERB
     end
@@ -232,7 +236,7 @@ module Tilt
         scope.instance_variables.any? { |var| var.to_sym == :@_out_buf } &&
         scope.instance_variable_get(:@_out_buf)
 
-      scope.instance_eval(&template_proc(locals))
+      super
 
       output = scope.instance_variable_get(:@_out_buf)
       scope.instance_variable_set(:@_out_buf, original_out_buf)
@@ -241,14 +245,6 @@ module Tilt
     end
 
   private
-    def template_proc(locals)
-      @template_procs[locals.keys] ||= begin
-        source, offset = local_assignment_code(locals)
-        source = [source, template_source].join("\n")
-        instance_eval("proc { #{source} }", eval_file, line - offset)
-      end
-    end
-
     # ERB generates a line to specify the character coding of the generated
     # source in 1.9. Account for this in the line offset.
     if RUBY_VERSION >= '1.9.0'
