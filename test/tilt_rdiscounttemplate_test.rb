@@ -23,14 +23,14 @@ begin
     end
 
     test "smartypants when :smart is set" do
-      template = Tilt::RDiscountTemplate.new(nil, :smart => true) { |t|
+      template = Tilt::RDiscountTemplate.new(:smart => true) { |t|
         "OKAY -- 'Smarty Pants'" }
       assert_equal "<p>OKAY &mdash; &lsquo;Smarty Pants&rsquo;</p>\n",
         template.render
     end
 
     test "stripping HTML when :filter_html is set" do
-      template = Tilt::RDiscountTemplate.new(nil, :filter_html => true) { |t|
+      template = Tilt::RDiscountTemplate.new(:filter_html => true) { |t|
         "HELLO <blink>WORLD</blink>" }
       assert_equal "<p>HELLO &lt;blink>WORLD&lt;/blink></p>\n", template.render
     end

@@ -71,31 +71,38 @@ module Tilt
     attr_reader :compile_site
 
     # Create a new template with the file, line, and options specified. By
-    # default, template data is read from the file specified. When a block
-    # is given, it should read template data and return as a String. When
-    # file is nil, a block is required.
+    # default, template data is read from the file. When a block is given,
+    # it should read template data and return as a String. When file is nil,
+    # a block is required.
     #
-    # For source generating templates, passing a module as the compile_site
-    # argument enables template compilation. This module must also be mixed
-    # into objects passed in the scope argument in order for template
+    # Passing a module as the compile_site argument enables template
+    # compilation for source generating templates. The same module must also
+    # be mixed into objects passed in the scope argument in order for template
     # compilation to function properly. If no compile_site is given, templates
-    # are evaluated from source each time they're rendered.
+    # are evaluated from source each time rendered.
+    #
+    # All arguments are optional.
     def initialize(file=nil, line=1, options={}, compile_site=nil, &block)
-      raise ArgumentError, "file or block required" if file.nil? && block.nil?
-      compile_site, options = options, {} if options.is_a?(Module)
-      options, line = line, 1 if line.is_a?(Hash)
-      @file = file
-      @line = line || 1
-      @options = options || {}
-      @compile_site = compile_site
-      @reader = block || lambda { |t| File.read(file) }
-      @data = nil
+      @file, @line, @options, @compile_site = nil, 1, {}, nil
+
+      [compile_site, options, line, file].compact.each do |arg|
+        case
+        when arg.respond_to?(:to_str)  ; @file = arg.to_str
+        when arg.respond_to?(:to_int)  ; @line = arg.to_int
+        when arg.respond_to?(:to_hash) ; @options = arg.to_hash
+        when arg.is_a?(Module)         ; @compile_site = arg
+        else raise TypeError
+        end
+      end
+
+      raise ArgumentError, "file or block required" if (@file || block).nil?
 
       if !self.class.engine_initialized
         initialize_engine
         self.class.engine_initialized = true
       end
 
+      @reader = block || lambda { |t| File.read(@file) }
       @data = @reader.call(self)
       prepare
     end
