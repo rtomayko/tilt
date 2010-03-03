@@ -153,10 +153,10 @@ module Tilt
       end
     end
 
-    # Process the template and return the result. When a compile_site is
-    # set, compiles the template to a method and reuses given identical
-    # locals keys. When no compile_site is set or the scope object
-    # does not mix in the compile_site module, the template source is
+    # Process the template and return the result. When the scope mixes in
+    # the Tilt::CompileSite module, the template is compiled to a method and
+    # reused given identical locals keys. When the scope object
+    # does not mix in the CompileSite module, the template source is
     # evaluated with instance_eval. In any case, template executation
     # is guaranteed to be performed in the scope object with the locals
     # specified and with support for yielding to the block.
@@ -181,7 +181,7 @@ module Tilt
     # Return a string containing the (Ruby) source code for the template. The
     # default Template#evaluate implementation requires this method be
     # defined and guarantees correct file/line handling, custom scopes, and
-    # support for template compilation when the compile_site attribute is set.
+    # support for template compilation when the scope object allows it.
     def template_source
       raise NotImplementedError
     end
