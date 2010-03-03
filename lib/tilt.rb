@@ -67,19 +67,27 @@ module Tilt
     # interface.
     attr_reader :options
 
+    # A module where compiled methods should be created.
+    attr_reader :compile_site
+
     # Create a new template with the file, line, and options specified. By
     # default, template data is read from the file specified. When a block
     # is given, it should read template data and return as a String. When
     # file is nil, a block is required.
     #
-    # The #initialize_engine method is called if this is the very first
-    # time this template subclass has been initialized.
-    def initialize(file=nil, line=1, options={}, &block)
+    # For source generating templates, passing a module as the compile_site
+    # argument enables template compilation. This module must also be mixed
+    # into objects passed in the scope argument in order for template
+    # compilation to function properly. If no compile_site is given, templates
+    # are evaluated from source each time they're rendered.
+    def initialize(file=nil, line=1, options={}, compile_site=nil, &block)
       raise ArgumentError, "file or block required" if file.nil? && block.nil?
+      compile_site, options = options, {} if options.is_a?(Module)
       options, line = line, 1 if line.is_a?(Hash)
       @file = file
       @line = line || 1
       @options = options || {}
+      @compile_site = compile_site
       @reader = block || lambda { |t| File.read(file) }
       @data = nil
 
@@ -138,14 +146,31 @@ module Tilt
       end
     end
 
-    # Process the template and return the result. Subclasses should override
-    # this method unless they implement the #template_source method.
+    # Process the template and return the result. When a compile_site is
+    # set, compiles the template to a method and reuses given identical
+    # locals keys. When no compile_site is set or the scope object
+    # does not mix in the compile_site module, the template source is
+    # evaluated with instance_eval. In any case, template executation
+    # is guaranteed to be performed in the scope object with the locals
+    # specified and with support for yielding to the block.
     def evaluate(scope, locals, &block)
-      method_name = "__tilt_#{object_id}_#{locals.keys.hash}"
-      compile_template_method(method_name, locals)
-
-      if scope.respond_to?(method_name)
-        scope.send method_name, locals, &block
+      if compile_site
+        method_name = compiled_method_name(locals)
+        if scope.respond_to?(method_name)
+          # fast path compiled method already defined
+          scope.send method_name, locals, &block
+        else
+          # compile and try to run; disable compile_site for this template
+          # if scope doesn't have the module mixed in properly.
+          compile_template_method(method_name, locals)
+          if scope.respond_to?(method_name)
+            scope.send method_name, locals, &block
+          else
+            # XXX maybe we should issue a warning here
+            @compile_site = nil
+            evaluate(scope, locals, &block)
+          end
+        end
       else
         source, offset = local_assignment_code(locals)
         source = [source, template_source].join("\n")
@@ -155,7 +180,8 @@ module Tilt
 
     # Return a string containing the (Ruby) source code for the template. The
     # default Template#evaluate implementation requires this method be
-    # defined.
+    # defined and guarantees correct file/line handling, custom scopes, and
+    # support for template compilation when the compile_site attribute is set.
     def template_source
       raise NotImplementedError
     end
@@ -167,25 +193,19 @@ module Tilt
       [source.join("\n"), source.length]
     end
 
-    SYMBOLIC_NAME = (Symbol === Kernel.methods[0] ? :to_sym : :to_s)
-
-    def symbolic_name(name)
-      name && name.send(SYMBOLIC_NAME)
+    def compiled_method_name(locals)
+      "__tilt_#{object_id}_#{locals.keys.hash}"
     end
 
     def compile_template_method(method_name, locals)
-      method_name = symbolic_name(method_name)
-      unless CompiledTemplates.instance_methods.include?(method_name)
-        source, offset = local_assignment_code(locals)
-        source = [source, template_source].join("\n")
-        offset += 1
-        CompiledTemplates.module_eval <<-RUBY, eval_file, line - offset
-          def #{method_name}(locals)
-            #{source}
-          end
-        RUBY
-        true
-      end
+      source, offset = local_assignment_code(locals)
+      source = [source, template_source].join("\n")
+      offset += 1
+      compile_site.module_eval <<-RUBY, eval_file, line - offset
+        def #{method_name}(locals)
+          #{source}
+        end
+      RUBY
     end
 
     def require_template_library(name)
