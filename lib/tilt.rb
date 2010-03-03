@@ -70,6 +70,21 @@ module Tilt
     # A module where compiled methods should be created.
     attr_reader :compile_site
 
+    # Default compile_site for all new Template instances. nil by default.
+    # Set to a module to enable template compilation globally. This
+    # should be set only when you're sure no other code uses Tilt.
+    # Passing the compile_site to Template.new is the recommended way of
+    # enabling template compilation.
+    def self.default_compile_site
+      @@default_compile_site
+    end
+
+    def self.default_compile_site=(mod)
+      @@default_compile_site = mod
+    end
+
+    self.default_compile_site = nil
+
     # Create a new template with the file, line, and options specified. By
     # default, template data is read from the file. When a block is given,
     # it should read template data and return as a String. When file is nil,
@@ -83,7 +98,8 @@ module Tilt
     #
     # All arguments are optional.
     def initialize(file=nil, line=1, options={}, compile_site=nil, &block)
-      @file, @line, @options, @compile_site = nil, 1, {}, nil
+      @file, @line, @options, @compile_site =
+        nil, 1, {}, self.class.default_compile_site
 
       [compile_site, options, line, file].compact.each do |arg|
         case
