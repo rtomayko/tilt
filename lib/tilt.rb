@@ -3,8 +3,7 @@ module Tilt
 
   @template_mappings = {}
 
-  # Hash of template path pattern => template implementation
-  # class mappings.
+  # Hash of template path pattern => template implementation class mappings.
   def self.mappings
     @template_mappings
   end
@@ -25,7 +24,7 @@ module Tilt
     end
   end
 
-  # Lookup a template class given for the given filename or file
+  # Lookup a template class for the given filename or file
   # extension. Return nil when no implementation is found.
   def self.[](file)
     if @template_mappings.key?(pattern = file.to_s.downcase)
@@ -43,7 +42,6 @@ module Tilt
       nil
     end
   end
-
 
   # Base class for template implementations. Subclasses must implement
   # the #compile! method and one of the #evaluate or #template_source
@@ -93,7 +91,6 @@ module Tilt
     @engine_initialized = false
     class << self ; attr_accessor :engine_initialized ; end
 
-
     # Load template source and compile the template. The template is
     # loaded and compiled the first time this method is called; subsequent
     # calls are no-ops.
@@ -138,7 +135,7 @@ module Tilt
     end
 
     # Process the template and return the result. Subclasses should override
-    # this method unless they implement the #template_source.
+    # this method unless they implement the #template_source method.
     def evaluate(scope, locals, &block)
       source, offset = local_assignment_code(locals)
       source = [source, template_source].join("\n")
