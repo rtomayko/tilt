@@ -97,12 +97,17 @@ module Tilt
 
       raise ArgumentError, "file or block required" if (@file || block).nil?
 
+      # initialize engine if it hasn't been already
       if !self.class.engine_initialized
         initialize_engine
         self.class.engine_initialized = true
       end
 
-      @stamp = (Time.now.to_f * 10000).to_i
+      # used to generate unique method names for template compilation
+      stamp = (Time.now.to_f * 10000).to_i
+      @_prefix = "__tilt_O#{object_id.to_s(16)}T#{stamp.to_s(16)}"
+
+      # load template data and prepare
       @reader = block || lambda { |t| File.read(@file) }
       @data = @reader.call(self)
       prepare
@@ -195,7 +200,7 @@ module Tilt
     end
 
     def compiled_method_name(locals_hash)
-      "__tilt_#{object_id}_#{@stamp}_#{locals_hash}"
+      "#{@_prefix}L#{locals_hash.to_s(16).sub('-', 'n')}"
     end
 
     def compile_template_method(method_name, locals)
