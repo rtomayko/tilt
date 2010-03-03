@@ -43,6 +43,12 @@ module Tilt
     end
   end
 
+  # Default site for compiled template methods. Mixing this module
+  # into scope objects drastically improves performance for source
+  # generating templates like ERB, Erubis, and Builder.
+  module CompiledTemplates
+  end
+
   # Base class for template implementations. Subclasses must implement
   # the #compile! method and one of the #evaluate or #template_source
   # methods.
@@ -129,9 +135,16 @@ module Tilt
     # Process the template and return the result. Subclasses should override
     # this method unless they implement the #template_source method.
     def evaluate(scope, locals, &block)
-      source, offset = local_assignment_code(locals)
-      source = [source, template_source].join("\n")
-      scope.instance_eval source, eval_file, line - offset
+      method_name = "__tilt_#{object_id}_#{locals.keys.hash}"
+      compile_template_method(method_name, locals)
+
+      if scope.respond_to?(method_name)
+        scope.send method_name, locals, &block
+      else
+        source, offset = local_assignment_code(locals)
+        source = [source, template_source].join("\n")
+        scope.instance_eval source, eval_file, line - offset
+      end
     end
 
     # Return a string containing the (Ruby) source code for the template. The
@@ -146,6 +159,19 @@ module Tilt
       return ['', 1] if locals.empty?
       source = locals.collect { |k,v| "#{k} = locals[:#{k}]" }
       [source.join("\n"), source.length]
+    end
+
+    def compile_template_method(method_name, locals)
+      unless CompiledTemplates.instance_methods.include?(method_name)
+        source, offset = local_assignment_code(locals)
+        source = [source, template_source].join("\n")
+        CompiledTemplates.module_eval <<-RUBY
+          def #{method_name}(locals)
+            #{source}
+          end
+        RUBY
+        true
+      end
     end
 
     def require_template_library(name)
