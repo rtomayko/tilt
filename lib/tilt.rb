@@ -131,6 +131,7 @@ module Tilt
     def prepare
       if respond_to?(:compile!)
         # backward compat with tilt < 0.6; just in case
+        warn 'Tilt::Template#compile! is deprecated; implement #prepare instead.'
         compile!
       else
         raise NotImplementedError
