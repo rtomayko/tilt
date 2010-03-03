@@ -2,44 +2,50 @@ require 'contest'
 require 'tilt'
 
 class TiltTemplateTest < Test::Unit::TestCase
+
+  class MockTemplate < Tilt::Template
+    def compile!
+    end
+  end
+
   test "needs a file or block" do
     assert_raise(ArgumentError) { Tilt::Template.new }
   end
 
   test "initializing with a file" do
-    inst = Tilt::Template.new('foo.erb')
+    inst = MockTemplate.new('foo.erb') {}
     assert_equal 'foo.erb', inst.file
   end
 
   test "initializing with a file and line" do
-    inst = Tilt::Template.new('foo.erb', 55)
+    inst = MockTemplate.new('foo.erb', 55) {}
     assert_equal 'foo.erb', inst.file
     assert_equal 55, inst.line
   end
 
   test "uses correct eval_file" do
-    inst = Tilt::Template.new('foo.erb', 55)
+    inst = MockTemplate.new('foo.erb', 55) {}
     assert_equal 'foo.erb', inst.eval_file
   end
 
   test "uses a default filename for #eval_file when no file provided" do
-    inst = Tilt::Template.new { 'Hi' }
+    inst = MockTemplate.new { 'Hi' }
     assert_not_nil inst.eval_file
     assert !inst.eval_file.include?("\n")
   end
 
   test "calculating template's #basename" do
-    inst = Tilt::Template.new('/tmp/templates/foo.html.erb')
+    inst = MockTemplate.new('/tmp/templates/foo.html.erb') {}
     assert_equal 'foo.html.erb', inst.basename
   end
 
   test "calculating the template's #name" do
-    inst = Tilt::Template.new('/tmp/templates/foo.html.erb')
+    inst = MockTemplate.new('/tmp/templates/foo.html.erb') {}
     assert_equal 'foo', inst.name
   end
 
   test "initializing with a data loading block" do
-    Tilt::Template.new { |template| "Hello World!" }
+    MockTemplate.new { |template| "Hello World!" }
   end
 
   class InitializingMockTemplate < Tilt::Template
@@ -78,8 +84,7 @@ class TiltTemplateTest < Test::Unit::TestCase
   end
 
   test "raises NotImplementedError when #compile! not defined" do
-    inst = Tilt::Template.new { |template| "Hello World!" }
-    assert_raise(NotImplementedError) { inst.render }
+    assert_raise(NotImplementedError) { Tilt::Template.new { |template| "Hello World!" } }
   end
 
   test "raises NotImplementedError when #evaluate or #template_source not defined" do

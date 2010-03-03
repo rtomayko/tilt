@@ -81,6 +81,9 @@ module Tilt
         initialize_engine
         self.class.engine_initialized = true
       end
+
+      @data = @reader.call(self)
+      compile!
     end
 
     # Called once and only once for each template subclass the first time
@@ -91,21 +94,10 @@ module Tilt
     @engine_initialized = false
     class << self ; attr_accessor :engine_initialized ; end
 
-    # Load template source and compile the template. The template is
-    # loaded and compiled the first time this method is called; subsequent
-    # calls are no-ops.
-    def compile
-      if @data.nil?
-        @data = @reader.call(self)
-        compile!
-      end
-    end
-
     # Render the template in the given scope with the locals specified. If a
     # block is given, it is typically available within the template via
     # +yield+.
     def render(scope=Object.new, locals={}, &block)
-      compile
       evaluate scope, locals || {}, &block
     end
 

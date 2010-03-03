@@ -33,7 +33,6 @@ begin
 
     test "locating views defined at the top-level" do
       template = Tilt::MustacheTemplate.new('foo.mustache') { "<p>Hey {{foo}}!</p>" }
-      template.compile
       assert_equal Views::Foo, template.engine
     end
 
@@ -46,7 +45,6 @@ begin
 
     test "locating views defined in a custom namespace" do
       template = Tilt::MustacheTemplate.new('bizzle.mustache', :namespace => Bar) { "<p>Hello World!</p>" }
-      template.compile
       assert_equal Bar::Views::Bizzle, template.engine
       assert_equal "<p>Hello World!</p>", template.render
     end
@@ -54,7 +52,6 @@ begin
     test "locating views in files" do
       view_path = File.expand_path('../tilt_mustache_views', __FILE__)
       template = Tilt::MustacheTemplate.new('external.mustache', :view_path => view_path) { "<p>{{hello}}!</p>" }
-      template.compile
       assert defined?(Views::External), "external.rb should have been required"
       assert_equal Views::External, template.engine
       assert_equal "<p>Stached!</p>", template.render
