@@ -22,6 +22,13 @@ class ERBTemplateTest < Test::Unit::TestCase
     assert_equal "Hey Joe!", template.render(Object.new, :name => 'Joe')
   end
 
+  test "rendering same template with different locals" do
+    template = Tilt::ERBTemplate.new { 'Hey <%= name %>!' }
+    assert_equal "Hey Joe!", template.render(Object.new, :name => 'Joe')
+    assert_equal "Hey Jane!", template.render(Object.new, :name => 'Jane')
+    assert_equal "Hey Billy!", template.render(Object.new, :name => 'Billy', :x => 5)
+  end
+
   test "evaluating in an object scope" do
     template = Tilt::ERBTemplate.new { 'Hey <%= @name %>!' }
     scope = Object.new
