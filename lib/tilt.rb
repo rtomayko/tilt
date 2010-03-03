@@ -102,6 +102,7 @@ module Tilt
         self.class.engine_initialized = true
       end
 
+      @stamp = (Time.now.to_f * 10000).to_i
       @reader = block || lambda { |t| File.read(@file) }
       @data = @reader.call(self)
       prepare
@@ -162,7 +163,7 @@ module Tilt
     # specified and with support for yielding to the block.
     def evaluate(scope, locals, &block)
       if scope.respond_to?(:__tilt__)
-        method_name = compiled_method_name(locals)
+        method_name = compiled_method_name(locals.keys.hash)
         if scope.respond_to?(method_name)
           # fast path
           scope.send method_name, locals, &block
@@ -193,8 +194,8 @@ module Tilt
       [source.join("\n"), source.length]
     end
 
-    def compiled_method_name(locals)
-      "__tilt_#{object_id}_#{locals.keys.hash}"
+    def compiled_method_name(locals_hash)
+      "__tilt_#{object_id}_#{@stamp}_#{locals_hash}"
     end
 
     def compile_template_method(method_name, locals)
@@ -217,9 +218,7 @@ module Tilt
     def compiled_template_method_remover(method_name)
       Tilt.instance_eval do
         proc do |oid|
-          Thread.critical = true
           CompileSite.remove_method(method_name)
-          Thread.critical = false
         end
       end
     end

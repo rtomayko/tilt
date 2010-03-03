@@ -94,7 +94,7 @@ class CompiledERBTemplateTest < Test::Unit::TestCase
   test "compiling template source to a method" do
     template = Tilt::ERBTemplate.new { |t| "Hello World!" }
     template.render(Scope.new)
-    method_name = "__tilt_#{template.object_id}_#{[].hash}"
+    method_name = template.send(:compiled_method_name, [].hash)
     method_name = method_name.to_sym if Symbol === Kernel.methods.first
     assert Tilt::CompileSite.instance_methods.include?(method_name),
       "CompileSite.instance_methods.include?(#{method_name.inspect})"

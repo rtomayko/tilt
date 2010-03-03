@@ -69,6 +69,10 @@ end
 
 
 class CompiledStringTemplateTest < Test::Unit::TestCase
+  def teardown
+    GC.start
+  end
+
   class Scope
     include Tilt::CompileSite
   end
@@ -76,7 +80,7 @@ class CompiledStringTemplateTest < Test::Unit::TestCase
   test "compiling template source to a method" do
     template = Tilt::StringTemplate.new { |t| "Hello World!" }
     template.render(Scope.new)
-    method_name = "__tilt_#{template.object_id}_#{[].hash}"
+    method_name = template.send(:compiled_method_name, [].hash)
     method_name = method_name.to_sym if Symbol === Kernel.methods.first
     assert Tilt::CompileSite.instance_methods.include?(method_name),
       "CompileSite.instance_methods.include?(#{method_name.inspect})"
@@ -87,7 +91,8 @@ class CompiledStringTemplateTest < Test::Unit::TestCase
   test "loading and evaluating templates on #render" do
     template = Tilt::StringTemplate.new { |t| "Hello World!" }
     assert_equal "Hello World!", template.render(Scope.new)
-    assert Scope.new.respond_to?("__tilt_#{template.object_id}_#{[].hash}")
+    method_name = template.send(:compiled_method_name, [].hash)
+    assert Scope.new.respond_to?(method_name)
   end
 
   test "passing locals" do
