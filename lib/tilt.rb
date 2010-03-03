@@ -161,7 +161,14 @@ module Tilt
       [source.join("\n"), source.length]
     end
 
+    SYMBOLIC_NAME = (Symbol === Kernel.methods[0] ? :to_sym : :to_s)
+
+    def symbolic_name(name)
+      name && name.send(SYMBOLIC_NAME)
+    end
+
     def compile_template_method(method_name, locals)
+      method_name = symbolic_name(method_name)
       unless CompiledTemplates.instance_methods.include?(method_name)
         source, offset = local_assignment_code(locals)
         source = [source, template_source].join("\n")
