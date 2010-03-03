@@ -242,7 +242,7 @@ module Tilt
 
   private
     def template_proc(locals)
-      @template_procs[locals] ||= begin
+      @template_procs[locals.keys] ||= begin
         source, offset = local_assignment_code(locals)
         source = [source, template_source].join("\n")
         instance_eval("proc { #{source} }", eval_file, line - offset)
