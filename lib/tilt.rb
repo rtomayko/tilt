@@ -201,11 +201,27 @@ module Tilt
       source, offset = local_assignment_code(locals)
       source = [source, template_source].join("\n")
       offset += 1
+
+      # add the new method
       CompileSite.module_eval <<-RUBY, eval_file, line - offset
         def #{method_name}(locals)
           #{source}
         end
       RUBY
+
+      # setup a finalizer to remove the newly added method
+      ObjectSpace.define_finalizer self,
+        compiled_template_method_remover(method_name)
+    end
+
+    def compiled_template_method_remover(method_name)
+      Tilt.instance_eval do
+        proc do |oid|
+          Thread.critical = true
+          CompileSite.remove_method(method_name)
+          Thread.critical = false
+        end
+      end
     end
 
     def require_template_library(name)

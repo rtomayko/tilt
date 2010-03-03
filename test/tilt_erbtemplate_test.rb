@@ -83,6 +83,10 @@ class ERBTemplateTest < Test::Unit::TestCase
 end
 
 class CompiledERBTemplateTest < Test::Unit::TestCase
+  def teardown
+    GC.start
+  end
+
   class Scope
     include Tilt::CompileSite
   end
