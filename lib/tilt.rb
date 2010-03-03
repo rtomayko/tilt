@@ -141,7 +141,13 @@ module Tilt
     # this method unless they implement either the #template_source or
     # template_proc method.
     def evaluate(scope, locals, &block)
-      scope.instance_eval(&template_proc(locals))
+      if scope.respond_to?(:instance_exec)
+        scope.instance_exec(locals, &template_proc(locals))
+      else
+        source, offset = local_assignment_code(locals)
+        source = [source, template_source].join("\n")
+        scope.instance_eval(source, eval_file, line - offset)
+      end
     end
 
     # Return a string containing the (Ruby) source code for the template. The
@@ -157,7 +163,7 @@ module Tilt
       @procs[locals.keys] ||= begin
         source, offset = local_assignment_code(locals)
         source = [source, template_source].join("\n")
-        instance_eval("proc { #{source} }", eval_file, line - offset)
+        instance_eval("proc { |locals| #{source} }", eval_file, line - offset)
       end
     end
 
