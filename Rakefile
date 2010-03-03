@@ -16,38 +16,39 @@ end
 
 # PACKAGING =================================================================
 
-require 'rubygems/specification'
-$spec ||= eval(File.read('tilt.gemspec'))
+if defined?(Gem)
+  SPEC = eval(File.read('tilt.gemspec'))
 
-def package(ext='')
-  "dist/tilt-#{$spec.version}" + ext
-end
+  def package(ext='')
+    "pkg/tilt-#{SPEC.version}" + ext
+  end
 
-desc 'Build packages'
-task :package => %w[.gem .tar.gz].map {|e| package(e)}
+  desc 'Build packages'
+  task :package => %w[.gem .tar.gz].map {|e| package(e)}
 
-desc 'Build and install as local gem'
-task :install => package('.gem') do
-  sh "gem install #{package('.gem')}"
-end
+  desc 'Build and install as local gem'
+  task :install => package('.gem') do
+    sh "gem install #{package('.gem')}"
+  end
 
-directory 'dist/'
+  directory 'pkg/'
 
-file package('.gem') => %w[dist/ tilt.gemspec] + $spec.files do |f|
-  sh "gem build tilt.gemspec"
-  mv File.basename(f.name), f.name
-end
+  file package('.gem') => %w[dist/ tilt.gemspec] + SPEC.files do |f|
+    sh "gem build tilt.gemspec"
+    mv File.basename(f.name), f.name
+  end
 
-file package('.tar.gz') => %w[dist/] + $spec.files do |f|
-  sh "git archive --format=tar HEAD | gzip > #{f.name}"
-end
+  file package('.tar.gz') => %w[dist/] + SPEC.files do |f|
+    sh "git archive --format=tar HEAD | gzip > #{f.name}"
+  end
 
-desc 'Upload gem and tar.gz distributables to rubyforge'
-task :release => [package('.gem'), package('.tar.gz')] do |t|
-  sh <<-SH
-    rubyforge add_release sinatra tilt #{$spec.version} #{package('.gem')} &&
-    rubyforge add_file    sinatra tilt #{$spec.version} #{package('.tar.gz')}
-  SH
+  desc 'Upload gem and tar.gz distributables to rubyforge'
+  task :release => [package('.gem'), package('.tar.gz')] do |t|
+    sh <<-SH
+      rubyforge add_release sinatra tilt #{SPEC.version} #{package('.gem')} &&
+      rubyforge add_file    sinatra tilt #{SPEC.version} #{package('.tar.gz')}
+    SH
+  end
 end
 
 # GEMSPEC ===================================================================
