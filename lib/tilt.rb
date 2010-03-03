@@ -165,7 +165,8 @@ module Tilt
       unless CompiledTemplates.instance_methods.include?(method_name)
         source, offset = local_assignment_code(locals)
         source = [source, template_source].join("\n")
-        CompiledTemplates.module_eval <<-RUBY
+        offset += 1
+        CompiledTemplates.module_eval <<-RUBY, eval_file, line - offset
           def #{method_name}(locals)
             #{source}
           end
