@@ -238,18 +238,14 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      source, offset = local_assignment_code(locals)
-      source = [source, template_source].join("\n")
-
       original_out_buf =
         scope.instance_variables.any? { |var| var.to_sym == :@_out_buf } &&
         scope.instance_variable_get(:@_out_buf)
 
-      scope.instance_eval source, eval_file, line - offset
+      super
 
       output = scope.instance_variable_get(:@_out_buf)
       scope.instance_variable_set(:@_out_buf, original_out_buf)
-
       output
     end
 
