@@ -83,37 +83,35 @@ class ERBTemplateTest < Test::Unit::TestCase
 end
 
 class CompiledERBTemplateTest < Test::Unit::TestCase
-  def setup
-    @compile_site = Module.new
-    @scope_class = Class.new
-    @scope_class.send :include, @compile_site
+  class Scope
+    include Tilt::CompileSite
   end
 
   test "compiling template source to a method" do
-    template = Tilt::ERBTemplate.new(@compile_site) { |t| "Hello World!" }
-    template.render(@scope_class.new)
+    template = Tilt::ERBTemplate.new { |t| "Hello World!" }
+    template.render(Scope.new)
     method_name = "__tilt_#{template.object_id}_#{[].hash}"
     method_name = method_name.to_sym if Symbol === Kernel.methods.first
-    assert @compile_site.instance_methods.include?(method_name),
-      "compile_site.instance_methods.include?(#{method_name.inspect})"
-    assert @scope_class.new.respond_to?(method_name),
+    assert Tilt::CompileSite.instance_methods.include?(method_name),
+      "CompileSite.instance_methods.include?(#{method_name.inspect})"
+    assert Scope.new.respond_to?(method_name),
       "scope.respond_to?(#{method_name.inspect})"
   end
 
   test "loading and evaluating templates on #render" do
-    template = Tilt::ERBTemplate.new(@compile_site) { |t| "Hello World!" }
-    assert_equal "Hello World!", template.render(@scope_class.new)
-    assert_equal "Hello World!", template.render(@scope_class.new)
+    template = Tilt::ERBTemplate.new { |t| "Hello World!" }
+    assert_equal "Hello World!", template.render(Scope.new)
+    assert_equal "Hello World!", template.render(Scope.new)
   end
 
   test "passing locals" do
-    template = Tilt::ERBTemplate.new(@compile_site) { 'Hey <%= name %>!' }
-    assert_equal "Hey Joe!", template.render(@scope_class.new, :name => 'Joe')
+    template = Tilt::ERBTemplate.new { 'Hey <%= name %>!' }
+    assert_equal "Hey Joe!", template.render(Scope.new, :name => 'Joe')
   end
 
   test "evaluating in an object scope" do
-    template = Tilt::ERBTemplate.new(@compile_site) { 'Hey <%= @name %>!' }
-    scope = @scope_class.new
+    template = Tilt::ERBTemplate.new { 'Hey <%= @name %>!' }
+    scope = Scope.new
     scope.instance_variable_set :@name, 'Joe'
     assert_equal "Hey Joe!", template.render(scope)
     scope.instance_variable_set :@name, 'Jane'
@@ -121,17 +119,17 @@ class CompiledERBTemplateTest < Test::Unit::TestCase
   end
 
   test "passing a block for yield" do
-    template = Tilt::ERBTemplate.new(@compile_site) { 'Hey <%= yield %>!' }
-    assert_equal "Hey Joe!", template.render(@scope_class.new) { 'Joe' }
-    assert_equal "Hey Jane!", template.render(@scope_class.new) { 'Jane' }
+    template = Tilt::ERBTemplate.new { 'Hey <%= yield %>!' }
+    assert_equal "Hey Joe!", template.render(Scope.new) { 'Joe' }
+    assert_equal "Hey Jane!", template.render(Scope.new) { 'Jane' }
   end
 
   test "backtrace file and line reporting without locals" do
     data = File.read(__FILE__).split("\n__END__\n").last
     fail unless data[0] == ?<
-    template = Tilt::ERBTemplate.new('test.erb', 11, @compile_site) { data }
+    template = Tilt::ERBTemplate.new('test.erb', 11) { data }
     begin
-      template.render(@scope_class.new)
+      template.render(Scope.new)
       fail 'should have raised an exception'
     rescue => boom
       assert_kind_of NameError, boom
@@ -145,9 +143,9 @@ class CompiledERBTemplateTest < Test::Unit::TestCase
   test "backtrace file and line reporting with locals" do
     data = File.read(__FILE__).split("\n__END__\n").last
     fail unless data[0] == ?<
-    template = Tilt::ERBTemplate.new('test.erb', @compile_site) { data }
+    template = Tilt::ERBTemplate.new('test.erb') { data }
     begin
-      template.render(@scope_class.new, :name => 'Joe', :foo => 'bar')
+      template.render(Scope.new, :name => 'Joe', :foo => 'bar')
       fail 'should have raised an exception'
     rescue => boom
       assert_kind_of RuntimeError, boom
@@ -159,18 +157,18 @@ class CompiledERBTemplateTest < Test::Unit::TestCase
   end
 
   test "default non-stripping trim mode" do
-    template = Tilt.new('test.erb', @compile_site) { "\n<%= 1 + 1 %>\n" }
-    assert_equal "\n2\n", template.render(@scope_class.new)
+    template = Tilt.new('test.erb') { "\n<%= 1 + 1 %>\n" }
+    assert_equal "\n2\n", template.render(Scope.new)
   end
 
   test "stripping trim mode" do
-    template = Tilt.new('test.erb', {:trim => '-'}, @compile_site) { "\n<%= 1 + 1 -%>\n" }
-    assert_equal "\n2", template.render(@scope_class.new)
+    template = Tilt.new('test.erb', :trim => '-') { "\n<%= 1 + 1 -%>\n" }
+    assert_equal "\n2", template.render(Scope.new)
   end
 
   test "shorthand whole line syntax trim mode" do
-    template = Tilt.new('test.erb', {:trim => '%'}, @compile_site) { "\n% if true\nhello\n%end\n" }
-    assert_equal "\nhello\n", template.render(@scope_class.new)
+    template = Tilt.new('test.erb', :trim => '%') { "\n% if true\nhello\n%end\n" }
+    assert_equal "\nhello\n", template.render(Scope.new)
   end
 end
 

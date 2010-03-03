@@ -43,22 +43,20 @@ module Tilt
     end
   end
 
-  # Default site for compiled template methods. Mixing this module
-  # into scope objects drastically improves performance for source
-  # generating templates like ERB, Erubis, and Builder.
-  module CompiledTemplates
-  end
-
-  # Enable compiled templates globally. This is a potentially dangerous --
-  # certainly sloppy -- operation that mixes all compiled template methods
-  # into Object so that any object can be used as a template's render scope.
+  # Mixin allowing template compilation on scope objects.
   #
-  # The recommended way of enabling template compilation is by passing
-  # a compile_site module to Template.new explicitly and ensuring any scope
-  # objects include the compile site module.
-  def self.enable_global_compile_site!
-    ::Object.send :include, CompiledTemplates
-    Template.default_compile_site = CompiledTemplates
+  # Including this module in scope objects passed to Template#render
+  # causes template source to be compiled to methods the first time they're
+  # used. This can yield significant (5x-10x) performance increases for
+  # templates that support it (ERB, Erubis, Builder).
+  #
+  # It's also possible (though not recommended) to include this module in
+  # Object to enable template compilation globally. The downside is that
+  # the template methods will polute the global namespace and could lead to
+  # unexpected behavior.
+  module CompileSite
+    def __tilt__
+    end
   end
 
   # Base class for template implementations. Subclasses must implement
@@ -79,46 +77,20 @@ module Tilt
     # interface.
     attr_reader :options
 
-    # A module where compiled methods should be created.
-    attr_reader :compile_site
-
-    # Default compile_site for all new Template instances. nil by default.
-    # Set to a module to enable template compilation globally. This
-    # should be set only when you're sure no other code uses Tilt.
-    # Passing the compile_site to Template.new is the recommended way of
-    # enabling template compilation.
-    def self.default_compile_site
-      @@default_compile_site
-    end
-
-    def self.default_compile_site=(mod)
-      @@default_compile_site = mod
-    end
-
-    self.default_compile_site = nil
-
     # Create a new template with the file, line, and options specified. By
     # default, template data is read from the file. When a block is given,
     # it should read template data and return as a String. When file is nil,
     # a block is required.
     #
-    # Passing a module as the compile_site argument enables template
-    # compilation for source generating templates. The same module must also
-    # be mixed into objects passed in the scope argument in order for template
-    # compilation to function properly. If no compile_site is given, templates
-    # are evaluated from source each time rendered.
-    #
     # All arguments are optional.
-    def initialize(file=nil, line=1, options={}, compile_site=nil, &block)
-      @file, @line, @options, @compile_site =
-        nil, 1, {}, self.class.default_compile_site
+    def initialize(file=nil, line=1, options={}, &block)
+      @file, @line, @options = nil, 1, {}
 
-      [compile_site, options, line, file].compact.each do |arg|
+      [options, line, file].compact.each do |arg|
         case
         when arg.respond_to?(:to_str)  ; @file = arg.to_str
         when arg.respond_to?(:to_int)  ; @line = arg.to_int
         when arg.respond_to?(:to_hash) ; @options = arg.to_hash
-        when arg.is_a?(Module)         ; @compile_site = arg
         else raise TypeError
         end
       end
@@ -189,22 +161,15 @@ module Tilt
     # is guaranteed to be performed in the scope object with the locals
     # specified and with support for yielding to the block.
     def evaluate(scope, locals, &block)
-      if compile_site
+      if scope.respond_to?(:__tilt__)
         method_name = compiled_method_name(locals)
         if scope.respond_to?(method_name)
-          # fast path compiled method already defined
+          # fast path
           scope.send method_name, locals, &block
         else
-          # compile and try to run; disable compile_site for this template
-          # if scope doesn't have the module mixed in properly.
+          # compile first and then run
           compile_template_method(method_name, locals)
-          if scope.respond_to?(method_name)
-            scope.send method_name, locals, &block
-          else
-            # XXX maybe we should issue a warning here
-            @compile_site = nil
-            evaluate(scope, locals, &block)
-          end
+          scope.send method_name, locals, &block
         end
       else
         source, offset = local_assignment_code(locals)
@@ -236,7 +201,7 @@ module Tilt
       source, offset = local_assignment_code(locals)
       source = [source, template_source].join("\n")
       offset += 1
-      compile_site.module_eval <<-RUBY, eval_file, line - offset
+      CompileSite.module_eval <<-RUBY, eval_file, line - offset
         def #{method_name}(locals)
           #{source}
         end
