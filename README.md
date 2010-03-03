@@ -33,6 +33,12 @@ Support for these template engines is included with the package:
     RDiscount                  .markdown         rdiscount
     RedCloth                   .textile          redcloth
 
+See [TEMPLATES.md][t] for detailed information on template engine
+options and supported features.
+
+[t]: http://github.com/rtomayko/tilt/blob/master/TEMPLATES.md
+   "Tilt Template Engine Documentation"
+
 Basic Usage
 -----------
 
