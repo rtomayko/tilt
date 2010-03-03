@@ -9,7 +9,7 @@ begin
       assert_equal Tilt::BuilderTemplate, Tilt['test.xml.builder']
     end
 
-    test "compiling and evaluating the template on #render" do
+    test "preparing and evaluating the template on #render" do
       template = Tilt::BuilderTemplate.new { |t| "xml.em 'Hello World!'" }
       assert_equal "<em>Hello World!</em>\n", template.render
     end

@@ -4,7 +4,7 @@ require 'tilt'
 class TiltTemplateTest < Test::Unit::TestCase
 
   class MockTemplate < Tilt::Template
-    def compile!
+    def prepare
     end
   end
 
@@ -58,7 +58,7 @@ class TiltTemplateTest < Test::Unit::TestCase
       @@initialized_count += 1
     end
 
-    def compile!
+    def prepare
     end
   end
 
@@ -74,42 +74,42 @@ class TiltTemplateTest < Test::Unit::TestCase
     assert_equal 1, InitializingMockTemplate.initialized_count
   end
 
-  class CompilingMockTemplate < Tilt::Template
+  class PreparingMockTemplate < Tilt::Template
     include Test::Unit::Assertions
-    def compile!
+    def prepare
       assert !data.nil?
-      @compiled = true
+      @prepared = true
     end
-    def compiled? ; @compiled ; end
+    def prepared? ; @prepared ; end
   end
 
-  test "raises NotImplementedError when #compile! not defined" do
+  test "raises NotImplementedError when #prepare not defined" do
     assert_raise(NotImplementedError) { Tilt::Template.new { |template| "Hello World!" } }
   end
 
   test "raises NotImplementedError when #evaluate or #template_source not defined" do
-    inst = CompilingMockTemplate.new { |t| "Hello World!" }
+    inst = PreparingMockTemplate.new { |t| "Hello World!" }
     assert_raise(NotImplementedError) { inst.render }
-    assert inst.compiled?
+    assert inst.prepared?
   end
 
-  class SimpleMockTemplate < CompilingMockTemplate
+  class SimpleMockTemplate < PreparingMockTemplate
     include Test::Unit::Assertions
     def evaluate(scope, locals, &block)
-      assert compiled?
+      assert prepared?
       assert !scope.nil?
       assert !locals.nil?
       "<em>#{@data}</em>"
     end
   end
 
-  test "compiles and evaluates the template on #render" do
+  test "prepares and evaluates the template on #render" do
     inst = SimpleMockTemplate.new { |t| "Hello World!" }
     assert_equal "<em>Hello World!</em>", inst.render
-    assert inst.compiled?
+    assert inst.prepared?
   end
 
-  class SourceGeneratingMockTemplate < CompilingMockTemplate
+  class SourceGeneratingMockTemplate < PreparingMockTemplate
     def template_source
       "foo = [] ; foo << %Q{#{data}} ; foo.join"
     end
@@ -118,7 +118,7 @@ class TiltTemplateTest < Test::Unit::TestCase
   test "template_source with locals" do
     inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{name}!' }
     assert_equal "Hey Joe!", inst.render(Object.new, :name => 'Joe')
-    assert inst.compiled?
+    assert inst.prepared?
   end
 
   class Person

@@ -12,7 +12,7 @@ begin
       assert_equal Tilt::HamlTemplate, Tilt['test.haml']
     end
 
-    test "compiling and evaluating templates on #render" do
+    test "preparing and evaluating templates on #render" do
       template = Tilt::HamlTemplate.new { |t| "%p Hello World!" }
       assert_equal "<p>Hello World!</p>\n", template.render
     end

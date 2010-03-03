@@ -17,7 +17,7 @@ begin
       assert_equal Tilt::RDiscountTemplate, Tilt['test.mkd']
     end
 
-    test "compiling and evaluating templates on #render" do
+    test "preparing and evaluating templates on #render" do
       template = Tilt::RDiscountTemplate.new { |t| "# Hello World!" }
       assert_equal "<h1>Hello World!</h1>\n", template.render
     end

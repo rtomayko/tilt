@@ -9,7 +9,7 @@ begin
       assert_equal Tilt::LiquidTemplate, Tilt['test.liquid']
     end
 
-    test "compiling and evaluating templates on #render" do
+    test "preparing and evaluating templates on #render" do
       template = Tilt::LiquidTemplate.new { |t| "Hello World!" }
       assert_equal "Hello World!", template.render
     end

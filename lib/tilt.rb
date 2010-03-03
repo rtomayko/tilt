@@ -50,7 +50,7 @@ module Tilt
   end
 
   # Base class for template implementations. Subclasses must implement
-  # the #compile! method and one of the #evaluate or #template_source
+  # the #prepare method and one of the #evaluate or #template_source
   # methods.
   class Template
     # Template source; loaded from a file or given directly.
@@ -89,7 +89,7 @@ module Tilt
       end
 
       @data = @reader.call(self)
-      compile!
+      prepare
     end
 
     # Called once and only once for each template subclass the first time
@@ -123,13 +123,18 @@ module Tilt
     end
 
   protected
-    # Do whatever preparation is necessary to "compile" the template.
-    # Called immediately after template #data is loaded. Instance variables
-    # set in this method are available when #evaluate is called.
+    # Do whatever preparation is necessary to setup the underlying template
+    # engine. Called immediately after template data is loaded. Instance
+    # variables set in this method are available when #evaluate is called.
     #
     # Subclasses must provide an implementation of this method.
-    def compile!
-      raise NotImplementedError
+    def prepare
+      if respond_to?(:compile!)
+        # backward compat with tilt < 0.6; just in case
+        compile!
+      else
+        raise NotImplementedError
+      end
     end
 
     # Process the template and return the result. Subclasses should override
@@ -197,7 +202,7 @@ module Tilt
   #   cache = Tilt::Cache.new
   #   cache.fetch(path, line, options) { Tilt.new(path, line, options) }
   #
-  # Subsequent invocations return the already compiled template object.
+  # Subsequent invocations return the already loaded template object.
   class Cache
     def initialize
       @cache = {}
@@ -219,7 +224,7 @@ module Tilt
   # The template source is evaluated as a Ruby string. The #{} interpolation
   # syntax can be used to generated dynamic output.
   class StringTemplate < Template
-    def compile!
+    def prepare
       @code = "%Q{#{data}}"
     end
 
@@ -237,7 +242,7 @@ module Tilt
       require_template_library 'erb' unless defined? ::ERB
     end
 
-    def compile!
+    def prepare
       @engine = ::ERB.new(data, options[:safe], options[:trim], '@_out_buf')
     end
 
@@ -278,7 +283,7 @@ module Tilt
       require_template_library 'erubis' unless defined? ::Erubis
     end
 
-    def compile!
+    def prepare
       Erubis::Eruby.class_eval(%Q{def add_preamble(src) src << "@_out_buf = _buf = '';" end})
       @engine = ::Erubis::Eruby.new(data, options)
     end
@@ -304,7 +309,7 @@ module Tilt
       require_template_library 'haml' unless defined? ::Haml::Engine
     end
 
-    def compile!
+    def prepare
       @engine = ::Haml::Engine.new(data, haml_options)
     end
 
@@ -329,7 +334,7 @@ module Tilt
       require_template_library 'sass' unless defined? ::Sass::Engine
     end
 
-    def compile!
+    def prepare
       @engine = ::Sass::Engine.new(data, sass_options)
     end
 
@@ -354,7 +359,7 @@ module Tilt
       require_template_library 'less' unless defined? ::Less::Engine
     end
 
-    def compile!
+    def prepare
       @engine = ::Less::Engine.new(data)
     end
 
@@ -371,7 +376,7 @@ module Tilt
       require_template_library 'builder' unless defined?(::Builder)
     end
 
-    def compile!
+    def prepare
     end
 
     def evaluate(scope, locals, &block)
@@ -410,7 +415,7 @@ module Tilt
       require_template_library 'liquid' unless defined? ::Liquid::Template
     end
 
-    def compile!
+    def prepare
       @engine = ::Liquid::Template.parse(data)
     end
 
@@ -443,7 +448,7 @@ module Tilt
       require_template_library 'rdiscount' unless defined? ::RDiscount
     end
 
-    def compile!
+    def prepare
       @engine = RDiscount.new(data, *flags)
     end
 
@@ -463,7 +468,7 @@ module Tilt
       require_template_library 'redcloth' unless defined? ::RedCloth
     end
 
-    def compile!
+    def prepare
       @engine = RedCloth.new(data)
     end
 
@@ -487,7 +492,7 @@ module Tilt
       require_template_library 'mustache' unless defined? ::Mustache
     end
 
-    def compile!
+    def prepare
       Mustache.view_namespace = options[:namespace]
       Mustache.view_path = options[:view_path] || options[:mustaches]
       @engine = options[:view] || Mustache.view_class(name)
@@ -535,7 +540,7 @@ module Tilt
       end
     end
 
-    def compile!
+    def prepare
       markup = RDoc::Markup::ToHtml.new
       @engine = markup.convert(data)
     end
@@ -553,7 +558,7 @@ module Tilt
       require_template_library 'coffee-script' unless defined? ::CoffeeScript
     end
 
-    def compile!
+    def prepare
       @engine = ::CoffeeScript::compile(data, options)
     end
 
