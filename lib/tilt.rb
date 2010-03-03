@@ -49,6 +49,18 @@ module Tilt
   module CompiledTemplates
   end
 
+  # Enable compiled templates globally. This is a potentially dangerous --
+  # certainly sloppy -- operation that mixes all compiled template methods
+  # into Object so that any object can be used as a template's render scope.
+  #
+  # The recommended way of enabling template compilation is by passing
+  # a compile_site module to Template.new explicitly and ensuring any scope
+  # objects include the compile site module.
+  def self.enable_global_compile_site!
+    ::Object.send :include, CompiledTemplates
+    Template.default_compile_site = CompiledTemplates
+  end
+
   # Base class for template implementations. Subclasses must implement
   # the #prepare method and one of the #evaluate or #template_source
   # methods.
