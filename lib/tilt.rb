@@ -61,6 +61,14 @@ module Tilt
     # interface.
     attr_reader :options
 
+    # Used to determine if this class's initialize_engine method has
+    # been called yet.
+    @engine_initialized = false
+    class << self
+      attr_accessor :engine_initialized
+      alias engine_initialized? engine_initialized
+    end
+
     # Create a new template with the file, line, and options specified. By
     # default, template data is read from the file specified. When a block
     # is given, it should read template data and return as a String. When
@@ -77,7 +85,9 @@ module Tilt
       @reader = block || lambda { |t| File.read(file) }
       @data = nil
 
-      if !self.class.engine_initialized
+      # call the initialize_engine method if this is the very first time
+      # an instance of this class has been created.
+      if !self.class.engine_initialized?
         initialize_engine
         self.class.engine_initialized = true
       end
@@ -85,14 +95,6 @@ module Tilt
       @data = @reader.call(self)
       compile!
     end
-
-    # Called once and only once for each template subclass the first time
-    # the template class is initialized. This should be used to require the
-    # underlying template library and perform any initial setup.
-    def initialize_engine
-    end
-    @engine_initialized = false
-    class << self ; attr_accessor :engine_initialized ; end
 
     # Render the template in the given scope with the locals specified. If a
     # block is given, it is typically available within the template via
@@ -117,6 +119,12 @@ module Tilt
     end
 
   protected
+    # Called once and only once for each template subclass the first time
+    # the template class is initialized. This should be used to require the
+    # underlying template library and perform any initial setup.
+    def initialize_engine
+    end
+
     # Do whatever preparation is necessary to "compile" the template.
     # Called immediately after template #data is loaded. Instance variables
     # set in this method are available when #evaluate is called.
