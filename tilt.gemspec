@@ -46,7 +46,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'contest'
   s.add_development_dependency 'builder'
   s.add_development_dependency 'erubis'
-  s.add_development_dependency 'haml'
+  s.add_development_dependency 'haml', '>= 2.2.11'
   s.add_development_dependency 'mustache'
   s.add_development_dependency 'rdiscount'
   s.add_development_dependency 'liquid'
