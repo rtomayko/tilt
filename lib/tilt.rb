@@ -425,7 +425,7 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      @engine.render
+      @output ||= @engine.render
     end
 
   private
