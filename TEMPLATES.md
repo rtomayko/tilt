@@ -67,6 +67,12 @@ of any combination of the following characters:
 The `$SAFE` level; when set, ERB code will be run in a
 separate thread with `$SAFE` set to the provided level.
 
+#### `:outvar => '_erbout'`
+
+The name of the variable used to accumulate template output. This can be
+any valid Ruby expression but must be assignable. By default a local
+variable named `_erbout` is used.
+
 ### See also
 
   * [ERB documentation](http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html)
@@ -98,14 +104,19 @@ Set pattern for embedded Ruby code.
 
 See the [ERB](#erb) template documentation for examples, usage, and options.
 
-__NOTE:__ It's suggested that your program `require 'erubis'` at load time when
-using this template engine within a threaded environment.
+#### `:outvar => '_erbout'`
+
+The name of the variable used to accumulate template output. This can be
+any valid Ruby expression but must be assignable. By default a local
+variable named `_erbout` is used.
 
 ### See also
 
   * [Erubis Home](http://www.kuwata-lab.com/erubis/)
   * [Erubis User's Guide](http://www.kuwata-lab.com/erubis/users-guide.html)
 
+__NOTE:__ It's suggested that your program `require 'erubis'` at load time when
+using this template engine within a threaded environment.
 
 <a name='haml'></a>
 Haml (`haml`)
