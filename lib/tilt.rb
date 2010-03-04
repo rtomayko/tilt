@@ -377,11 +377,33 @@ module Tilt
       @engine = ::Haml::Engine.new(data, haml_options)
     end
 
-    def evaluate(scope, locals, &block)
-      @engine.render(scope, locals, &block)
+    # Precompiled Haml source. Taken from the precompiled_with_ambles
+    # method in Haml::Precompiler:
+    # http://github.com/nex3/haml/blob/master/lib/haml/precompiler.rb#L111-126
+    def template_source
+      @engine.instance_eval do
+        <<-RUBY
+          _haml_locals = locals
+          begin
+            extend Haml::Helpers
+            _hamlout = @haml_buffer = Haml::Buffer.new(@haml_buffer, #{options_for_buffer.inspect})
+            _erbout = _hamlout.buffer
+            __in_erb_template = true
+            #{precompiled}
+            #{precompiled_method_return_value}
+          ensure
+            @haml_buffer = @haml_buffer.upper
+          end
+        RUBY
+      end
     end
 
   private
+    def local_assignment_code(locals)
+      source, offset = super
+      [source, offset + 6]
+    end
+
     def haml_options
       options.merge(:filename => eval_file, :line => line)
     end
