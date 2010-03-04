@@ -69,6 +69,14 @@ begin
       scope.instance_variable_set :@name, 'Joe'
       assert_equal "Hey Joe!", template.render(scope)
     end
+
+    test "using an instance variable as the outvar" do
+      template = Tilt::ErubisTemplate.new(nil, :outvar => '@buf') { "<%= 1 + 1 %>" }
+      scope = Object.new
+      scope.instance_variable_set(:@buf, 'original value')
+      assert_equal '2', template.render(scope)
+      assert_equal 'original value', scope.instance_variable_get(:@buf)
+    end
   end
 rescue LoadError => boom
   warn "Tilt::ErubisTemplate (disabled)\n"

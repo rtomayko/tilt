@@ -251,12 +251,16 @@ module Tilt
     end
 
     def compile!
-      Erubis::Eruby.class_eval(%Q{def add_preamble(src) src << "@_out_buf = _buf = '';" end})
+      @options.merge!(:preamble => false, :postamble => false)
+      @outvar = (options.delete(:outvar) || '_erbout').to_s
       @engine = ::Erubis::Eruby.new(data, options)
     end
 
-  private
+    def template_source
+      ["#{@outvar} = _buf = ''", @engine.src, "_buf.to_s"].join(";")
+    end
 
+  private
     # Erubis doesn't have ERB's line-off-by-one under 1.9 problem. Override
     # and adjust back.
     if RUBY_VERSION >= '1.9.0'
