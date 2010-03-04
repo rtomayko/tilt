@@ -33,12 +33,12 @@ if defined?(Gem)
 
   directory 'pkg/'
 
-  file package('.gem') => %w[dist/ tilt.gemspec] + SPEC.files do |f|
+  file package('.gem') => %w[pkg/ tilt.gemspec] + SPEC.files do |f|
     sh "gem build tilt.gemspec"
     mv File.basename(f.name), f.name
   end
 
-  file package('.tar.gz') => %w[dist/] + SPEC.files do |f|
+  file package('.tar.gz') => %w[pkg/] + SPEC.files do |f|
     sh "git archive --format=tar HEAD | gzip > #{f.name}"
   end
 
