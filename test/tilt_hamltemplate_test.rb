@@ -71,6 +71,17 @@ begin
       include Tilt::CompileSite
     end
 
+    test "compiling template source to a method" do
+      template = Tilt::HamlTemplate.new { |t| "Hello World!" }
+      template.render(Scope.new)
+      method_name = template.send(:compiled_method_name, [].hash)
+      method_name = method_name.to_sym if Symbol === Kernel.methods.first
+      assert Tilt::CompileSite.instance_methods.include?(method_name),
+        "CompileSite.instance_methods.include?(#{method_name.inspect})"
+      assert Scope.new.respond_to?(method_name),
+        "scope.respond_to?(#{method_name.inspect})"
+    end
+
     test "passing locals" do
       template = Tilt::HamlTemplate.new { "%p= 'Hey ' + name + '!'" }
       assert_equal "<p>Hey Joe!</p>\n", template.render(Scope.new, :name => 'Joe')
