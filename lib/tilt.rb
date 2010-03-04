@@ -217,13 +217,19 @@ module Tilt
 
       # setup a finalizer to remove the newly added method
       ObjectSpace.define_finalizer self,
-        compiled_template_method_remover(method_name)
+        Template.compiled_template_method_remover(CompileSite, method_name)
     end
 
-    def compiled_template_method_remover(method_name)
-      Tilt.instance_eval do
-        proc do |oid|
-          CompileSite.remove_method(method_name)
+    def self.compiled_template_method_remover(site, method_name)
+      proc { |oid| garbage_collect_compiled_template_method(site, method_name) }
+    end
+
+    def self.garbage_collect_compiled_template_method(site, method_name)
+      site.module_eval do
+        begin
+          remove_method(method_name)
+        rescue NameError
+          # method was already removed (ruby >= 1.9)
         end
       end
     end

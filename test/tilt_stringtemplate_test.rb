@@ -95,6 +95,19 @@ class CompiledStringTemplateTest < Test::Unit::TestCase
     assert Scope.new.respond_to?(method_name)
   end
 
+  test 'garbage collecting compiled methods' do
+    template = Tilt::StringTemplate.new { '' }
+    method_name = template.send(:compiled_method_name, [].hash)
+    template.render(Scope.new)
+    assert Scope.new.respond_to?(method_name)
+    Tilt::Template.send(
+      :garbage_collect_compiled_template_method,
+      Tilt::CompileSite,
+      method_name
+    )
+    assert !Scope.new.respond_to?(method_name), "compiled method not removed"
+  end
+
   test "passing locals" do
     template = Tilt::StringTemplate.new { 'Hey #{name}!' }
     assert_equal "Hey Joe!", template.render(Scope.new, :name => 'Joe')
