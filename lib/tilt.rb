@@ -377,6 +377,14 @@ module Tilt
       @engine = ::Haml::Engine.new(data, haml_options)
     end
 
+    def evaluate(scope, locals, &block)
+      if @engine.respond_to?(:precompiled_method_return_value, true)
+        super
+      else
+        @engine.render(scope, locals, &block)
+      end
+    end
+
     # Precompiled Haml source. Taken from the precompiled_with_ambles
     # method in Haml::Precompiler:
     # http://github.com/nex3/haml/blob/master/lib/haml/precompiler.rb#L111-126
