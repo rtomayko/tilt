@@ -1,5 +1,5 @@
 module Tilt
-  VERSION = '0.6'
+  VERSION = '0.7'
 
   @template_mappings = {}
 
