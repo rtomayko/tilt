@@ -9,7 +9,7 @@ begin
       assert_equal Tilt::RDocTemplate, Tilt['test.rdoc']
     end
 
-    test "compiling and evaluating the template with #render" do
+    test "preparing and evaluating the template with #render" do
       template = Tilt::RDocTemplate.new { |t| "= Hello World!" }
       assert_equal "<h1>Hello World!</h1>\n", template.render
     end

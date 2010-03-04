@@ -16,7 +16,7 @@ begin
       assert_equal Tilt::MustacheTemplate, Tilt['test.mustache']
     end
 
-    test "compiling and evaluating templates on #render" do
+    test "preparing and evaluating templates on #render" do
       template = Tilt::MustacheTemplate.new { |t| "Hello World!" }
       assert_equal "Hello World!", template.render
     end
