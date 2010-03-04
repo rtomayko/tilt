@@ -80,6 +80,14 @@ class ERBTemplateTest < Test::Unit::TestCase
     template = Tilt.new('test.erb', 1, :trim => '%') { "\n% if true\nhello\n%end\n" }
     assert_equal "\nhello\n", template.render
   end
+
+  test "using an instance variable as the outvar" do
+    template = Tilt::ERBTemplate.new(nil, :outvar => '@buf') { "<%= 1 + 1 %>" }
+    scope = Object.new
+    scope.instance_variable_set(:@buf, 'original value')
+    assert_equal '2', template.render(scope)
+    assert_equal 'original value', scope.instance_variable_get(:@buf)
+  end
 end
 
 __END__

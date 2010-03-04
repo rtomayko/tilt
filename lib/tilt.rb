@@ -204,7 +204,8 @@ module Tilt
     end
 
     def compile!
-      @engine = ::ERB.new(data, options[:safe], options[:trim], '@_out_buf')
+      @outvar = (options[:outvar] || '_erbout').to_s
+      @engine = ::ERB.new(data, options[:safe], options[:trim], @outvar)
     end
 
     def template_source
@@ -212,22 +213,23 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      source, offset = local_assignment_code(locals)
-      source = [source, template_source].join("\n")
-
-      original_out_buf =
-        scope.instance_variables.any? { |var| var.to_sym == :@_out_buf } &&
-        scope.instance_variable_get(:@_out_buf)
-
-      scope.instance_eval source, eval_file, line - offset
-
-      output = scope.instance_variable_get(:@_out_buf)
-      scope.instance_variable_set(:@_out_buf, original_out_buf)
-
-      output
+      preserve_outvar_value(scope) { super }
     end
 
   private
+    # Retains the previous value of outvar when configured to use
+    # an instance variable. This allows multiple templates to be rendered
+    # within the context of an object without overwriting the outvar.
+    def preserve_outvar_value(scope)
+      if @outvar[0] == ?@
+        previous = scope.instance_variable_get(@outvar)
+        output = yield
+        scope.instance_variable_set(@outvar, previous)
+        output
+      else
+        yield
+      end
+    end
 
     # ERB generates a line to specify the character coding of the generated
     # source in 1.9. Account for this in the line offset.
