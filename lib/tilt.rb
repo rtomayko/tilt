@@ -197,28 +197,54 @@ module Tilt
           scope.send method_name, locals, &block
         end
       else
-        source, offset = local_assignment_code(locals)
-        source = [source, template_source].join("\n")
+        source, offset = precompiled(locals)
         scope.instance_eval source, eval_file, line - offset
       end
     end
 
-    # Return a string containing the (Ruby) source code for the template. The
-    # default Template#evaluate implementation requires this method be
-    # defined and guarantees correct file/line handling, custom scopes, and
-    # support for template compilation when the scope object allows it.
-    def template_source
+    # Generates all template source by combining the preamble, template, and
+    # postamble and returns a two-tuple of the form: [source, offset], where
+    # source is the string containing (Ruby) source code for the template and
+    # offset is the integer line offset where line reporting should begin.
+    #
+    # Template subclasses may override this method when they need complete
+    # control over source generation or want to adjust the default line
+    # offset. In most cases, overriding the #precompiled_template method is
+    # easier and more appropriate.
+    def precompiled(locals)
+      preamble = precompiled_preamble(locals)
+      parts = [
+        preamble,
+        precompiled_template(locals),
+        precompiled_postamble(locals)
+      ]
+      [parts.join("\n"), preamble.count("\n") + 1]
+    end
+
+    # A string containing the (Ruby) source code for the template. The
+    # default Template#evaluate implementation requires either this method
+    # or the #precompiled method be overridden. When defined, the base
+    # Template guarantees correct file/line handling, locals support, custom
+    # scopes, and support for template compilation when the scope object
+    # allows it.
+    def precompiled_template(locals)
       raise NotImplementedError
     end
 
-    # Generates code to perform locals assignment and calculates the base
-    # source offset. This sometimes needs to be overridden in subclasses if
-    # locals assignment requires special processing or the source offset needs
-    # to be calculated differently.
-    def local_assignment_code(locals)
-      return ['', 1] if locals.empty?
-      source = locals.collect { |k,v| "#{k} = locals[:#{k}]" }
-      [source.join("\n"), source.length]
+    # Generates preamble code for initializing template state, and performing
+    # locals assignment. The default implementation performs locals
+    # assignment only. Lines included in the preamble are subtracted from the
+    # source line offset, so adding code to the preamble does not effect line
+    # reporting in Kernel::caller and backtraces.
+    def precompiled_preamble(locals)
+      locals.map { |k,v| "#{k} = locals[:#{k}]" }.join("\n")
+    end
+
+    # Generates postamble code for the precompiled template source. The
+    # string returned from this method is appended to the precompiled
+    # template source.
+    def precompiled_postamble(locals)
+      ''
     end
 
     # The unique compiled method name for the locals keys provided.
@@ -235,18 +261,14 @@ module Tilt
     end
 
     def compile_template_method(method_name, locals)
-      source, offset = local_assignment_code(locals)
-      source = [source, template_source].join("\n")
+      source, offset = precompiled(locals)
       offset += 1
-
-      # add the new method
       CompileSite.module_eval <<-RUBY, eval_file, line - offset
         def #{method_name}(locals)
           #{source}
         end
       RUBY
 
-      # setup a finalizer to remove the newly added method
       ObjectSpace.define_finalizer self,
         Template.compiled_template_method_remover(CompileSite, method_name)
     end
@@ -298,7 +320,7 @@ module Tilt
       @code = "%Q{#{data}}"
     end
 
-    def template_source
+    def precompiled_template(locals)
       @code
     end
   end
@@ -317,38 +339,37 @@ module Tilt
       @engine = ::ERB.new(data, options[:safe], options[:trim], @outvar)
     end
 
-    def template_source
+    def precompiled_template(locals)
       @engine.src
     end
 
-    def evaluate(scope, locals, &block)
-      preserve_outvar_value(scope) { super }
+    def precompiled_preamble(locals)
+      <<-RUBY
+        begin
+          __original_outvar = #{@outvar} if defined?(#{@outvar})
+          #{super}
+      RUBY
     end
 
-  private
-    # Retains the previous value of outvar when configured to use
-    # an instance variable. This allows multiple templates to be rendered
-    # within the context of an object without overwriting the outvar.
-    def preserve_outvar_value(scope)
-      if @outvar[0] == ?@
-        previous = scope.instance_variable_get(@outvar)
-        output = yield
-        scope.instance_variable_set(@outvar, previous)
-        output
-      else
-        yield
-      end
+    def precompiled_postamble(locals)
+      <<-RUBY
+          #{super}
+        ensure
+          #{@outvar} = __original_outvar
+        end
+      RUBY
     end
 
     # ERB generates a line to specify the character coding of the generated
     # source in 1.9. Account for this in the line offset.
     if RUBY_VERSION >= '1.9.0'
-      def local_assignment_code(locals)
+      def precompiled(locals)
         source, offset = super
         [source, offset + 1]
       end
     end
   end
+
   %w[erb rhtml].each { |ext| register ext, ERBTemplate }
 
 
@@ -365,15 +386,18 @@ module Tilt
       @engine = ::Erubis::Eruby.new(data, options)
     end
 
-    def template_source
-      ["#{@outvar} = _buf = ''", @engine.src, "_buf.to_s"].join(";")
+    def precompiled_preamble(locals)
+      [super, "#{@outvar} = _buf = ''"].join("\n")
     end
 
-  private
-    # Erubis doesn't have ERB's line-off-by-one under 1.9 problem. Override
-    # and adjust back.
+    def precompiled_postamble(locals)
+      ["_buf", super].join("\n")
+    end
+
+    # Erubis doesn't have ERB's line-off-by-one under 1.9 problem.
+    # Override and adjust back.
     if RUBY_VERSION >= '1.9.0'
-      def local_assignment_code(locals)
+      def precompiled(locals)
         source, offset = super
         [source, offset - 1]
       end
@@ -390,7 +414,8 @@ module Tilt
     end
 
     def prepare
-      @engine = ::Haml::Engine.new(data, haml_options)
+      options = @options.merge(:filename => eval_file, :line => line)
+      @engine = ::Haml::Engine.new(data, options)
     end
 
     def evaluate(scope, locals, &block)
@@ -404,32 +429,34 @@ module Tilt
     # Precompiled Haml source. Taken from the precompiled_with_ambles
     # method in Haml::Precompiler:
     # http://github.com/nex3/haml/blob/master/lib/haml/precompiler.rb#L111-126
-    def template_source
+    def precompiled_template(locals)
+      @engine.precompiled
+    end
+
+    def precompiled_preamble(locals)
+      local_assigns = super
       @engine.instance_eval do
         <<-RUBY
-          _haml_locals = locals
           begin
             extend Haml::Helpers
             _hamlout = @haml_buffer = Haml::Buffer.new(@haml_buffer, #{options_for_buffer.inspect})
             _erbout = _hamlout.buffer
             __in_erb_template = true
-            #{precompiled}
+            _haml_locals = locals
+            #{local_assigns}
+        RUBY
+      end
+    end
+
+    def precompiled_postamble(locals)
+      @engine.instance_eval do
+        <<-RUBY
             #{precompiled_method_return_value}
           ensure
             @haml_buffer = @haml_buffer.upper
           end
         RUBY
       end
-    end
-
-  private
-    def local_assignment_code(locals)
-      source, offset = super
-      [source, offset + 6]
-    end
-
-    def haml_options
-      options.merge(:filename => eval_file, :line => line)
     end
   end
   register 'haml', HamlTemplate
@@ -501,7 +528,7 @@ module Tilt
       xml.target!
     end
 
-    def template_source
+    def precompiled_template(locals)
       data.to_str
     end
   end
