@@ -561,10 +561,11 @@ module Tilt
 
     def prepare
       @engine = RDiscount.new(data, *flags)
+      @output = nil
     end
 
     def evaluate(scope, locals, &block)
-      @engine.to_html
+      @output ||= @engine.to_html
     end
   end
   register 'markdown', RDiscountTemplate
@@ -581,10 +582,11 @@ module Tilt
 
     def prepare
       @engine = RedCloth.new(data)
+      @output = nil
     end
 
     def evaluate(scope, locals, &block)
-      @engine.to_html
+      @output ||= @engine.to_html
     end
   end
   register 'textile', RedClothTemplate
@@ -655,10 +657,11 @@ module Tilt
     def prepare
       markup = RDoc::Markup::ToHtml.new
       @engine = markup.convert(data)
+      @output = nil
     end
 
     def evaluate(scope, locals, &block)
-      @engine.to_s
+      @output ||= @engine.to_s
     end
   end
   register 'rdoc', RDocTemplate
@@ -672,11 +675,11 @@ module Tilt
     end
 
     def prepare
-      @engine = ::CoffeeScript::compile(data, options)
+      @output = nil
     end
 
     def evaluate(scope, locals, &block)
-      @engine
+      @output ||= ::CoffeeScript::compile(data, options)
     end
   end
   register 'coffee', CoffeeTemplate
