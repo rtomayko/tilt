@@ -110,7 +110,7 @@ class TiltTemplateTest < Test::Unit::TestCase
   end
 
   class SourceGeneratingMockTemplate < PreparingMockTemplate
-    def template_source
+    def precompiled_template(locals)
       "foo = [] ; foo << %Q{#{data}} ; foo.join"
     end
   end

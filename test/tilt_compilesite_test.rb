@@ -10,7 +10,7 @@ class CompileSiteTest < Test::Unit::TestCase
     def prepare
     end
 
-    def template_source
+    def precompiled_template(locals)
       @data.inspect
     end
   end
