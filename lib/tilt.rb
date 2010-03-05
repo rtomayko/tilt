@@ -329,38 +329,37 @@ module Tilt
       @engine = ::ERB.new(data, options[:safe], options[:trim], @outvar)
     end
 
-    def template_source
+    def precompiled_template(locals)
       @engine.src
     end
 
-    def evaluate(scope, locals, &block)
-      preserve_outvar_value(scope) { super }
+    def precompiled_preamble(locals)
+      <<-RUBY
+        begin
+          __original_outvar = #{@outvar} if defined?(#{@outvar})
+          #{super}
+      RUBY
     end
 
-  private
-    # Retains the previous value of outvar when configured to use
-    # an instance variable. This allows multiple templates to be rendered
-    # within the context of an object without overwriting the outvar.
-    def preserve_outvar_value(scope)
-      if @outvar[0] == ?@
-        previous = scope.instance_variable_get(@outvar)
-        output = yield
-        scope.instance_variable_set(@outvar, previous)
-        output
-      else
-        yield
-      end
+    def precompiled_postamble(locals)
+      <<-RUBY
+          #{super}
+        ensure
+          #{@outvar} = __original_outvar
+        end
+      RUBY
     end
 
     # ERB generates a line to specify the character coding of the generated
     # source in 1.9. Account for this in the line offset.
     if RUBY_VERSION >= '1.9.0'
-      def local_assignment_code(locals)
+      def precompiled(locals)
         source, offset = super
         [source, offset + 1]
       end
     end
   end
+
   %w[erb rhtml].each { |ext| register ext, ERBTemplate }
 
 
@@ -377,15 +376,18 @@ module Tilt
       @engine = ::Erubis::Eruby.new(data, options)
     end
 
-    def template_source
-      ["#{@outvar} = _buf = ''", @engine.src, "_buf.to_s"].join(";")
+    def precompiled_preamble(locals)
+      [super, "#{@outvar} = _buf = ''"].join("\n")
     end
 
-  private
-    # Erubis doesn't have ERB's line-off-by-one under 1.9 problem. Override
-    # and adjust back.
+    def precompiled_postamble(locals)
+      ["_buf", super].join("\n")
+    end
+
+    # Erubis doesn't have ERB's line-off-by-one under 1.9 problem.
+    # Override and adjust back.
     if RUBY_VERSION >= '1.9.0'
-      def local_assignment_code(locals)
+      def precompiled(locals)
         source, offset = super
         [source, offset - 1]
       end
