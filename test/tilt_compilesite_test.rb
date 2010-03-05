@@ -22,7 +22,7 @@ class CompileSiteTest < Test::Unit::TestCase
   test "compiling template source to a method" do
     template = CompilingTemplate.new { |t| "Hello World!" }
     template.render(Scope.new)
-    method_name = template.send(:compiled_method_name, [].hash)
+    method_name = template.send(:compiled_method_name, [])
     method_name = method_name.to_sym if Symbol === Kernel.methods.first
     assert Tilt::CompileSite.instance_methods.include?(method_name),
       "CompileSite.instance_methods.include?(#{method_name.inspect})"
@@ -32,7 +32,7 @@ class CompileSiteTest < Test::Unit::TestCase
 
   test 'garbage collecting compiled methods' do
     template = CompilingTemplate.new { '' }
-    method_name = template.send(:compiled_method_name, [].hash)
+    method_name = template.send(:compiled_method_name, [])
     template.render(Scope.new)
     assert Scope.new.respond_to?(method_name)
     Tilt::Template.send(
@@ -46,7 +46,7 @@ class CompileSiteTest < Test::Unit::TestCase
   def self.create_and_destroy_template
     template = CompilingTemplate.new { 'Hello World' }
     template.render(Scope.new)
-    method_name = template.send(:compiled_method_name, [].hash)
+    method_name = template.send(:compiled_method_name, [])
     method_name = method_name.to_sym if Symbol === Kernel.methods.first
     [template.object_id, method_name]
   end

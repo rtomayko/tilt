@@ -1,3 +1,5 @@
+require 'digest/md5'
+
 module Tilt
   VERSION = '0.7'
 
@@ -113,8 +115,8 @@ module Tilt
       end
 
       # used to generate unique method names for template compilation
-      stamp = (Time.now.to_f * 10000).to_i
-      @_prefix = "__tilt_O#{object_id.to_s(16)}T#{stamp.to_s(16)}"
+      @stamp = (Time.now.to_f * 10000).to_i
+      @compiled_method_names = {}
 
       # load template data and prepare
       @reader = block || lambda { |t| File.read(@file) }
@@ -185,7 +187,7 @@ module Tilt
     # specified and with support for yielding to the block.
     def evaluate(scope, locals, &block)
       if scope.respond_to?(:__tilt__)
-        method_name = compiled_method_name(locals.keys.hash)
+        method_name = compiled_method_name(locals.keys)
         if scope.respond_to?(method_name)
           # fast path
           scope.send method_name, locals, &block
@@ -219,11 +221,19 @@ module Tilt
       [source.join("\n"), source.length]
     end
 
-    def compiled_method_name(locals_hash)
-      "#{@_prefix}L#{locals_hash.to_s(16).sub('-', 'n')}"
+    # The unique compiled method name for the locals keys provided.
+    def compiled_method_name(locals_keys)
+      @compiled_method_names[locals_keys] ||=
+        generate_compiled_method_name(locals_keys)
     end
 
   private
+    def generate_compiled_method_name(locals_keys)
+      parts = [object_id, @stamp] + locals_keys.map { |k| k.to_s }.sort
+      digest = Digest::MD5.hexdigest(parts.join(':'))
+      "__tilt_#{digest}"
+    end
+
     def compile_template_method(method_name, locals)
       source, offset = local_assignment_code(locals)
       source = [source, template_source].join("\n")
