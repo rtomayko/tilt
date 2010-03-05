@@ -151,6 +151,16 @@ module Tilt
     def initialize_engine
     end
 
+    # Like Kernel::require but issues a warning urging a manual require when
+    # running under a threaded environment.
+    def require_template_library(name)
+      if Thread.list.size > 1
+        warn "WARN: tilt autoloading '#{name}' in a non thread-safe way; " +
+             "explicit require '#{name}' suggested."
+      end
+      require name
+    end
+
     # Do whatever preparation is necessary to setup the underlying template
     # engine. Called immediately after template data is loaded. Instance
     # variables set in this method are available when #evaluate is called.
@@ -243,14 +253,6 @@ module Tilt
           # method was already removed (ruby >= 1.9)
         end
       end
-    end
-
-    def require_template_library(name)
-      if Thread.list.size > 1
-        warn "WARN: tilt autoloading '#{name}' in a non thread-safe way; " +
-             "explicit require '#{name}' suggested."
-      end
-      require name
     end
   end
 
