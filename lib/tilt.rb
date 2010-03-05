@@ -199,7 +199,10 @@ module Tilt
       raise NotImplementedError
     end
 
-  private
+    # Generates code to perform locals assignment and calculates the base
+    # source offset. This sometimes needs to be overridden in subclasses if
+    # locals assignment requires special processing or the source offset needs
+    # to be calculated differently.
     def local_assignment_code(locals)
       return ['', 1] if locals.empty?
       source = locals.collect { |k,v| "#{k} = locals[:#{k}]" }
@@ -210,6 +213,7 @@ module Tilt
       "#{@_prefix}L#{locals_hash.to_s(16).sub('-', 'n')}"
     end
 
+  private
     def compile_template_method(method_name, locals)
       source, offset = local_assignment_code(locals)
       source = [source, template_source].join("\n")
