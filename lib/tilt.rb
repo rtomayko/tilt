@@ -518,7 +518,7 @@ module Tilt
       xml.target!
     end
 
-    def template_source
+    def precompiled_template(locals)
       data.to_str
     end
   end
