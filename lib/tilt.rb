@@ -197,8 +197,7 @@ module Tilt
           scope.send method_name, locals, &block
         end
       else
-        source, offset = precompiled(locals)
-        scope.instance_eval source, eval_file, line - offset
+        evaluate_source(scope, locals, &block)
       end
     end
 
@@ -254,6 +253,32 @@ module Tilt
     end
 
   private
+    # Evaluate the template source in the context of the scope object.
+    def evaluate_source(scope, locals, &block)
+      source, offset = precompiled(locals)
+      scope.instance_eval(source, eval_file, line - offset)
+    end
+
+    # JRuby doesn't allow Object#instance_eval to yield to the block it's
+    # closed over. This is by design and (ostensibly) something that will
+    # change in MRI, though no current MRI version tested (1.8.6 - 1.9.2)
+    # exhibits the behavior. More info here:
+    #
+    # http://jira.codehaus.org/browse/JRUBY-2599
+    #
+    # Additionally, JRuby's eval line reporting is off by one compared to
+    # all MRI versions tested.
+    #
+    # We redefine evaluate_source to work around both issues.
+    if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
+      undef evaluate_source
+      def evaluate_source(scope, locals, &block)
+        source, offset = precompiled(locals)
+        file, lineno = eval_file, (line - offset) - 1
+        scope.instance_eval { Kernel::eval(source, binding, file, lineno) }
+      end
+    end
+
     def generate_compiled_method_name(locals_keys)
       parts = [object_id, @stamp] + locals_keys.map { |k| k.to_s }.sort
       digest = Digest::MD5.hexdigest(parts.join(':'))
