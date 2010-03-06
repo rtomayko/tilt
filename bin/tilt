@@ -12,6 +12,7 @@ the template's type.
 Options
   -l, --list           List supported template engines + file patterns and exit.
   -t, --type=PATTERN   Use this template engine; required when FILE is stdin.
+  -y, --layout=FILE    Use FILE as a layout template.
 
   -h, --help           Show this help message.
 
