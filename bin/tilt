@@ -46,7 +46,7 @@ ARGV.options do |o|
 
   # the template type / pattern
   o.on("-t", "--type=PATTERN") do |val|
-    fail "unknown template type: #{val}" if Tilt[val].nil?
+    abort "unknown template type: #{val}" if Tilt[val].nil?
     pattern = val
   end
 
@@ -56,7 +56,7 @@ ARGV.options do |o|
     layout = paths.
       map  { |p| File.expand_path(p) }.
       find { |p| File.exist?(p) }
-    fail "no such layout: #{file}" if layout.nil?
+    abort "no such layout: #{file}" if layout.nil?
   end
 
   o.on_tail("-h", "--help") { puts usage; exit }
