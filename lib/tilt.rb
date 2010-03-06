@@ -189,12 +189,10 @@ module Tilt
       if scope.respond_to?(:__tilt__)
         method_name = compiled_method_name(locals.keys)
         if scope.respond_to?(method_name)
-          # fast path
-          scope.send method_name, locals, &block
+          scope.send(method_name, locals, &block)
         else
-          # compile first and then run
           compile_template_method(method_name, locals)
-          scope.send method_name, locals, &block
+          scope.send(method_name, locals, &block)
         end
       else
         evaluate_source(scope, locals, &block)
@@ -356,7 +354,8 @@ module Tilt
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html
   class ERBTemplate < Template
     def initialize_engine
-      require_template_library 'erb' unless defined? ::ERB
+      return if defined? ::ERB
+      require_template_library 'erb'
     end
 
     def prepare
@@ -402,7 +401,8 @@ module Tilt
   # http://www.kuwata-lab.com/erubis/
   class ErubisTemplate < ERBTemplate
     def initialize_engine
-      require_template_library 'erubis' unless defined? ::Erubis
+      return if defined? ::Erubis
+      require_template_library 'erubis'
     end
 
     def prepare
@@ -435,7 +435,8 @@ module Tilt
   # http://haml.hamptoncatlin.com/
   class HamlTemplate < Template
     def initialize_engine
-      require_template_library 'haml' unless defined? ::Haml::Engine
+      return if defined? ::Haml::Engine
+      require_template_library 'haml'
     end
 
     def prepare
@@ -493,7 +494,8 @@ module Tilt
   # Sass templates do not support object scopes, locals, or yield.
   class SassTemplate < Template
     def initialize_engine
-      require_template_library 'sass' unless defined? ::Sass::Engine
+      return if defined? ::Sass::Engine
+      require_template_library 'sass'
     end
 
     def prepare
@@ -518,7 +520,8 @@ module Tilt
   # Less templates do not support object scopes, locals, or yield.
   class LessTemplate < Template
     def initialize_engine
-      require_template_library 'less' unless defined? ::Less::Engine
+      return if defined? ::Less::Engine
+      require_template_library 'less'
     end
 
     def prepare
@@ -536,7 +539,8 @@ module Tilt
   # http://builder.rubyforge.org/
   class BuilderTemplate < Template
     def initialize_engine
-      require_template_library 'builder' unless defined?(::Builder)
+      return if defined?(::Builder)
+      require_template_library 'builder'
     end
 
     def prepare
@@ -575,7 +579,8 @@ module Tilt
   # time when using this template engine.
   class LiquidTemplate < Template
     def initialize_engine
-      require_template_library 'liquid' unless defined? ::Liquid::Template
+      return if defined? ::Liquid::Template
+      require_template_library 'liquid'
     end
 
     def prepare
@@ -608,7 +613,8 @@ module Tilt
     end
 
     def initialize_engine
-      require_template_library 'rdiscount' unless defined? ::RDiscount
+      return if defined? ::RDiscount
+      require_template_library 'rdiscount'
     end
 
     def prepare
@@ -629,7 +635,8 @@ module Tilt
   # http://redcloth.org/
   class RedClothTemplate < Template
     def initialize_engine
-      require_template_library 'redcloth' unless defined? ::RedCloth
+      return if defined? ::RedCloth
+      require_template_library 'redcloth'
     end
 
     def prepare
@@ -654,7 +661,8 @@ module Tilt
     attr_reader :engine
 
     def initialize_engine
-      require_template_library 'mustache' unless defined? ::Mustache
+      return if defined? ::Mustache
+      require_template_library 'mustache'
     end
 
     def prepare
@@ -700,10 +708,9 @@ module Tilt
   # engine.
   class RDocTemplate < Template
     def initialize_engine
-      unless defined?(::RDoc::Markup)
-        require_template_library 'rdoc/markup'
-        require_template_library 'rdoc/markup/to_html'
-      end
+      return if defined?(::RDoc::Markup)
+      require_template_library 'rdoc/markup'
+      require_template_library 'rdoc/markup/to_html'
     end
 
     def prepare
@@ -723,7 +730,8 @@ module Tilt
   # http://jashkenas.github.com/coffee-script/
   class CoffeeTemplate < Template
     def initialize_engine
-      require_template_library 'coffee-script' unless defined? ::CoffeeScript
+      return if defined? ::CoffeeScript
+      require_template_library 'coffee-script'
     end
 
     def prepare
