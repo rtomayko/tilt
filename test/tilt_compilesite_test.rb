@@ -1,5 +1,6 @@
 require 'contest'
 require 'tilt'
+require 'thread'
 
 class CompileSiteTest < Test::Unit::TestCase
   def setup
@@ -58,5 +59,28 @@ class CompileSiteTest < Test::Unit::TestCase
       "CompileSite.instance_methods.include?(#{finalized_method_name.inspect})"
     assert !Scope.new.respond_to?(finalized_method_name),
       "Scope.new.respond_to?(#{finalized_method_name.inspect})"
+  end
+
+  # This test attempts to surface issues with compiling templates from
+  # multiple threads.
+  test "using compiled templates from multiple threads" do
+    template = CompilingTemplate.new { 'template' }
+    main_thread = Thread.current
+    10.times do |i|
+      threads =
+        (1..50).map do |j|
+          Thread.new {
+            begin
+              locals = { "local#{i}" => 'value' }
+              res = template.render(self, locals)
+              thread_id = Thread.current.object_id
+              res = template.render(self, "local#{thread_id.to_s}" => 'value')
+            rescue => boom
+              main_thread.raise(boom)
+            end
+          }
+        end
+      threads.each { |t| t.join }
+    end
   end
 end
