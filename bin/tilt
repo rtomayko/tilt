@@ -3,21 +3,21 @@ require 'ostruct'
 require 'optparse'
 require 'tilt'
 
-usage = <<EOF
-Usage: tilt [OPTIONS] [FILE]
-Process template FILE and generate output. With no FILE or when FILE
-is '-', read template from stdin and use the --type option to determine
-the template's type.
+usage = <<USAGE
+Usage: tilt <options> <file>
+Process template <file> and write output to stdout. With no <file> or
+when <file> is '-', read template from stdin and use the --type option
+to determine the template's type.
 
 Options
-  -l, --list           List supported template engines + file patterns and exit.
-  -t, --type=PATTERN   Use this template engine; required when FILE is stdin.
-  -y, --layout=FILE    Use FILE as a layout template.
+  -l, --list           List template engines + file patterns and exit
+  -t, --type=<pattern> Use this template engine; required if no <file>
+  -y, --layout=<file>  Use <file> as a layout template
 
-  -D NAME=VALUE        Define variable NAME as VALUE.
-  -o, --vars=RUBY      Evaluate RUBY to Hash and use for variables.
+  -D<name>=<value>     Define variable <name> as <value>
+  -o, --vars=<ruby>    Evaluate <ruby> to Hash and use for variables
 
-  -h, --help           Show this help message.
+  -h, --help           Show this help message
 
 Convert markdown to HTML:
   $ tilt foo.markdown > foo.html
@@ -26,12 +26,12 @@ Process ERB template:
   $ echo "Answer: <%= 2 + 2 %>" | tilt -t erb
   Answer: 4
 
-Defining variables:
+Define variables:
   $ echo "Answer: <%= 2 + n %>" | tilt --locals="{:n=>40, :x=>0}"
   Answer: 42
   $ echo "Answer: <%= 2 + n %>" | tilt -Dn=40 -Dx=0
   Answer: 42
-EOF
+USAGE
 
 script_name = File.basename($0)
 pattern = nil
@@ -55,13 +55,13 @@ ARGV.options do |o|
   end
 
   # the template type / pattern
-  o.on("-t", "--type=PATTERN") do |val|
+  o.on("-t", "--type=PATTERN", String) do |val|
     abort "unknown template type: #{val}" if Tilt[val].nil?
     pattern = val
   end
 
   # pass template output into the specified layout template
-  o.on("-y", "--layout=FILE")  do |file|
+  o.on("-y", "--layout=FILE", String)  do |file|
     paths = [file, "~/.tilt/#{file}", "/etc/tilt/#{file}"]
     layout = paths.
       map  { |p| File.expand_path(p) }.
@@ -89,8 +89,13 @@ end
 
 file = ARGV.first || '-'
 pattern = file if pattern.nil?
+abort "template type not given. see: #{$0} --help" if ['-', ''].include?(pattern)
+
+engine = Tilt[pattern]
+abort "template engine not found for: #{pattern}" if engine.nil?
+
 template =
-  Tilt[pattern].new(file) {
+  engine.new(file) {
     if file == '-'
       $stdin.read
     else
