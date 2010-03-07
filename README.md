@@ -13,7 +13,8 @@ feature is relevant to the engine):
  * Ability to pass locals to template evaluation
  * Support for passing a block to template evaluation for "yield"
  * Backtraces with correct filenames and line numbers
- * Template compilation caching and reloading
+ * Template file caching and reloading
+ * Fast, method-based template source compilation
 
 The primary goal is to get all of the things listed above right for all
 template engines included in the distribution.
@@ -144,6 +145,47 @@ engines. To use Erubis instead of ERB for `.erb` files:
 Or, use BlueCloth for markdown instead of RDiscount:
 
     Tilt.register 'markdown', Tilt::BlueClothTemplate
+
+Template Compilation
+--------------------
+
+Tilt can compile generated Ruby source code produced by template engines and
+reuse on subsequent template invocations. Benchmarks show this yields a 5x-10x
+performance increase over evaluating the Ruby source on each invocation.
+
+Template compilation is currently supported for these template engines:
+StringTemplate, ERB, Erubis, Haml, and Builder.
+
+To enable template compilation, the `Tilt::CompileSite` module must be mixed in
+to the scope object passed to the template's `#render` method. This can be
+accomplished by including (with `Module#include`) the module in the class used
+for scope objects or by extending (with `Object#extend`) scope objects before
+passing to `Template#render`:
+
+    require 'tilt'
+
+    template = Tilt::ERBTemplate.new('foo.erb')
+
+    # Slow. Uses Object#instance_eval to process template
+    class Scope
+    end
+    scope = Scope.new
+    template.render(scope)
+
+    # Fast. Uses compiled template and Object#send to process template
+    class Scope
+      include Tilt::CompileSite
+    end
+    scope = Scope.new
+    template.render(scope)
+
+    # Also fast, though a bit a slower due to having to extend each time
+    scope = Object.new
+    scope.extend Tilt::CompileSite
+    template.render(scope)
+
+When the `Tilt::CompileSite` module is not present, template execution falls
+back to evaluating the template from source on each invocation.
 
 LICENSE
 -------
