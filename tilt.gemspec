@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'tilt'
-  s.version = '0.7'
-  s.date = '2010-03-04'
+  s.version = '0.8'
+  s.date = '2010-03-07'
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
@@ -42,7 +42,7 @@ Gem::Specification.new do |s|
   ]
   # = MANIFEST =
 
-  s.test_files = s.files.select {|path| path =~ /^test\/spec_.*.rb/}
+  s.test_files = s.files.select {|path| path =~ /^test\/.*_test.rb/}
   s.add_development_dependency 'contest'
   s.add_development_dependency 'builder'
   s.add_development_dependency 'erubis'
