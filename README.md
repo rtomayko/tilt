@@ -190,5 +190,5 @@ back to evaluating the template from source on each invocation.
 LICENSE
 -------
 
-Tilt is Copyright (c) 2009 [Ryan Tomayko](http://tomayko.com/about) and
-distributed under the MIT license. See the COPYING file for more info.
+Tilt is Copyright (c) 2010 [Ryan Tomayko](http://tomayko.com/about) and
+distributed under the MIT license. See the `COPYING` file for more info.
