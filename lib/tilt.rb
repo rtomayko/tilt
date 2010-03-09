@@ -399,6 +399,16 @@ module Tilt
 
   # Erubis template implementation. See:
   # http://www.kuwata-lab.com/erubis/
+  #
+  # ErubisTemplate supports the following additional options, which are not 
+  # passed down to the Erubis engine:
+  #
+  #   :engine_class   allows you to specify a custom engine class to use
+  #                   instead of the default (which is ::Erubis::Eruby).
+  #
+  #   :escape_html    when true, ::Erubis::EscapedEruby will be used as
+  #                   the engine class instead of the default. All content
+  #                   within <%= %> blocks will be automatically html escaped.
   class ErubisTemplate < ERBTemplate
     def initialize_engine
       return if defined? ::Erubis
@@ -408,7 +418,9 @@ module Tilt
     def prepare
       @options.merge!(:preamble => false, :postamble => false)
       @outvar = (options.delete(:outvar) || '_erbout').to_s
-      @engine = ::Erubis::Eruby.new(data, options)
+      engine_class = options.delete(:engine_class)
+      engine_class = ::Erubis::EscapedEruby if options.delete(:escape_html)
+      @engine = (engine_class || ::Erubis::Eruby).new(data, options)
     end
 
     def precompiled_preamble(locals)
