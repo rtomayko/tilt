@@ -400,7 +400,7 @@ module Tilt
   # Erubis template implementation. See:
   # http://www.kuwata-lab.com/erubis/
   #
-  # ErubisTemplate supports the following additional options, which are not 
+  # ErubisTemplate supports the following additional options, which are not
   # passed down to the Erubis engine:
   #
   #   :engine_class   allows you to specify a custom engine class to use

@@ -77,22 +77,22 @@ begin
       assert_equal '2', template.render(scope)
       assert_equal 'original value', scope.instance_variable_get(:@buf)
     end
-    
+
     test "using Erubis::EscapedEruby subclass via :engine_class option" do
       template = Tilt::ErubisTemplate.new(nil, :engine_class => ::Erubis::EscapedEruby) { |t| %(<%= "<p>Hello World!</p>" %>) }
       assert_equal "&lt;p&gt;Hello World!&lt;/p&gt;", template.render
     end
-    
+
     test "using :escape_html => true option" do
       template = Tilt::ErubisTemplate.new(nil, :escape_html => true) { |t| %(<%= "<p>Hello World!</p>" %>) }
       assert_equal "&lt;p&gt;Hello World!&lt;/p&gt;", template.render
     end
-    
+
     test "using :escape_html => false option" do
       template = Tilt::ErubisTemplate.new(nil, :escape_html => false) { |t| %(<%= "<p>Hello World!</p>" %>) }
       assert_equal "<p>Hello World!</p>", template.render
     end
-    
+
     test "erubis default does not escape html" do
       template = Tilt::ErubisTemplate.new { |t| %(<%= "<p>Hello World!</p>" %>) }
       assert_equal "<p>Hello World!</p>", template.render
