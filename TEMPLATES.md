@@ -94,9 +94,22 @@ the extensions as follows:
 
 ### Options
 
-#### `:trim => true`
+#### `:engine_class => Erubis::Eruby`
 
-Delete spaces around '<% %>'. (But, spaces around '<%= %>' are preserved.)
+Allows you to specify a custom engine class to use instead of the
+default which is `Erubis::Eruby`.
+
+#### `:escape_html => false`
+
+When `true`, `Erubis::EscapedEruby` will be used as the engine class
+instead of the default. All content within `<%= %>` blocks will be
+automatically html escaped.
+
+#### `:outvar => '_erbout'`
+
+The name of the variable used to accumulate template output. This can be
+any valid Ruby expression but must be assignable. By default a local
+variable named `_erbout` is used.
 
 #### `:pattern => '<% %>'`
 
@@ -104,11 +117,9 @@ Set pattern for embedded Ruby code.
 
 See the [ERB](#erb) template documentation for examples, usage, and options.
 
-#### `:outvar => '_erbout'`
+#### `:trim => true`
 
-The name of the variable used to accumulate template output. This can be
-any valid Ruby expression but must be assignable. By default a local
-variable named `_erbout` is used.
+Delete spaces around '<% %>'. (But, spaces around '<%= %>' are preserved.)
 
 ### See also
 
