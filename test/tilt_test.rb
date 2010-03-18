@@ -14,15 +14,23 @@ class TiltTest < Test::Unit::TestCase
     Tilt.register('mock', MockTemplate)
   end
 
+  test "an extension is registered if explicit handle is found" do
+    Tilt.register('mock', MockTemplate)
+    assert Tilt.registered?('mock')
+  end
+
   test "registering template classes by symbol file extension" do
     Tilt.register(:mock, MockTemplate)
   end
 
-  test "looking up template classes by file extension" do
+  test "looking up template classes by exact file extension" do
     Tilt.register('mock', MockTemplate)
     impl = Tilt['mock']
     assert_equal MockTemplate, impl
+  end
 
+  test "looking up template classes by implicit file extension" do
+    Tilt.register('mock', MockTemplate)
     impl = Tilt['.mock']
     assert_equal MockTemplate, impl
   end

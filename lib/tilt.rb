@@ -16,6 +16,10 @@ module Tilt
     mappings[ext.downcase] = template_class
   end
 
+  def self.registered?(ext)
+    mappings.key?(ext.downcase)
+  end
+
   # Create a new template for the given file using the file's extension
   # to determine the the template mapping.
   def self.new(file, line=nil, options={}, &block)
@@ -29,20 +33,12 @@ module Tilt
   # Lookup a template class for the given filename or file
   # extension. Return nil when no implementation is found.
   def self.[](file)
-    if @template_mappings.key?(pattern = file.to_s.downcase)
-      @template_mappings[pattern]
-    elsif @template_mappings.key?(pattern = File.basename(pattern))
-      @template_mappings[pattern]
-    else
-      while !pattern.empty?
-        if @template_mappings.key?(pattern)
-          return @template_mappings[pattern]
-        else
-          pattern = pattern.sub(/^[^.]*\.?/, '')
-        end
-      end
-      nil
+    pattern = file.to_s.downcase
+    unless registered?(pattern)
+      pattern = File.basename(pattern)
+      pattern.sub!(/^[^.]*\.?/, '') until (pattern.empty? || registered?(pattern))
     end
+    @template_mappings[pattern]
   end
 
   # Mixin allowing template compilation on scope objects.
