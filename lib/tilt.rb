@@ -16,6 +16,7 @@ module Tilt
     mappings[ext.downcase] = template_class
   end
 
+  # Returns true when a template exists on an exact match of the provided file extension
   def self.registered?(ext)
     mappings.key?(ext.downcase)
   end
