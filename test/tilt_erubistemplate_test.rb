@@ -97,6 +97,12 @@ begin
       template = Tilt::ErubisTemplate.new { |t| %(<%= "<p>Hello World!</p>" %>) }
       assert_equal "<p>Hello World!</p>", template.render
     end
+
+    test "does not modify options argument" do
+      options_hash = {:escape_html => true}
+      template = Tilt::ErubisTemplate.new(nil, options_hash) { |t| "Hello World!" }
+      assert_equal({:escape_html => true}, options_hash)
+    end
   end
 rescue LoadError => boom
   warn "Tilt::ErubisTemplate (disabled)\n"

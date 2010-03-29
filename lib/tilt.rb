@@ -97,7 +97,7 @@ module Tilt
         case
         when arg.respond_to?(:to_str)  ; @file = arg.to_str
         when arg.respond_to?(:to_int)  ; @line = arg.to_int
-        when arg.respond_to?(:to_hash) ; @options = arg.to_hash
+        when arg.respond_to?(:to_hash) ; @options = arg.to_hash.dup
         else raise TypeError
         end
       end
