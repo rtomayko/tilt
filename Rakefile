@@ -72,26 +72,3 @@ file 'tilt.gemspec' => FileList['{lib,test}/**','Rakefile'] do |f|
   File.open(f.name, 'w') { |io| io.write(spec) }
   puts "updated #{f.name}"
 end
-
-# DOC =======================================================================
-
-# requires the hanna gem:
-#   gem install mislav-hanna --source=http://gems.github.com
-desc 'Build API documentation (doc/api)'
-task 'rdoc' => 'rdoc/index.html' 
-file 'rdoc/index.html' => FileList['lib/**/*.rb'] do |f|
-  rm_rf 'rdoc'
-  sh((<<-SH).gsub(/[\s\n]+/, ' ').strip)
-  hanna
-    --op doc/api
-    --promiscuous
-    --charset utf8
-    --fmt html
-    --inline-source
-    --line-numbers
-    --accessor option_accessor=RW
-    --main Tilt
-    --title 'Tilt API Documentation'
-    #{f.prerequisites.join(' ')}
-  SH
-end
