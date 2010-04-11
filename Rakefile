@@ -16,6 +16,11 @@ end
 
 # PACKAGING =================================================================
 
+begin
+  require 'rubygems'
+rescue LoadError
+end
+
 if defined?(Gem)
   SPEC = eval(File.read('tilt.gemspec'))
 
