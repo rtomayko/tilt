@@ -752,4 +752,53 @@ module Tilt
     end
   end
   register 'coffee', CoffeeTemplate
+
+
+  class EffigyTemplate < Template
+
+    def initialize_engine
+      return if defined? ::Effigy
+      require_template_library 'effigy'
+    end
+
+    def prepare
+      file = File.open(@file, 'r:utf-8')
+      @content = file.read
+      file.close
+
+      klass = File.basename(@file, '.html').capitalize.split('_').map(&:capitalize).join + 'View'
+      begin
+        @view = Object.const_get(klass)
+      rescue NameError => e
+        @view = Effigy::View
+      end
+    end
+
+    def evaluate(scope, locals, &blk)
+      case block_given?
+        when true
+          # Render a template, and use &blk to perform the transformations.
+          if @view == Effigy::View
+            template = @view.new
+            template.render(@content, &blk)
+          # Pass a rendered partial onto a template/layout.
+          else
+            template = @view.new(scope, locals)
+            template.instance_variable_set("@current_context", Nokogiri.parse(@content))
+            template.transform(&blk)
+            template.send(:output)
+          end
+        when false
+          # We expected a subclass of Effigy::View to perform transformations, but couldn't find it.
+          if @view == Effigy::View
+            raise NameError, "Missing view for template #{@file}"
+          else
+          # Render a template & use a subclass of Effigy::View to perform the transformations.
+            template = @view.new(scope, locals)
+            template.render(@content)
+          end
+      end
+    end
+  end
+  register 'effigy', EffigyTemplate
 end
