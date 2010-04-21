@@ -33,6 +33,8 @@ Support for these template engines is included with the package:
     Mustache                   .mustache         mustache
     RDiscount                  .markdown         rdiscount
     RedCloth                   .textile          redcloth
+    RDoc                       .rdoc             rdoc
+    Radius                     .radius           radius
 
 See [TEMPLATES.md][t] for detailed information on template engine
 options and supported features.
