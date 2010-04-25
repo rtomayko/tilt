@@ -122,6 +122,8 @@ class TiltTemplateTest < Test::Unit::TestCase
   end
 
   class Person
+    CONSTANT = "Bob"
+
     attr_accessor :name
     def initialize(name)
       @name = name
@@ -137,5 +139,19 @@ class TiltTemplateTest < Test::Unit::TestCase
   test "template_source with a block for yield" do
     inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{yield}!' }
     assert_equal "Hey Joe!", inst.render(Object.new){ 'Joe' }
+  end
+
+  test "template which accesses a constant" do
+    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
+    assert_equal "Hey Bob!", inst.render(Person.new("Joe"))
+  end
+
+  class FastPerson < Person
+    include Tilt::CompileSite
+  end
+
+  test "template which accesses a constant with Tilt::CompileSite" do
+    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
+    assert_equal "Hey Bob!", inst.render(FastPerson.new("Joe"))
   end
 end
