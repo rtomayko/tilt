@@ -350,6 +350,14 @@ module Tilt
   # ERB template implementation. See:
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html
   class ERBTemplate < Template
+    def self.expose_buffer_variable!
+      @expose_buffer_variable = true
+    end
+
+    def self.expose_buffer_variable?
+      !!@expose_buffer_variable
+    end
+
     def initialize_engine
       return if defined? ::ERB
       require_template_library 'erb'
@@ -361,7 +369,9 @@ module Tilt
     end
 
     def precompiled_template(locals)
-      @engine.src
+      source = @engine.src
+      source = "@_erbout = " + source if ERBTemplate.expose_buffer_variable?
+      source
     end
 
     def precompiled_preamble(locals)
@@ -407,6 +417,14 @@ module Tilt
   #                   the engine class instead of the default. All content
   #                   within <%= %> blocks will be automatically html escaped.
   class ErubisTemplate < ERBTemplate
+    def self.expose_buffer_variable!
+      @expose_buffer_variable = true
+    end
+
+    def self.expose_buffer_variable?
+      !!@expose_buffer_variable
+    end
+
     def initialize_engine
       return if defined? ::Erubis
       require_template_library 'erubis'
@@ -421,7 +439,13 @@ module Tilt
     end
 
     def precompiled_preamble(locals)
-      [super, "#{@outvar} = _buf = ''"].join("\n")
+      preambles = [
+        super,
+        "#{@outvar} = _buf = ''",
+      ]
+      preambles.push("@_erbout = _buf") if ErubisTemplate.expose_buffer_variable?
+
+      preambles.join("\n")
     end
 
     def precompiled_postamble(locals)

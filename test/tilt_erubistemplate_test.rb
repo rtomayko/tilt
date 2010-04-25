@@ -26,6 +26,15 @@ begin
       assert_equal "Hey Joe!", template.render(scope)
     end
 
+    test "exposing the buffer to the template" do
+      $exposed_template = nil
+      Tilt::ErubisTemplate.expose_buffer_variable!
+      template = Tilt::ErubisTemplate.new { '<% $exposed_template = @_erbout %>hey' }
+      template.render
+      assert_not_nil $exposed_template
+      assert_equal $exposed_template, 'hey'
+    end
+
     test "passing a block for yield" do
       template = Tilt::ErubisTemplate.new { 'Hey <%= yield %>!' }
       assert_equal "Hey Joe!", template.render { 'Joe' }
