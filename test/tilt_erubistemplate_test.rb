@@ -28,8 +28,8 @@ begin
 
     test "exposing the buffer to the template" do
       $exposed_template = nil
-      Tilt::ErubisTemplate.expose_buffer_variable!
-      template = Tilt::ErubisTemplate.new { '<% $exposed_template = @_erbout %>hey' }
+      Tilt::ErubisTemplate.expose_buffer!
+      template = Tilt::ErubisTemplate.new { '<% $exposed_template = @_out_buf %>hey' }
       template.render
       assert_not_nil $exposed_template
       assert_equal $exposed_template, 'hey'

@@ -350,12 +350,12 @@ module Tilt
   # ERB template implementation. See:
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html
   class ERBTemplate < Template
-    def self.expose_buffer_variable!
-      @expose_buffer_variable = true
+    def self.expose_buffer!
+      @expose_buffer = true
     end
 
-    def self.expose_buffer_variable?
-      !!@expose_buffer_variable
+    def self.expose_buffer?
+      !!@expose_buffer
     end
 
     def initialize_engine
@@ -364,13 +364,14 @@ module Tilt
     end
 
     def prepare
-      @outvar = (options[:outvar] || '_erbout').to_s
+      @outvar = ERBTemplate.expose_buffer? ?
+        '@_out_buf' :
+        '_erbout'
       @engine = ::ERB.new(data, options[:safe], options[:trim], @outvar)
     end
 
     def precompiled_template(locals)
       source = @engine.src
-      source = "@_erbout = " + source if ERBTemplate.expose_buffer_variable?
       source
     end
 
@@ -417,12 +418,12 @@ module Tilt
   #                   the engine class instead of the default. All content
   #                   within <%= %> blocks will be automatically html escaped.
   class ErubisTemplate < ERBTemplate
-    def self.expose_buffer_variable!
-      @expose_buffer_variable = true
+    def self.expose_buffer!
+      @expose_buffer = true
     end
 
-    def self.expose_buffer_variable?
-      !!@expose_buffer_variable
+    def self.expose_buffer?
+      !!@expose_buffer
     end
 
     def initialize_engine
@@ -432,7 +433,9 @@ module Tilt
 
     def prepare
       @options.merge!(:preamble => false, :postamble => false)
-      @outvar = (options.delete(:outvar) || '_erbout').to_s
+      @outvar = ErubisTemplate.expose_buffer? ?
+        '@_out_buf' :
+        '_erbout'
       engine_class = options.delete(:engine_class)
       engine_class = ::Erubis::EscapedEruby if options.delete(:escape_html)
       @engine = (engine_class || ::Erubis::Eruby).new(data, options)
@@ -443,8 +446,6 @@ module Tilt
         super,
         "#{@outvar} = _buf = ''",
       ]
-      preambles.push("@_erbout = _buf") if ErubisTemplate.expose_buffer_variable?
-
       preambles.join("\n")
     end
 

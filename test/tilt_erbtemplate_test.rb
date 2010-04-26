@@ -31,8 +31,8 @@ class ERBTemplateTest < Test::Unit::TestCase
 
   test "exposing the buffer to the template" do
     $exposed_template = nil
-    Tilt::ERBTemplate.expose_buffer_variable!
-    template = Tilt::ERBTemplate.new { '<% $exposed_template = @_erbout %>hey' }
+    Tilt::ERBTemplate.expose_buffer!
+    template = Tilt::ERBTemplate.new { '<% $exposed_template = @_out_buf %>hey' }
     template.render
     assert_not_nil $exposed_template
     assert_equal $exposed_template, 'hey'
