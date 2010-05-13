@@ -465,7 +465,7 @@ To render a template such as the one above.
 
     require 'radius'
     template = Tilt::RadiusTemplate.new('example.radius', :tag_prefix=>'r')
-    template.render(scope, :type=>'hlist'){ "Jackpot! }
+    template.render(scope, :type=>'hlist'){ "Jackpot!" }
 
 The result will be:
 
