@@ -452,8 +452,8 @@ language designed to be valid XML/HTML.
       </r:repeat>
       </ul>
       <r:yield />
-   </body>
-   </html>
+    </body>
+    </html>
 
 ### Usage
 
@@ -478,8 +478,8 @@ The result will be:
         <li>Hello, World!</li>
       </ul>
       Jackpot!
-   </body>
-   </html>
+    </body>
+    </html>
 
 ### See also
 
