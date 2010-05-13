@@ -775,11 +775,7 @@ module Tilt
           if locals.key?(tag.to_sym)
             locals[tag.to_sym]
           else
-            if scope.respond_to?(:__tilt__) # FIXME: is this right?
-              scope.__send__(tag)  # any way to support attr as args?
-            else
-              scope.instance_eval(tag)
-            end
+            scope.__send__(tag)  # any way to support attr as args?
           end
         end
       end
