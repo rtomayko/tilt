@@ -350,12 +350,14 @@ module Tilt
   # ERB template implementation. See:
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html
   class ERBTemplate < Template
-    def self.expose_buffer!
-      @expose_buffer = true
+    @@default_output_variable = '_erbout'
+
+    def self.default_output_variable
+      @@default_output_variable
     end
 
-    def self.expose_buffer?
-      !!@expose_buffer
+    def self.default_output_variable=(name)
+      @@default_output_variable = name
     end
 
     def initialize_engine
@@ -364,9 +366,7 @@ module Tilt
     end
 
     def prepare
-      @outvar = ERBTemplate.expose_buffer? ?
-        '@_out_buf' :
-        '_erbout'
+      @outvar = options[:outvar] || self.class.default_output_variable
       @engine = ::ERB.new(data, options[:safe], options[:trim], @outvar)
     end
 
@@ -418,14 +418,6 @@ module Tilt
   #                   the engine class instead of the default. All content
   #                   within <%= %> blocks will be automatically html escaped.
   class ErubisTemplate < ERBTemplate
-    def self.expose_buffer!
-      @expose_buffer = true
-    end
-
-    def self.expose_buffer?
-      !!@expose_buffer
-    end
-
     def initialize_engine
       return if defined? ::Erubis
       require_template_library 'erubis'
@@ -433,20 +425,14 @@ module Tilt
 
     def prepare
       @options.merge!(:preamble => false, :postamble => false)
-      @outvar = ErubisTemplate.expose_buffer? ?
-        '@_out_buf' :
-        '_erbout'
+      @outvar = options.delete(:outvar) || self.class.default_output_variable
       engine_class = options.delete(:engine_class)
       engine_class = ::Erubis::EscapedEruby if options.delete(:escape_html)
       @engine = (engine_class || ::Erubis::Eruby).new(data, options)
     end
 
     def precompiled_preamble(locals)
-      preambles = [
-        super,
-        "#{@outvar} = _buf = ''",
-      ]
-      preambles.join("\n")
+      [super, "#{@outvar} = _buf = ''"].join("\n")
     end
 
     def precompiled_postamble(locals)

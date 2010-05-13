@@ -26,13 +26,17 @@ begin
       assert_equal "Hey Joe!", template.render(scope)
     end
 
-    test "exposing the buffer to the template" do
-      $exposed_template = nil
-      Tilt::ErubisTemplate.expose_buffer!
-      template = Tilt::ErubisTemplate.new { '<% $exposed_template = @_out_buf %>hey' }
-      template.render
-      assert_not_nil $exposed_template
-      assert_equal $exposed_template, 'hey'
+    class MockOutputVariableScope
+      attr_accessor :exposed_buffer
+    end
+
+    test "exposing the buffer to the template by default" do
+      Tilt::ErubisTemplate.default_output_variable = '@_out_buf'
+      template = Tilt::ErubisTemplate.new { '<% self.exposed_buffer = @_out_buf %>hey' }
+      scope = MockOutputVariableScope.new
+      template.render(scope)
+      assert_not_nil scope.exposed_buffer
+      assert_equal scope.exposed_buffer, 'hey'
     end
 
     test "passing a block for yield" do
