@@ -350,18 +350,29 @@ module Tilt
   # ERB template implementation. See:
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html
   class ERBTemplate < Template
+    def self.expose_buffer!
+      @expose_buffer = true
+    end
+
+    def self.expose_buffer?
+      !!@expose_buffer
+    end
+
     def initialize_engine
       return if defined? ::ERB
       require_template_library 'erb'
     end
 
     def prepare
-      @outvar = (options[:outvar] || '_erbout').to_s
+      @outvar = ERBTemplate.expose_buffer? ?
+        '@_out_buf' :
+        '_erbout'
       @engine = ::ERB.new(data, options[:safe], options[:trim], @outvar)
     end
 
     def precompiled_template(locals)
-      @engine.src
+      source = @engine.src
+      source
     end
 
     def precompiled_preamble(locals)
@@ -407,6 +418,14 @@ module Tilt
   #                   the engine class instead of the default. All content
   #                   within <%= %> blocks will be automatically html escaped.
   class ErubisTemplate < ERBTemplate
+    def self.expose_buffer!
+      @expose_buffer = true
+    end
+
+    def self.expose_buffer?
+      !!@expose_buffer
+    end
+
     def initialize_engine
       return if defined? ::Erubis
       require_template_library 'erubis'
@@ -414,14 +433,20 @@ module Tilt
 
     def prepare
       @options.merge!(:preamble => false, :postamble => false)
-      @outvar = (options.delete(:outvar) || '_erbout').to_s
+      @outvar = ErubisTemplate.expose_buffer? ?
+        '@_out_buf' :
+        '_erbout'
       engine_class = options.delete(:engine_class)
       engine_class = ::Erubis::EscapedEruby if options.delete(:escape_html)
       @engine = (engine_class || ::Erubis::Eruby).new(data, options)
     end
 
     def precompiled_preamble(locals)
-      [super, "#{@outvar} = _buf = ''"].join("\n")
+      preambles = [
+        super,
+        "#{@outvar} = _buf = ''",
+      ]
+      preambles.join("\n")
     end
 
     def precompiled_postamble(locals)
