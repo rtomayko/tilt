@@ -753,6 +753,7 @@ module Tilt
   end
   register 'coffee', CoffeeTemplate
 
+
   # Radius Template
   # http://github.com/jlong/radius/
   class RadiusTemplate < Template
@@ -774,12 +775,16 @@ module Tilt
           if locals.key?(tag.to_sym)
             locals[tag.to_sym]
           else
-            scope.__send__(tag)  # any way to support attr as args?
+            if scope.respond_to?(:__tilt__) # FIXME: is this right?
+              scope.__send__(tag)  # any way to support attr as args?
+            else
+              scope.instance_eval(tag)
+            end
           end
         end
       end
-      # TODO: how to config tag prefix?
-      parser = Radius::Parser.new(@context, :tag_prefix => 'r')
+      options = {:tag_prefix => 'r'}.merge(@options)
+      parser = Radius::Parser.new(@context, options)
       parser.parse(data)
     end
   end

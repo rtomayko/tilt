@@ -432,3 +432,56 @@ engine in a threaded environment.
 ### See also
 
  * [RDoc](http://rdoc.sourceforge.net/doc/index.html)
+
+
+<a name='radius'></a>
+Radius (`radius`)
+-----------------
+
+Radius is the template language used by Radiant CMS. It is a tag
+language designed to be valid XML/HTML.
+
+### Example
+
+    <html>
+    <body>
+      <h1><r:title /></h1>
+      <ul class="<r:type />">
+      <r:repeat times="3">
+        <li><r:hello />!</li>
+      </r:repeat>
+      </ul>
+      <r:yield />
+   </body>
+   </html>
+
+### Usage
+
+To render a template such as the one above.
+
+    scope = OpenStruct.new
+    scope.title = "Radius Example"
+    scope.hello = "Hello, World!"
+
+    require 'radius'
+    template = Tilt::RadiusTemplate.new('example.radius', :tag_prefix=>'r')
+    template.render(scope, :type=>'hlist'){ "Jackpot! }
+
+The result will be:
+
+    <html>
+    <body>
+      <h1>Radius Example</h1>
+      <ul class="hlist">
+        <li>Hello, World!</li>
+        <li>Hello, World!</li>
+        <li>Hello, World!</li>
+      </ul>
+      Jackpot!
+   </body>
+   </html>
+
+### See also
+
+* [Radius](http://radius.rubyforge.org/)
+* [Radiant](http://radiantcms.org/)

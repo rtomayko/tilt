@@ -41,6 +41,16 @@ begin
         template.render(scope, :beer => 'great', :whisky => 'greater')
     end
 
+    #test "handles local scope" do
+    #  beer   = 'wet'
+    #  whisky = 'wetter'
+    #
+    #  template = Tilt::RadiusTemplate.new {
+    #    'Beer is <r:beer /> but Whisky is <r:whisky />.'
+    #  }
+    #  assert_equal "Beer is wet but Whisky is wetter.", template.render(self)
+    #end
+
     test "passing a block for yield" do
       template = Tilt::RadiusTemplate.new {
         'Beer is <r:yield /> but Whisky is <r:yield />ter.'
