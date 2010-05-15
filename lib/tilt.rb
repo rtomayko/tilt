@@ -763,24 +763,25 @@ module Tilt
     end
 
     def prepare
-      @context = Class.new(Radius::Context).new
     end
 
     def evaluate(scope, locals, &block)
-      @context.define_tag("yield") do
+      context = Class.new(Radius::Context).new
+      context.define_tag("yield") do
         block.call
       end
-      (class << @context; self; end).class_eval do
+      locals.each do |tag, value|
+        context.define_tag(tag) do
+          value
+        end
+      end
+      (class << context; self; end).class_eval do
         define_method :tag_missing do |tag, attr, &block|
-          if locals.key?(tag.to_sym)
-            locals[tag.to_sym]
-          else
-            scope.__send__(tag)  # any way to support attr as args?
-          end
+          scope.__send__(tag)  # any way to support attr as args?
         end
       end
       options = {:tag_prefix => 'r'}.merge(@options)
-      parser = Radius::Parser.new(@context, options)
+      parser = Radius::Parser.new(context, options)
       parser.parse(data)
     end
   end
