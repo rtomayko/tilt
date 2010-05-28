@@ -29,6 +29,23 @@ class ERBTemplateTest < Test::Unit::TestCase
     assert_equal "Hey Joe!", template.render(scope)
   end
 
+  class MockOutputVariableScope
+    attr_accessor :exposed_buffer
+  end
+
+  test "exposing the buffer to the template by default" do
+    begin
+      Tilt::ERBTemplate.default_output_variable = '@_out_buf'
+      template = Tilt::ERBTemplate.new { '<% self.exposed_buffer = @_out_buf %>hey' }
+      scope = MockOutputVariableScope.new
+      template.render(scope)
+      assert_not_nil scope.exposed_buffer
+      assert_equal scope.exposed_buffer, 'hey'
+    ensure
+      Tilt::ERBTemplate.default_output_variable = '_erbout'
+    end
+  end
+
   test "passing a block for yield" do
     template = Tilt::ERBTemplate.new { 'Hey <%= yield %>!' }
     assert_equal "Hey Joe!", template.render { 'Joe' }

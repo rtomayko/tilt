@@ -350,18 +350,29 @@ module Tilt
   # ERB template implementation. See:
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html
   class ERBTemplate < Template
+    @@default_output_variable = '_erbout'
+
+    def self.default_output_variable
+      @@default_output_variable
+    end
+
+    def self.default_output_variable=(name)
+      @@default_output_variable = name
+    end
+
     def initialize_engine
       return if defined? ::ERB
       require_template_library 'erb'
     end
 
     def prepare
-      @outvar = (options[:outvar] || '_erbout').to_s
+      @outvar = options[:outvar] || self.class.default_output_variable
       @engine = ::ERB.new(data, options[:safe], options[:trim], @outvar)
     end
 
     def precompiled_template(locals)
-      @engine.src
+      source = @engine.src
+      source
     end
 
     def precompiled_preamble(locals)
@@ -414,7 +425,7 @@ module Tilt
 
     def prepare
       @options.merge!(:preamble => false, :postamble => false)
-      @outvar = (options.delete(:outvar) || '_erbout').to_s
+      @outvar = options.delete(:outvar) || self.class.default_output_variable
       engine_class = options.delete(:engine_class)
       engine_class = ::Erubis::EscapedEruby if options.delete(:escape_html)
       @engine = (engine_class || ::Erubis::Eruby).new(data, options)
