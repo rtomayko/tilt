@@ -1,6 +1,5 @@
-
 begin
-  require 'mustach'
+  require 'mustache'
 
   module Views
     class External < Mustache
