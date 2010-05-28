@@ -11,8 +11,8 @@ begin
     end
 
     test "compiles and evaluates the template on #render" do
-      template = Tilt::SassTemplate.new { |t| "#main\n  :background-color #0000ff" }
-      assert_equal "#main {\n  background-color: #0000ff; }\n", template.render
+      template = Tilt::SassTemplate.new { |t| "#main\n  :background-color #0000f1" }
+      assert_equal "#main {\n  background-color: #0000f1; }\n", template.render
     end
   end
 
