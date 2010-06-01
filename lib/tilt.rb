@@ -787,7 +787,7 @@ module Tilt
         end
       end
       (class << context; self; end).class_eval do
-        define_method :tag_missing do |tag, attr, &block|
+        define_method :tag_missing do |tag, attr|
           scope.__send__(tag)  # any way to support attr as args?
         end
       end
