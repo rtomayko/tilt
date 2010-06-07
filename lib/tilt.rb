@@ -59,7 +59,7 @@ module Tilt
   end
 
   # Base class for template implementations. Subclasses must implement
-  # the #prepare method and one of the #evaluate or #template_source
+  # the #prepare method and one of the #evaluate or #evaluate_source
   # methods.
   class Template
     # Template source; loaded from a file or given directly.
