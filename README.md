@@ -30,7 +30,6 @@ Support for these template engines is included with the package:
     Less CSS                   .less             less
     Builder                    .builder          builder
     Liquid                     .liquid           liquid
-    Mustache                   .mustache         mustache
     RDiscount                  .markdown         rdiscount
     RedCloth                   .textile          redcloth
     RDoc                       .rdoc             rdoc

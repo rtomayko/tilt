@@ -9,7 +9,6 @@ documentation on each supported template engine is provided below.
  * [Erubis](#erubis) - `Tilt::ErubisTemplate`
  * [Haml](#haml) - `Tilt::HamlTemplate`
  * [Liquid](#liquid) - `Tilt::LiquidTemplate`
- * [Mustache](#mustache) - `Tilt::MustachTemplate`
 
 Tilt includes support for CSS processors like [lesscss](http://lesscss.org)
 and [sass](http://sass-lang.com/), in addition, it also supports simple
@@ -303,53 +302,6 @@ time when using this template engine within a threaded environment.
   * [Liquid for Programmers](http://wiki.github.com/tobi/liquid/liquid-for-programmers)
   * [Liquid Docs](http://liquid.rubyforge.org/)
   * GitHub: [tobi/liquid](http://github.com/tobi/liquid/)
-
-<a name='mustache'></a>
-Mustache (`mustache`)
----------------------
-
-Mustache is a framework-agnostic way to render logic-free views.
-
-__NOTE:__ It's suggested that your program `require 'mustache'` at load time
-when using this template engine in a threaded environment.
-
-### Options
-
-#### `:path => Dir.pwd`
-
-The base path where mustache templates (`.html` files) are located.  Defaults to
-the current working directory.
-
-#### `:template_extension => 'html'`
-
-The file extension used on mustache templates. Default is `'html'`.
-
-#### `:namespace => Object`
-
-The class or module where View classes are located. If you have
-`Hurl::App::Views`, namespace should be `Hurl:App`. This defaults to `Object`,
-causing `::Views` to be searched for classes.
-
-#### `:mustaches => nil` or `:view_path => nil`
-
-Where mustache views (`.rb` files) are located, or `nil` to disable auto-requiring
-of views based on template names. By default, the view file is assumed to be in
-the same directory as the template file.
-
-All other options are assumed to be attribute writer's on the Mustache
-class and are set when a template is compiled. They are:
-
-#### `:view => nil`
-
-The Mustache subclass that should be used a the view. When this option is
-specified, the template file will be determined from the view class, and the
-`:namespace` and `:mustaches` options are irrelevant.
-
-### See also
-
-  * [Mustache Docs](http://defunkt.github.com/mustache/)
-  * GitHub: [defunkt/mustache](http://github.com/defunkt/mustache)
-
 
 <a name='markdown'></a>
 Markdown (`markdown`, `md`, `mkd`)

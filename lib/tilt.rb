@@ -671,55 +671,6 @@ module Tilt
   register 'textile', RedClothTemplate
 
 
-  # Mustache is written and maintained by Chris Wanstrath. See:
-  # http://github.com/defunkt/mustache
-  #
-  # When a scope argument is provided to MustacheTemplate#render, the
-  # instance variables are copied from the scope object to the Mustache
-  # view.
-  class MustacheTemplate < Template
-    attr_reader :engine
-
-    def initialize_engine
-      return if defined? ::Mustache
-      require_template_library 'mustache'
-    end
-
-    def prepare
-      Mustache.view_namespace = options[:namespace]
-      Mustache.view_path = options[:view_path] || options[:mustaches]
-      @engine = options[:view] || Mustache.view_class(name)
-      options.each do |key, value|
-        next if %w[view view_path namespace mustaches].include?(key.to_s)
-        @engine.send("#{key}=", value) if @engine.respond_to? "#{key}="
-      end
-    end
-
-    def evaluate(scope=nil, locals={}, &block)
-      instance = @engine.new
-
-      # copy instance variables from scope to the view
-      scope.instance_variables.each do |name|
-        instance.instance_variable_set(name, scope.instance_variable_get(name))
-      end
-
-      # locals get added to the view's context
-      locals.each do |local, value|
-        instance[local] = value
-      end
-
-      # if we're passed a block it's a subview. Sticking it in yield
-      # lets us use {{yield}} in layout.html to render the actual page.
-      instance[:yield] = block.call if block
-
-      instance.template = data unless instance.compiled?
-
-      instance.to_html
-    end
-  end
-  register 'mustache', MustacheTemplate
-
-
   # RDoc template. See:
   # http://rdoc.rubyforge.org/
   #
