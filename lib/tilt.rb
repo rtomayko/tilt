@@ -697,25 +697,6 @@ module Tilt
   register 'rdoc', RDocTemplate
 
 
-  # CoffeeScript info:
-  # http://jashkenas.github.com/coffee-script/
-  class CoffeeTemplate < Template
-    def initialize_engine
-      return if defined? ::CoffeeScript
-      require_template_library 'coffee-script'
-    end
-
-    def prepare
-      @output = nil
-    end
-
-    def evaluate(scope, locals, &block)
-      @output ||= ::CoffeeScript::compile(data, options)
-    end
-  end
-  register 'coffee', CoffeeTemplate
-
-
   # Radius Template
   # http://github.com/jlong/radius/
   class RadiusTemplate < Template
@@ -748,6 +729,4 @@ module Tilt
     end
   end
   register 'radius', RadiusTemplate
-
 end
-
