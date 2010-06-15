@@ -59,7 +59,7 @@ module Tilt
   end
 
   # Base class for template implementations. Subclasses must implement
-  # the #prepare method and one of the #evaluate or #template_source
+  # the #prepare method and one of the #evaluate or #evaluate_source
   # methods.
   class Template
     # Template source; loaded from a file or given directly.
@@ -719,7 +719,7 @@ module Tilt
         end
       end
       (class << context; self; end).class_eval do
-        define_method :tag_missing do |tag, attr, &block|
+        define_method :tag_missing do |tag, attr|
           scope.__send__(tag)  # any way to support attr as args?
         end
       end
