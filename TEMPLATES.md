@@ -335,7 +335,7 @@ To wrap a Markdown formatted document with a layout:
     layout.render { data.render }
     # => "<!doctype html><title></title><h1>hello tilt</h1>\n"
 
-__NOTE:__ It's suggested that your program `require 'mustache'` at load time
+__NOTE:__ It's suggested that your program `require 'rdiscount'` at load time
 when using this template engine in a threaded environment.
 
 ### Options
