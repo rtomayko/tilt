@@ -14,10 +14,9 @@ class TiltCacheTest < Test::Unit::TestCase
 
   test "caching with multiple complex arguments to #fetch" do
     template = nil
-    args = ['hello', {:foo => 'bar', :baz => 'bizzle'}]
-    result = @cache.fetch(*args) { template = Tilt::StringTemplate.new {''} }
+    result = @cache.fetch('hello', {:foo => 'bar', :baz => 'bizzle'}) { template = Tilt::StringTemplate.new {''} }
     assert_same template, result
-    result = @cache.fetch(*args) { fail 'should be cached' }
+    result = @cache.fetch('hello', {:foo => 'bar', :baz => 'bizzle'}) { fail 'should be cached' }
     assert_same template, result
   end
 
