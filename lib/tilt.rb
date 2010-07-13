@@ -533,11 +533,19 @@ module Tilt
 
   private
     def sass_options
-      options.merge(:filename => eval_file, :line => line)
+      options.merge(:filename => eval_file, :line => line, :syntax => :sass)
     end
   end
   register 'sass', SassTemplate
 
+  # Sass's new .scss type template implementation.
+  class ScssTemplate < SassTemplate
+  private
+    def sass_options
+      options.merge(:filename => eval_file, :line => line, :syntax => :scss)
+    end
+  end
+  register 'scss', ScssTemplate
 
   # Lessscss template implementation. See:
   # http://lesscss.org/
