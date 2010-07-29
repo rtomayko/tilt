@@ -555,6 +555,33 @@ module Tilt
   register 'less', LessTemplate
 
 
+  # Nokogiri template implementation. See:
+  # http://nokogiri.org/
+  class NokogiriTemplate < Template
+    def initialize_engine
+      return if defined?(::Nokogiri)
+      require_template_library 'nokogiri'
+    end
+
+    def prepare; end
+
+    def evaluate(scope, locals, &block)
+      xml = ::Nokogiri::XML::Builder.new
+      if data.respond_to?(:to_str)
+        locals[:xml] = xml
+        super(scope, locals, &block)
+      elsif data.kind_of?(Proc)
+        data.call(xml)
+      end
+      xml.to_xml
+    end
+
+    def precompiled_template(locals)
+      data.to_str
+    end
+  end
+  register 'nokogiri', NokogiriTemplate
+
   # Builder template implementation. See:
   # http://builder.rubyforge.org/
   class BuilderTemplate < Template
