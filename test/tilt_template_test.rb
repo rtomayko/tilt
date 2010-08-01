@@ -150,10 +150,8 @@ class TiltTemplateTest < Test::Unit::TestCase
     include Tilt::CompileSite
   end
 
-  # FAILING CONSTANT TEST. DISABLED FOR 1.0.
-
-  # test "template which accesses a constant with Tilt::CompileSite" do
-  #   inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
-  #   assert_equal "Hey Bob!", inst.render(FastPerson.new("Joe"))
-  # end
+  test "template which accesses a constant with Tilt::CompileSite" do
+    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
+    assert_equal "Hey Bob!", inst.render(FastPerson.new("Joe"))
+  end
 end
