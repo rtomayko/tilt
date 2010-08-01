@@ -282,13 +282,18 @@ module Tilt
 
     def compile_template_method(method_name, locals)
       source, offset = precompiled(locals)
-      offset += 1
-      CompileSite.module_eval <<-RUBY, eval_file, line - offset
+      offset += 5
+      CompileSite.class_eval <<-RUBY, eval_file, line - offset
         def #{method_name}(locals)
-          #{source}
+          Thread.current[:tilt_vars] = [self, locals]
+          class << self
+            this, locals = Thread.current[:tilt_vars]
+            this.instance_eval do
+              #{source}
+            end
+          end
         end
       RUBY
-
       ObjectSpace.define_finalizer self,
         Template.compiled_template_method_remover(CompileSite, method_name)
     end
