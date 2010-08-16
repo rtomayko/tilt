@@ -769,4 +769,47 @@ module Tilt
     end
   end
   register 'radius', RadiusTemplate
+
+
+  # Markaby
+  # http://github.com/markaby/markaby
+  class MarkabyTemplate < Template
+    def self.builder_class
+      @builder_class ||= Class.new(Markaby::Builder) do
+        def __capture_markaby_tilt__(&block)
+          __run_markaby_tilt__ do
+            text capture(&block)
+          end
+        end
+      end
+    end
+
+    def initialize_engine
+      return if defined? ::Markaby
+      require_template_library 'markaby'
+    end
+
+    def prepare
+    end
+
+    def evaluate(scope, locals, &block)
+      builder = self.class.builder_class.new({}, scope)
+      builder.locals = locals
+
+      if block
+        builder.instance_eval <<-CODE, __FILE__, __LINE__
+          def __run_markaby_tilt__
+            #{data}
+          end
+        CODE
+
+        builder.__capture_markaby_tilt__(&block)
+      else
+        builder.instance_eval(data, __FILE__, __LINE__)
+      end
+
+      builder.to_s
+    end
+  end
+  register 'mab', MarkabyTemplate
 end
