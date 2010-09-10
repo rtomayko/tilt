@@ -1,7 +1,7 @@
 require 'digest/md5'
 
 module Tilt
-  VERSION = '1.0.1'
+  VERSION = '1.1'
 
   @template_mappings = {}
 
