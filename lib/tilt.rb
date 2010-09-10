@@ -593,57 +593,30 @@ module Tilt
   # http://coffeescript.org/
   #
   # CoffeeScript templates do not support object scopes, locals, or yield.
-  #
-  # Requires `coffee` binary be in PATH or specified with `coffee_bin`.
   class CoffeeScriptTemplate < Template
-    @@coffee_bin = nil
-    @@default_nowrap = true
+    @@default_no_wrap = true
 
-    def self.locate_coffee_bin
-      out = `which coffee`
-      if $?.success?
-        out.chomp
-      else
-        raise LoadError, "could not find `coffee` in PATH"
-      end
+    def self.default_no_wrap
+      @@default_no_wrap
     end
 
-    def self.coffee_bin
-      @@coffee_bin ||= locate_coffee_bin
+    def self.default_no_wrap=(value)
+      @@default_no_wrap = value
     end
 
-    def self.coffee_bin=(path)
-      @@coffee_bin = path
-    end
-
-    def self.default_nowrap
-      @@default_nowrap
-    end
-
-    def self.default_nowrap=(value)
-      @@default_nowrap = value
+    def initialize_engine
+      return if defined? ::CoffeeScript
+      require_template_library 'coffee_script'
     end
 
     def prepare
-      @nowrap = options.key?(:nowrap) ? options[:nowrap] :
-        self.class.default_nowrap
+      @no_wrap = options.key?(:no_wrap) ? options[:no_wrap] :
+        self.class.default_no_wrap
     end
 
     def evaluate(scope, locals, &block)
-      @output ||= coffee(data)
+      @output ||= CoffeeScript.compile(data, :no_wrap => @no_wrap)
     end
-
-    private
-      def coffee(input)
-        command = "#{self.class.coffee_bin} -sp"
-        command += " --no-wrap" if @nowrap
-
-        IO.popen(command, "w+") do |f|
-          f << input
-          f.close_write
-          f.read
-        end
-      end
   end
   register 'coffee', CoffeeScriptTemplate
 

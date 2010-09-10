@@ -2,7 +2,7 @@ require 'contest'
 require 'tilt'
 
 begin
-  Tilt::CoffeeScriptTemplate.locate_coffee_bin
+  require 'coffee_script'
 
   class CoffeeScriptTemplateTest < Test::Unit::TestCase
     test "is registered for '.coffee' files" do
@@ -15,7 +15,7 @@ begin
     end
 
     test "enabling coffee-script wrapper" do
-      template = Tilt::CoffeeScriptTemplate.new(:nowrap => false) { |t| "puts 'Hello, World!'\n" }
+      template = Tilt::CoffeeScriptTemplate.new(:no_wrap => false) { |t| "puts 'Hello, World!'\n" }
       assert_equal "(function() {\n  puts('Hello, World!');\n})();\n", template.render
     end
   end
