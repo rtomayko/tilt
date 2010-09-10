@@ -36,7 +36,7 @@ Support for these template engines is included with the package:
     Radius                     .radius           radius
     Markaby                    .mab              markaby
     Nokogiri                   .nokogiri         nokogiri
-    CoffeeScript               .coffee           node + coffee-script
+    CoffeeScript               .coffee           coffee-script (+node coffee)
 
 See [TEMPLATES.md][t] for detailed information on template engine
 options and supported features.
