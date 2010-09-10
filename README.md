@@ -35,6 +35,7 @@ Support for these template engines is included with the package:
     RDoc                       .rdoc             rdoc
     Radius                     .radius           radius
     Markaby                    .mab              markaby
+    Nokogiri                   .nokogiri         nokogiri
 
 See [TEMPLATES.md][t] for detailed information on template engine
 options and supported features.
