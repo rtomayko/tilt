@@ -589,6 +589,65 @@ module Tilt
   register 'less', LessTemplate
 
 
+  # CoffeeScript template implementation. See:
+  # http://coffeescript.org/
+  #
+  # CoffeeScript templates do not support object scopes, locals, or yield.
+  #
+  # Requires `coffee` binary be in PATH or specified with `coffee_bin`.
+  class CoffeeScriptTemplate < Template
+    @@coffee_bin = nil
+    @@default_nowrap = true
+
+    def self.locate_coffee_bin
+      out = `which coffee`
+      if $?.success?
+        out.chomp
+      else
+        raise LoadError, "could not find `coffee` in PATH"
+      end
+    end
+
+    def self.coffee_bin
+      @@coffee_bin ||= locate_coffee_bin
+    end
+
+    def self.coffee_bin=(path)
+      @@coffee_bin = path
+    end
+
+    def self.default_nowrap
+      @@default_nowrap
+    end
+
+    def self.default_nowrap=(value)
+      @@default_nowrap = value
+    end
+
+    def prepare
+      @nowrap = options.key?(:nowrap) ? options[:nowrap] :
+        self.class.default_nowrap
+    end
+
+    def evaluate(scope, locals, &block)
+      @output ||= coffee(data)
+    end
+
+    private
+      def coffee(input)
+        command = "#{self.class.coffee_bin} -sp"
+        command += " --no-wrap" if @nowrap
+
+        IO.popen(command, "w+") do |f|
+          f << input
+          f.close_write
+          f.read
+        end
+      end
+  end
+  register 'coffee', CoffeeScriptTemplate
+
+
   # Nokogiri template implementation. See:
   # http://nokogiri.org/
   class NokogiriTemplate < Template
