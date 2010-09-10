@@ -594,7 +594,7 @@ module Tilt
   #
   # CoffeeScript templates do not support object scopes, locals, or yield.
   class CoffeeScriptTemplate < Template
-    @@default_no_wrap = true
+    @@default_no_wrap = false
 
     def self.default_no_wrap
       @@default_no_wrap
