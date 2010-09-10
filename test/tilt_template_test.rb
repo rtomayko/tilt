@@ -151,6 +151,7 @@ class TiltTemplateTest < Test::Unit::TestCase
   end
 
   test "template which accesses a constant with Tilt::CompileSite" do
+    flunk "known broken under 1.9.1" if RUBY_VERSION =~ /^1.9.1/
     inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
     assert_equal "Hey Bob!", inst.render(FastPerson.new("Joe"))
   end

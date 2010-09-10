@@ -311,6 +311,27 @@ module Tilt
         end
       end
     end
+
+    # Special case Ruby 1.9.1's broken yield.
+    #
+    # http://github.com/rtomayko/tilt/commit/20c01a5
+    # http://redmine.ruby-lang.org/issues/show/3601
+    #
+    # Remove when 1.9.2 dominates 1.9.1 installs in the wild.
+    if RUBY_VERSION =~ /^1.9.1/
+      undef compile_template_method
+      def compile_template_method(method_name, locals)
+        source, offset = precompiled(locals)
+        offset += 1
+        CompileSite.module_eval <<-RUBY, eval_file, line - offset
+          def #{method_name}(locals)
+            #{source}
+          end
+        RUBY
+        ObjectSpace.define_finalizer self,
+          Template.compiled_template_method_remover(CompileSite, method_name)
+      end
+    end
   end
 
   # Extremely simple template cache implementation. Calling applications
