@@ -34,6 +34,7 @@ Support for these template engines is included with the package:
     RedCloth                   .textile          redcloth
     RDoc                       .rdoc             rdoc
     Radius                     .radius           radius
+    Markaby                    .mab              markaby
 
 See [TEMPLATES.md][t] for detailed information on template engine
 options and supported features.
