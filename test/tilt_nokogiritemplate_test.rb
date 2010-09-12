@@ -48,6 +48,17 @@ begin
       assert_equal 'Hey Joe!', doc.root.text
       assert_equal 'em', doc.root.name
     end
+
+    test "passing in xml builder instance to allow nesting" do
+      subtemplate = Tilt::NokogiriTemplate.new { "xml.em 'Hello World!'" }
+      template =
+        Tilt::NokogiriTemplate.new do |t|
+          lambda { |x| subtemplate.render Object.new, :xml => x }
+        end
+      doc = Nokogiri.XML template.render
+      assert_equal 'Hello World!', doc.root.text
+      assert_equal 'em', doc.root.name
+    end
   end
 rescue LoadError
   warn "Tilt::NokogiriTemplate (disabled)"

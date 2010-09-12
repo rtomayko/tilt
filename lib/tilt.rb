@@ -632,7 +632,7 @@ module Tilt
     def prepare; end
 
     def evaluate(scope, locals, &block)
-      xml = ::Nokogiri::XML::Builder.new
+      xml = locals[:xml] || ::Nokogiri::XML::Builder.new
       if data.respond_to?(:to_str)
         locals[:xml] = xml
         super(scope, locals, &block)
