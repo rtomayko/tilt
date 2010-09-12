@@ -53,11 +53,11 @@ begin
       subtemplate = Tilt::NokogiriTemplate.new { "xml.em 'Hello World!'" }
       template =
         Tilt::NokogiriTemplate.new do |t|
-          lambda { |x| subtemplate.render Object.new, :xml => x }
+          lambda { |x| x.strong { subtemplate.render Object.new, :xml => x }}
         end
       doc = Nokogiri.XML template.render
-      assert_equal 'Hello World!', doc.root.text
-      assert_equal 'em', doc.root.name
+      assert_equal 'Hello World!', doc.root.text.strip
+      assert_equal 'strong', doc.root.name
     end
   end
 rescue LoadError
