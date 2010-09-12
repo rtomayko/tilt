@@ -44,7 +44,7 @@ begin
         Tilt::NokogiriTemplate.new do |t|
           lambda { |xml| xml.em('Hey Joe!') }
         end
-      doc = Nokogiri.XML template.render template.render
+      doc = Nokogiri.XML template.render
       assert_equal 'Hey Joe!', doc.root.text
       assert_equal 'em', doc.root.name
     end
