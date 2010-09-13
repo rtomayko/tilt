@@ -49,13 +49,11 @@ begin
       assert_equal 'em', doc.root.name
     end
 
-    test "passing in xml builder instance to allow nesting" do
+    test "allows nesting raw XML, API-compatible to Builder" do
       subtemplate = Tilt::NokogiriTemplate.new { "xml.em 'Hello World!'" }
-      template =
-        Tilt::NokogiriTemplate.new do |t|
-          lambda { |x| x.strong { subtemplate.render Object.new, :xml => x }}
-        end
-      doc = Nokogiri.XML template.render
+      template = Tilt::NokogiriTemplate.new { "xml.strong { xml << yield }" }
+      options = { :xml => Nokogiri::XML::Builder.new }
+      doc = Nokogiri.XML(template.render(options) { subtemplate.render(options) })
       assert_equal 'Hello World!', doc.root.text.strip
       assert_equal 'strong', doc.root.name
     end

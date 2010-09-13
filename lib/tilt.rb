@@ -632,9 +632,10 @@ module Tilt
     def prepare; end
 
     def evaluate(scope, locals, &block)
-      xml = locals[:xml] || ::Nokogiri::XML::Builder.new
+      xml = ::Nokogiri::XML::Builder.new
       if data.respond_to?(:to_str)
         locals[:xml] = xml
+        block &&= proc { yield.gsub(/^<\?xml version=\"1\.0\"\?>\n?/, "") }
         super(scope, locals, &block)
       elsif data.kind_of?(Proc)
         data.call(xml)
