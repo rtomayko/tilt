@@ -742,6 +742,38 @@ module Tilt
   register 'markdown', RDiscountTemplate
   register 'mkd', RDiscountTemplate
   register 'md', RDiscountTemplate
+  
+  
+  # BlueCloth Markdown implementation. See:
+  # http://deveiate.org/projects/BlueCloth/
+  #
+  # RDiscount is a simple text filter. It does not support +scope+ or
+  # +locals+. The +:smartypants+ and +:escape_html+ options may be set true
+  # to enable those flags on the underlying BlueCloth object.
+  class BlueClothTemplate < Template
+    def initialize_engine
+      return if defined? ::BlueCloth
+      require_template_library 'bluecloth'
+    end
+
+    def prepare
+      @engine = BlueCloth.new(data, options)
+      @output = nil
+    end
+
+    def evaluate(scope, locals, &block)
+      @output ||= @engine.to_html
+    end
+  end
+  
+  begin
+    require 'rdiscount'
+  rescue LoadError
+    # Only register BlueCloth if we have RDiscount.
+    register 'markdown', BlueClothTemplate
+    register 'mkd', BlueClothTemplate
+    register 'md', BlueClothTemplate
+  end
 
 
   # RedCloth implementation. See:
