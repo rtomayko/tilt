@@ -765,15 +765,6 @@ module Tilt
       @output ||= @engine.to_html
     end
   end
-  
-  begin
-    require 'rdiscount'
-  rescue LoadError
-    # Only register BlueCloth if we have RDiscount.
-    register 'markdown', BlueClothTemplate
-    register 'mkd', BlueClothTemplate
-    register 'md', BlueClothTemplate
-  end
 
 
   # RedCloth implementation. See:

@@ -5,6 +5,19 @@ begin
   require 'bluecloth'
 
   class BlueClothTemplateTest < Test::Unit::TestCase
+    setup do
+      Tilt.register('markdown', Tilt::BlueClothTemplate)
+      Tilt.register('md', Tilt::BlueClothTemplate)
+      Tilt.register('mkd', Tilt::BlueClothTemplate)
+    end
+    
+    teardown do
+      # Need to revert to RDiscount, otherwise the RDiscount test will fail
+      Tilt.register('markdown', Tilt::RDiscountTemplate)
+      Tilt.register('md', Tilt::RDiscountTemplate)
+      Tilt.register('mkd', Tilt::RDiscountTemplate)
+    end
+    
     test "registered for '.markdown' files unless RDiscount is loaded" do
       unless defined?(RDiscount)
         assert_equal Tilt::BlueClothTemplate, Tilt['test.markdown']
