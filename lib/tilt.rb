@@ -850,16 +850,20 @@ module Tilt
       builder = self.class.builder_class.new({}, scope)
       builder.locals = locals
 
-      if block
+      if data.kind_of? Proc
+        (class << builder; self end).send(:define_method, :__run_markaby_tilt__, &data)
+      else
         builder.instance_eval <<-CODE, __FILE__, __LINE__
           def __run_markaby_tilt__
             #{data}
           end
         CODE
+      end
 
+      if block
         builder.__capture_markaby_tilt__(&block)
       else
-        builder.instance_eval(data, __FILE__, __LINE__)
+        builder.__run_markaby_tilt__
       end
 
       builder.to_s

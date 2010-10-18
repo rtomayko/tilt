@@ -66,6 +66,16 @@ begin
     test "should return a new instance of the implementation class (when calling Tilt.new)" do
       assert ::Tilt.new(File.dirname(__FILE__) + "/markaby/markaby.mab").kind_of?(Tilt::MarkabyTemplate)
     end
+
+    test "should be able to evaluate block style templates" do
+      tilt = Tilt::MarkabyTemplate.new { |t| lambda { h1 "Hello World!" }}
+      assert_equal "<h1>Hello World!</h1>", tilt.render
+    end
+
+    test "should pass locals to block style templates" do
+      tilt = Tilt::MarkabyTemplate.new { |t| lambda { h1 "Hello #{name}!" }}
+      assert_equal "<h1>Hello _why!</h1>", tilt.render(nil, :name => "_why")
+    end
   end
 
 rescue LoadError => boom
