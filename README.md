@@ -26,6 +26,7 @@ Support for these template engines is included with the package:
     ERB                        .erb              none (included ruby stdlib)
     Interpolated String        .str              none (included ruby core)
     Haml                       .haml             haml
+    Slim                       .slim             slim
     Sass                       .sass             haml
     Less CSS                   .less             less
     Builder                    .builder          builder

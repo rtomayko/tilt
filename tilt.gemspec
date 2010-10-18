@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
 
   s.name = 'tilt'
   s.version = '1.1'
-  s.date = '2010-09-10'
+  s.date = '2010-10-18'
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
@@ -43,6 +43,7 @@ Gem::Specification.new do |s|
     test/tilt_rdoctemplate_test.rb
     test/tilt_redclothtemplate_test.rb
     test/tilt_sasstemplate_test.rb
+    test/tilt_slimtemplate_test.rb
     test/tilt_stringtemplate_test.rb
     test/tilt_template_test.rb
     test/tilt_test.rb
@@ -65,6 +66,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'nokogiri'
   s.add_development_dependency 'markaby'
   s.add_development_dependency 'coffee-script'
+  s.add_development_dependency 'slim'
 
   s.extra_rdoc_files = %w[COPYING]
 

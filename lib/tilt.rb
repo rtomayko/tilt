@@ -533,6 +533,25 @@ module Tilt
   end
   register 'haml', HamlTemplate
 
+  # Slim template implementation. See:
+  # http://github.com/stonean/slim
+  class SlimTemplate < Template
+    def initialize_engine
+      return if defined? ::Slim::Compiler
+      require_template_library 'slim'
+    end
+
+    def prepare
+      extend ::Slim::Compiler
+      @template = data
+      compile
+    end
+
+    def precompiled_template(locals)
+      @optimized
+    end
+  end
+  register 'slim', SlimTemplate
 
   # Sass template implementation. See:
   # http://haml.hamptoncatlin.com/
