@@ -35,6 +35,7 @@ Gem::Specification.new do |s|
     test/tilt_erbtemplate_test.rb
     test/tilt_erubistemplate_test.rb
     test/tilt_hamltemplate_test.rb
+    test/tilt_kramdowntemplate_test.rb
     test/tilt_lesstemplate_test.rb
     test/tilt_liquidtemplate_test.rb
     test/tilt_markaby_test.rb
@@ -67,6 +68,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'markaby'
   s.add_development_dependency 'coffee-script'
   s.add_development_dependency 'creole'
+  s.add_development_dependency 'kramdown'
 
   s.extra_rdoc_files = %w[COPYING]
 

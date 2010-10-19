@@ -788,6 +788,26 @@ module Tilt
   register 'creole', CreoleTemplate
 
 
+  # Kramdown Markdown implementation. See:
+  # http://github.com/gettalong/kramdown
+  class KramdownTemplate < Template
+    def initialize_engine
+      return if defined? ::Kramdown
+      require_template_library 'kramdown'
+    end
+
+    def prepare
+      @to_latex = options.delete(:latex)
+      @engine = Kramdown::Document.new(data, options)
+      @output = nil
+    end
+
+    def evaluate(scope, locals, &block)
+      @output ||= @to_latex ? @engine.to_latex : @engine.to_html
+    end
+  end
+
+
   # RDoc template. See:
   # http://rdoc.rubyforge.org/
   #
