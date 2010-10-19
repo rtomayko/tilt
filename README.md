@@ -39,6 +39,7 @@ Support for these template engines is included with the package:
     Nokogiri                   .nokogiri            nokogiri
     CoffeeScript               .coffee              coffee-script (+node coffee)
     Erubis                     .erubis              erubis
+    Creole                     .creole              creole
 
 See [TEMPLATES.md][t] for detailed information on template engine
 options and supported features.

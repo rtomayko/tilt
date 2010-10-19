@@ -768,6 +768,26 @@ module Tilt
   register 'textile', RedClothTemplate
 
 
+  # Creole wiki text implementation. See:
+  # http://github.com/larsch/creole
+  class CreoleTemplate < Template
+    def initialize_engine
+      return if defined? ::Creole
+      require_template_library 'creole'
+    end
+
+    def prepare
+      @engine ||= ::Creole.new(data, options)
+      @output = nil
+    end
+
+    def evaluate(scope, locals, &block)
+      @output ||= @engine.to_html
+    end
+  end
+  register 'creole', CreoleTemplate
+
+
   # RDoc template. See:
   # http://rdoc.rubyforge.org/
   #
