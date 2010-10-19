@@ -21,22 +21,24 @@ template engines included in the distribution.
 
 Support for these template engines is included with the package:
 
-    ENGINE                     FILE EXTENSIONS   REQUIRED LIBRARIES
-    -------------------------- ----------------- ----------------------------
-    ERB                        .erb              none (included ruby stdlib)
-    Interpolated String        .str              none (included ruby core)
-    Haml                       .haml             haml
-    Sass                       .sass             haml
-    Less CSS                   .less             less
-    Builder                    .builder          builder
-    Liquid                     .liquid           liquid
-    RDiscount                  .markdown         rdiscount
-    RedCloth                   .textile          redcloth
-    RDoc                       .rdoc             rdoc
-    Radius                     .radius           radius
-    Markaby                    .mab              markaby
-    Nokogiri                   .nokogiri         nokogiri
-    CoffeeScript               .coffee           coffee-script (+node coffee)
+    ENGINE                     FILE EXTENSIONS      REQUIRED LIBRARIES
+    -------------------------- -----------------    ----------------------------
+    ERB                        .erb, .rhtml         none (included ruby stdlib)
+    Interpolated String        .str                 none (included ruby core)
+    Haml                       .haml                haml
+    Sass                       .sass                haml
+    Sassy CSS                  .scss                haml
+    Less CSS                   .less                less
+    Builder                    .builder             builder
+    Liquid                     .liquid              liquid
+    RDiscount                  .markdown, .mkd, .md rdiscount
+    RedCloth                   .textile             redcloth
+    RDoc                       .rdoc                rdoc
+    Radius                     .radius              radius
+    Markaby                    .mab                 markaby
+    Nokogiri                   .nokogiri            nokogiri
+    CoffeeScript               .coffee              coffee-script (+node coffee)
+    Erubis                     .erubis              erubis
 
 See [TEMPLATES.md][t] for detailed information on template engine
 options and supported features.
