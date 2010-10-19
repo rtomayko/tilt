@@ -54,7 +54,7 @@ module Tilt
   # the template methods will polute the global namespace and could lead to
   # unexpected behavior.
   module CompileSite
-    def __tilt__
+    def __tilt_enable_compilation__
     end
   end
 
@@ -111,9 +111,8 @@ module Tilt
         self.class.engine_initialized = true
       end
 
-      # used to generate unique method names for template compilation
-      @stamp = (Time.now.to_f * 10000).to_i
-      @compiled_method_names = {}
+      # used to hold compiled template methods
+      @compiled_method = {}
 
       # load template data and prepare
       @reader = block || lambda { |t| File.read(@file) }
@@ -183,14 +182,9 @@ module Tilt
     # is guaranteed to be performed in the scope object with the locals
     # specified and with support for yielding to the block.
     def evaluate(scope, locals, &block)
-      if scope.respond_to?(:__tilt__)
-        method_name = compiled_method_name(locals.keys)
-        if scope.respond_to?(method_name)
-          scope.send(method_name, locals, &block)
-        else
-          compile_template_method(method_name, locals)
-          scope.send(method_name, locals, &block)
-        end
+      if scope.respond_to?(:__tilt_enable_compilation__)
+        method = compiled_method(locals.keys)
+        method.bind(scope).call(locals, &block)
       else
         evaluate_source(scope, locals, &block)
       end
@@ -241,10 +235,10 @@ module Tilt
       ''
     end
 
-    # The unique compiled method name for the locals keys provided.
-    def compiled_method_name(locals_keys)
-      @compiled_method_names[locals_keys] ||=
-        generate_compiled_method_name(locals_keys)
+    # The compiled method for the locals keys provided.
+    def compiled_method(locals_keys)
+      @compiled_method[locals_keys] ||=
+        compile_template_method(locals_keys)
     end
 
   private
@@ -274,15 +268,10 @@ module Tilt
       end
     end
 
-    def generate_compiled_method_name(locals_keys)
-      parts = [object_id, @stamp] + locals_keys.map { |k| k.to_s }.sort
-      digest = Digest::MD5.hexdigest(parts.join(':'))
-      "__tilt_#{digest}"
-    end
-
-    def compile_template_method(method_name, locals)
+    def compile_template_method(locals)
       source, offset = precompiled(locals)
       offset += 5
+      method_name = "__tilt_#{Thread.current.object_id.abs}"
       CompileSite.class_eval <<-RUBY, eval_file, line - offset
         def #{method_name}(locals)
           Thread.current[:tilt_vars] = [self, locals]
@@ -294,22 +283,13 @@ module Tilt
           end
         end
       RUBY
-      ObjectSpace.define_finalizer self,
-        Template.compiled_template_method_remover(CompileSite, method_name)
+      unbind_compiled_method(method_name)
     end
 
-    def self.compiled_template_method_remover(site, method_name)
-      proc { |oid| garbage_collect_compiled_template_method(site, method_name) }
-    end
-
-    def self.garbage_collect_compiled_template_method(site, method_name)
-      site.module_eval do
-        begin
-          remove_method(method_name)
-        rescue NameError
-          # method was already removed (ruby >= 1.9)
-        end
-      end
+    def unbind_compiled_method(method_name)
+      method = CompileSite.instance_method(method_name)
+      CompileSite.class_eval { remove_method(method_name) }
+      method
     end
 
     # Special case Ruby 1.9.1's broken yield.
@@ -320,16 +300,16 @@ module Tilt
     # Remove when 1.9.2 dominates 1.9.1 installs in the wild.
     if RUBY_VERSION =~ /^1.9.1/
       undef compile_template_method
-      def compile_template_method(method_name, locals)
+      def compile_template_method(locals)
         source, offset = precompiled(locals)
         offset += 1
+        method_name = "__tilt_#{Thread.current.object_id}"
         CompileSite.module_eval <<-RUBY, eval_file, line - offset
           def #{method_name}(locals)
             #{source}
           end
         RUBY
-        ObjectSpace.define_finalizer self,
-          Template.compiled_template_method_remover(CompileSite, method_name)
+        unbind_compiled_method(method_name)
       end
     end
   end
@@ -743,8 +723,8 @@ module Tilt
   register 'markdown', RDiscountTemplate
   register 'mkd', RDiscountTemplate
   register 'md', RDiscountTemplate
-  
-  
+
+
   # BlueCloth Markdown implementation. See:
   # http://deveiate.org/projects/BlueCloth/
   #

@@ -80,12 +80,8 @@ class CompiledStringTemplateTest < Test::Unit::TestCase
   test "compiling template source to a method" do
     template = Tilt::StringTemplate.new { |t| "Hello World!" }
     template.render(Scope.new)
-    method_name = template.send(:compiled_method_name, [])
-    method_name = method_name.to_sym if Symbol === Kernel.methods.first
-    assert Tilt::CompileSite.instance_methods.include?(method_name),
-      "CompileSite.instance_methods.include?(#{method_name.inspect})"
-    assert Scope.new.respond_to?(method_name),
-      "scope.respond_to?(#{method_name.inspect})"
+    method = template.send(:compiled_method, [])
+    assert_kind_of UnboundMethod, method
   end
 
   test "loading and evaluating templates on #render" do
