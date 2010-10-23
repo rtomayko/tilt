@@ -1,7 +1,7 @@
 require 'digest/md5'
 
 module Tilt
-  TOPOBJECT = Object.superclass
+  TOPOBJECT = defined?(BasicObject) ? BasicObject : Object
   VERSION = '1.1'
 
   @template_mappings = {}
