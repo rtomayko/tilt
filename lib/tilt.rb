@@ -1,5 +1,3 @@
-require 'digest/md5'
-
 module Tilt
   TOPOBJECT = defined?(BasicObject) ? BasicObject : Object
   VERSION = '1.1'
