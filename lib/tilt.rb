@@ -40,7 +40,7 @@ module Tilt
     end
     @template_mappings[pattern]
   end
-  
+
   # Deprecated module.
   module CompileSite
   end
@@ -173,7 +173,7 @@ module Tilt
         method = compiled_method(locals.keys)
         method.bind(scope).call(locals, &block)
       end
-      
+
       # Use instance_eval the first time:
       evaluate_source(scope, locals, &block)
     end
