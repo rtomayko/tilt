@@ -1,7 +1,6 @@
 require 'digest/md5'
 
 module Tilt
-  TOPOBJECT = Object.superclass
   VERSION = '1.1'
 
   @template_mappings = {}
@@ -42,9 +41,21 @@ module Tilt
     end
     @template_mappings[pattern]
   end
-  
-  # Deprecated module.
+
+  # Mixin allowing template compilation on scope objects.
+  #
+  # Including this module in scope objects passed to Template#render
+  # causes template source to be compiled to methods the first time they're
+  # used. This can yield significant (5x-10x) performance increases for
+  # templates that support it (ERB, Erubis, Builder).
+  #
+  # It's also possible (though not recommended) to include this module in
+  # Object to enable template compilation globally. The downside is that
+  # the template methods will polute the global namespace and could lead to
+  # unexpected behavior.
   module CompileSite
+    def __tilt_enable_compilation__
+    end
   end
 
   # Base class for template implementations. Subclasses must implement
@@ -163,21 +174,20 @@ module Tilt
       end
     end
 
-    # Process the template and return the result. The first time this
-    # method is called, the template source is evaluated with instance_eval.
-    # On the sequential method calls it will compile the template to an
-    # unbound method which will lead to better performance. In any case,
-    # template executation is guaranteed to be performed in the scope object
-    # with the locals specified and with support for yielding to the block.
+    # Process the template and return the result. When the scope mixes in
+    # the Tilt::CompileSite module, the template is compiled to a method and
+    # reused given identical locals keys. When the scope object
+    # does not mix in the CompileSite module, the template source is
+    # evaluated with instance_eval. In any case, template executation
+    # is guaranteed to be performed in the scope object with the locals
+    # specified and with support for yielding to the block.
     def evaluate(scope, locals, &block)
-      # Redefine itself to use method compilation the next time:
-      def self.evaluate(scope, locals, &block)
+      if scope.respond_to?(:__tilt_enable_compilation__)
         method = compiled_method(locals.keys)
         method.bind(scope).call(locals, &block)
+      else
+        evaluate_source(scope, locals, &block)
       end
-      
-      # Use instance_eval the first time:
-      evaluate_source(scope, locals, &block)
     end
 
     # Generates all template source by combining the preamble, template, and
@@ -262,15 +272,13 @@ module Tilt
       source, offset = precompiled(locals)
       offset += 5
       method_name = "__tilt_#{Thread.current.object_id.abs}"
-      Object.class_eval <<-RUBY, eval_file, line - offset
-        TOPOBJECT.class_eval do
-          def #{method_name}(locals)
-            Thread.current[:tilt_vars] = [self, locals]
-            class << self
-              this, locals = Thread.current[:tilt_vars]
-              this.instance_eval do
-               #{source}
-              end
+      CompileSite.class_eval <<-RUBY, eval_file, line - offset
+        def #{method_name}(locals)
+          Thread.current[:tilt_vars] = [self, locals]
+          class << self
+            this, locals = Thread.current[:tilt_vars]
+            this.instance_eval do
+              #{source}
             end
           end
         end
@@ -279,8 +287,8 @@ module Tilt
     end
 
     def unbind_compiled_method(method_name)
-      method = TOPOBJECT.instance_method(method_name)
-      TOPOBJECT.class_eval { remove_method(method_name) }
+      method = CompileSite.instance_method(method_name)
+      CompileSite.class_eval { remove_method(method_name) }
       method
     end
 
@@ -296,11 +304,9 @@ module Tilt
         source, offset = precompiled(locals)
         offset += 1
         method_name = "__tilt_#{Thread.current.object_id}"
-        Object.class_eval <<-RUBY, eval_file, line - offset
-          TOPOBJECT.class_eval do
-            def #{method_name}(locals)
-              #{source}
-            end
+        CompileSite.module_eval <<-RUBY, eval_file, line - offset
+          def #{method_name}(locals)
+            #{source}
           end
         RUBY
         unbind_compiled_method(method_name)
