@@ -120,6 +120,14 @@ begin
       template = Tilt::ErubisTemplate.new(nil, options_hash) { |t| "Hello World!" }
       assert_equal({:escape_html => true}, options_hash)
     end
+    
+    if "1.9".respond_to? :encoding
+      test "honors ERB source encoding" do
+        template = Tilt::ErubisTemplate.new { 'Hey <%= name %>!'.force_encoding "UTF-8" }
+        result = template.render(Object.new, :name => 'Joe')
+        assert_equal "UTF-8", result.encoding.to_s
+      end
+    end
   end
 rescue LoadError => boom
   warn "Tilt::ErubisTemplate (disabled)\n"
