@@ -105,6 +105,14 @@ class ERBTemplateTest < Test::Unit::TestCase
     assert_equal '2', template.render(scope)
     assert_equal 'original value', scope.instance_variable_get(:@buf)
   end
+  
+  if "1.9".respond_to? :encoding
+    test "honors ERB source encoding" do
+      template = Tilt::ERBTemplate.new { 'Hey <%= name %>!'.force_encoding "UTF-8" }
+      result = template.render(Object.new, :name => 'Joe')
+      assert_equal "UTF-8", result.encoding.to_s
+    end
+  end
 end
 
 class CompiledERBTemplateTest < Test::Unit::TestCase
@@ -121,6 +129,16 @@ class CompiledERBTemplateTest < Test::Unit::TestCase
     template.render(Scope.new)
     method = template.send(:compiled_method, [])
     assert_kind_of UnboundMethod, method
+  end
+  
+  if "1.9".respond_to? :encoding
+    test "honors ERB source encoding" do
+      template = Tilt::ERBTemplate.new { "Hello World!".force_encoding "UTF-8" }
+      scope = Scope.new
+      result = template.render(scope)
+      result = template.render(scope)
+      assert_equal "UTF-8", result.encoding.to_s
+    end
   end
 
   test "loading and evaluating templates on #render" do
