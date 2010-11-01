@@ -372,7 +372,7 @@ module Tilt
       source = @engine.src
       source
     end
-
+    
     def precompiled_preamble(locals)
       <<-RUBY
         begin
@@ -380,14 +380,30 @@ module Tilt
           #{super}
       RUBY
     end
-
-    def precompiled_postamble(locals)
-      <<-RUBY
-          #{super}
-        ensure
-          #{@outvar} = __original_outvar
-        end
-      RUBY
+    
+    def encoding
+      #ERB determines the encoding by itself, trust it
+      @engine.instance_variable_get("@enc") || "US-ASCII"
+    end
+    
+    if "1.9".respond_to? :encoding  
+      def precompiled_postamble(locals)
+        <<-RUBY
+            #{super}.force_encoding("#{encoding}")
+          ensure
+            #{@outvar} = __original_outvar
+          end
+        RUBY
+      end
+    else
+      def precompiled_postamble(locals)
+        <<-RUBY
+            #{super}
+          ensure
+            #{@outvar} = __original_outvar
+          end
+        RUBY
+      end
     end
 
     # ERB generates a line to specify the character coding of the generated
@@ -420,7 +436,13 @@ module Tilt
       return if defined? ::Erubis
       require_template_library 'erubis'
     end
-
+    
+    def encoding
+      #Erubis does not guess the character encoding itself
+      #assume the input encoding
+      data.encoding
+    end
+    
     def prepare
       @options.merge!(:preamble => false, :postamble => false)
       @outvar = options.delete(:outvar) || self.class.default_output_variable
