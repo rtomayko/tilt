@@ -587,7 +587,7 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      @output ||= CoffeeScript.compile(data, :no_wrap => @no_wrap)
+      @output ||= CoffeeScript.compile(data, :wrap => !@no_wrap)
     end
   end
   register 'coffee', CoffeeScriptTemplate
