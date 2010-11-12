@@ -11,7 +11,7 @@ begin
 
     test "compiles and evaluates the template on #render" do
       template = Tilt::CoffeeScriptTemplate.new { |t| "puts 'Hello, World!'\n" }
-      assert_equal "(function() {\n  puts('Hello, World!');\n})();\n", template.render
+      assert_match "puts('Hello, World!');", template.render
     end
 
     test "disabling coffee-script wrapper" do
