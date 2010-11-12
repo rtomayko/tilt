@@ -38,6 +38,12 @@ Support for these template engines is included with the package:
     Nokogiri                   .nokogiri         nokogiri
     CoffeeScript               .coffee           coffee-script (+node coffee)
 
+These template engines ship with there own Tilt integration:
+
+    ENGINE                     FILE EXTENSIONS   REQUIRED LIBRARIES
+    -------------------------- ----------------- ----------------------------
+    Slim                       .slim             slim (>= 0.7)
+
 See [TEMPLATES.md][t] for detailed information on template engine
 options and supported features.
 
