@@ -189,9 +189,16 @@ module Tilt
     # easier and more appropriate.
     def precompiled(locals)
       preamble = precompiled_preamble(locals)
+      template = precompiled_template(locals)
+      magic_comment = extract_magic_comment(template)
+      if magic_comment
+        # Magic comment e.g. "# coding: utf-8" has to be in the first line.
+        # So we copy the magic comment to the first line.
+        preamble = magic_comment + "\n" + preamble
+      end
       parts = [
         preamble,
-        precompiled_template(locals),
+        template,
         precompiled_postamble(locals)
       ]
       [parts.join("\n"), preamble.count("\n") + 1]
@@ -280,6 +287,10 @@ module Tilt
       method = TOPOBJECT.instance_method(method_name)
       TOPOBJECT.class_eval { remove_method(method_name) }
       method
+    end
+
+    def extract_magic_comment(script)
+      script.slice(/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*$/)
     end
 
     # Special case Ruby 1.9.1's broken yield.
