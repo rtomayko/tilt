@@ -1,6 +1,8 @@
+# coding: utf-8
 require 'contest'
 require 'tilt'
 require 'erb'
+require 'tempfile'
 
 class ERBTemplateTest < Test::Unit::TestCase
   test "registered for '.erb' files" do
@@ -194,6 +196,17 @@ class CompiledERBTemplateTest < Test::Unit::TestCase
   test "shorthand whole line syntax trim mode" do
     template = Tilt.new('test.erb', :trim => '%') { "\n% if true\nhello\n%end\n" }
     assert_equal "\nhello\n", template.render(Scope.new)
+  end
+
+  test "encoding" do
+    f = Tempfile.open("template")
+    f.puts('<%# coding: UTF-8 %>')
+    f.puts('ふが <%= @hoge %>')
+    f.close()
+    @hoge = "ほげ"
+    erb = Tilt['erb'].new(f.path)
+    3.times { erb.render(self) }
+    f.delete
   end
 end
 

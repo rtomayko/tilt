@@ -268,6 +268,7 @@ module Tilt
       offset += 5
       method_name = "__tilt_#{Thread.current.object_id.abs}"
       Object.class_eval <<-RUBY, eval_file, line - offset
+        #{extract_magic_comment source}
         TOPOBJECT.class_eval do
           def #{method_name}(locals)
             Thread.current[:tilt_vars] = [self, locals]
