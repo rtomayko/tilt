@@ -101,8 +101,12 @@ module Tilt
       # used to hold compiled template methods
       @compiled_method = {}
 
-      # load template data and prepare
-      @reader = block || lambda { |t| File.read(@file) }
+      # used on 1.9 to set the encoding if it is not set elsewhere (like a magic comment)
+      # currently only used if template compiles to ruby
+      @default_encoding = @options.delete :default_encoding
+
+      # load template data and prepare (uses binread to avoid encoding issues)
+      @reader = block || lambda { |t| File.respond_to?(:binread) ? File.binread(@file) : File.read(@file) }
       @data = @reader.call(self)
       prepare
     end
@@ -291,7 +295,9 @@ module Tilt
     end
 
     def extract_magic_comment(script)
-      script.slice(/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*$/)
+      comment = script.slice(/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*$/)
+      return comment if comment and not %w[ascii-8bit binary].include?($1.downcase)
+      "# coding: #{@default_encoding}" if @default_encoding
     end
 
     # Special case Ruby 1.9.1's broken yield.
