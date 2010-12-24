@@ -43,9 +43,6 @@ module Tilt
 
   # Deprecated module.
   module CompileSite
-    def self.append_features(*)
-      warn "WARNING: Tilt::CompileSite is deprecated and will be removed in Tilt 2.0 (#{caller.first})."
-    end
   end
 
   # Base class for template implementations. Subclasses must implement
