@@ -197,13 +197,23 @@ class CompiledERBTemplateTest < Test::Unit::TestCase
     assert_equal "\nhello\n", template.render(Scope.new)
   end
 
-  test "encoding" do
+  test "encoding with magic comment" do
     f = Tempfile.open("template")
     f.puts('<%# coding: UTF-8 %>')
     f.puts('ふが <%= @hoge %>')
     f.close()
     @hoge = "ほげ"
     erb = Tilt['erb'].new(f.path)
+    3.times { erb.render(self) }
+    f.delete
+  end
+
+  test "encoding with :default_encoding" do
+    f = Tempfile.open("template")
+    f.puts('ふが <%= @hoge %>')
+    f.close()
+    @hoge = "ほげ"
+    erb = Tilt['erb'].new(f.path, :default_encoding => 'UTF-8')
     3.times { erb.render(self) }
     f.delete
   end
