@@ -68,7 +68,6 @@ begin
 
   class CompiledHamlTemplateTest < Test::Unit::TestCase
     class Scope
-      include Tilt::CompileSite
     end
 
     test "compiling template source to a method" do
