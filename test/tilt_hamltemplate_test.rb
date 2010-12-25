@@ -19,7 +19,7 @@ begin
 
     test "can be rendered more than once" do
       template = Tilt::HamlTemplate.new { |t| "%p Hello World!" }
-      3.times { template.render }
+      3.times { assert_equal "<p>Hello World!</p>\n", template.render }
     end
 
     test "passing locals" do

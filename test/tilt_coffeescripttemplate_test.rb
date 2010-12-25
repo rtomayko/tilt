@@ -16,7 +16,7 @@ begin
 
     test "can be rendered more than once" do
       template = Tilt::CoffeeScriptTemplate.new { |t| "puts 'Hello, World!'\n" }
-      3.times { template.render }
+      3.times { assert_match "puts('Hello, World!');", template.render }
     end
 
     test "disabling coffee-script wrapper" do

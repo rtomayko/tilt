@@ -43,7 +43,7 @@ begin
 
     test "can be rendered more than once" do
       template = Tilt::BlueClothTemplate.new { |t| "# Hello World!" }
-      3.times { template.render }
+      3.times { assert_equal "<h1>Hello World!</h1>", template.render }
     end
 
     test "smartypants when :smart is set" do

@@ -16,7 +16,7 @@ begin
 
     test "can be rendered more than once" do
       template = Tilt::LessTemplate.new { |t| ".bg { background-color: #0000ff; } \n#main\n { .bg; }\n" }
-      3.times { template.render }
+      3.times { assert_equal ".bg, #main { background-color: #0000ff; }\n", template.render }
     end
   end
 

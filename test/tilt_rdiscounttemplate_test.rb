@@ -24,7 +24,7 @@ begin
 
     test "can be rendered more than once" do
       template = Tilt::RDiscountTemplate.new { |t| "# Hello World!" }
-      3.times { template.render }
+      3.times { assert_equal "<h1>Hello World!</h1>\n", template.render }
     end
 
     test "smartypants when :smart is set" do

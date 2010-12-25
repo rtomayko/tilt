@@ -16,7 +16,7 @@ begin
 
     test "can be rendered more than once" do
       template = Tilt::LiquidTemplate.new { |t| "Hello World!" }
-      3.times { template.render }
+      3.times { assert_equal "Hello World!", template.render }
     end
 
     test "passing locals" do

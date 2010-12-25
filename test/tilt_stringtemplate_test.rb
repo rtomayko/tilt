@@ -13,7 +13,7 @@ class StringTemplateTest < Test::Unit::TestCase
 
   test "can be rendered more than once" do
     template = Tilt::StringTemplate.new { |t| "Hello World!" }
-    3.times { template.render }
+    3.times { assert_equal "Hello World!", template.render }
   end
 
   test "passing locals" do

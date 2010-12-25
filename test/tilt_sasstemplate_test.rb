@@ -17,7 +17,7 @@ begin
 
     test "can be rendered more than once" do
       template = Tilt::SassTemplate.new { |t| "#main\n  :background-color #0000f1" }
-      3.times { template.render }
+      3.times { assert_equal "#main {\n  background-color: #0000f1; }\n", template.render }
     end
   end
 
@@ -33,7 +33,7 @@ begin
 
     test "can be rendered more than once" do
       template = Tilt::ScssTemplate.new { |t| "#main {\n  background-color: #0000f1;\n}" }
-      3.times { template.render }
+      3.times { assert_equal "#main {\n  background-color: #0000f1; }\n", template.render }
     end
   end
 

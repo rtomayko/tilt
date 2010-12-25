@@ -16,7 +16,7 @@ begin
 
     test "can be rendered more than once" do
       template = Tilt::RDocTemplate.new { |t| "= Hello World!" }
-      3.times { template.render }
+      3.times { assert_equal "<h1>Hello World!</h1>\n", template.render }
     end
   end
 rescue LoadError => boom

@@ -18,7 +18,11 @@ begin
 
     test "can be rendered more than once" do
       template = Tilt::NokogiriTemplate.new { |t| "xml.em 'Hello World!'" }
-      3.times { template.render }
+      3.times do
+        doc = Nokogiri.XML template.render
+        assert_equal 'Hello World!', doc.root.text
+        assert_equal 'em', doc.root.name
+      end
     end
 
     test "passing locals" do

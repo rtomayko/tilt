@@ -16,7 +16,7 @@ begin
 
     test "can be rendered more than once" do
       template = Tilt::RedClothTemplate.new { |t| "h1. Hello World!" }
-      3.times { template.render }
+      3.times { assert_equal "<h1>Hello World!</h1>", template.render }
     end
   end
 rescue LoadError => boom

@@ -16,7 +16,7 @@ begin
 
     test "can be rendered more than once" do
       template = Tilt::BuilderTemplate.new { |t| "xml.em 'Hello World!'" }
-      3.times { template.render }
+      3.times { assert_equal "<em>Hello World!</em>\n", template.render }
     end
 
     test "passing locals" do
