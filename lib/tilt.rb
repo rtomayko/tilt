@@ -619,7 +619,7 @@ module Tilt
       if data.respond_to?(:to_str)
         locals[:xml] = xml
         block &&= proc { yield.gsub(/^<\?xml version=\"1\.0\"\?>\n?/, "") }
-        super(scope, locals, &block)
+        evaluate_source(scope, locals, &block)
       elsif data.kind_of?(Proc)
         data.call(xml)
       end
@@ -647,7 +647,7 @@ module Tilt
       xml = ::Builder::XmlMarkup.new(:indent => 2)
       if data.respond_to?(:to_str)
         locals[:xml] = xml
-        super(scope, locals, &block)
+        evaluate_source(scope, locals, &block)
       elsif data.kind_of?(Proc)
         data.call(xml)
       end

@@ -16,6 +16,11 @@ begin
       assert_equal 'em', doc.root.name
     end
 
+    test "can be rendered more than once" do
+      template = Tilt::NokogiriTemplate.new { |t| "xml.em 'Hello World!'" }
+      3.times { template.render }
+    end
+
     test "passing locals" do
       template = Tilt::NokogiriTemplate.new { "xml.em('Hey ' + name + '!')" }
       doc = Nokogiri.XML template.render(Object.new, :name => 'Joe')

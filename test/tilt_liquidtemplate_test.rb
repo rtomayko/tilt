@@ -14,6 +14,11 @@ begin
       assert_equal "Hello World!", template.render
     end
 
+    test "can be rendered more than once" do
+      template = Tilt::LiquidTemplate.new { |t| "Hello World!" }
+      3.times { template.render }
+    end
+
     test "passing locals" do
       template = Tilt::LiquidTemplate.new { "Hey {{ name }}!" }
       assert_equal "Hey Joe!", template.render(nil, :name => 'Joe')

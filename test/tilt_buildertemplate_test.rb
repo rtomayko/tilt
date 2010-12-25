@@ -14,6 +14,11 @@ begin
       assert_equal "<em>Hello World!</em>\n", template.render
     end
 
+    test "can be rendered more than once" do
+      template = Tilt::BuilderTemplate.new { |t| "xml.em 'Hello World!'" }
+      3.times { template.render }
+    end
+
     test "passing locals" do
       template = Tilt::BuilderTemplate.new { "xml.em('Hey ' + name + '!')" }
       assert_equal "<em>Hey Joe!</em>\n", template.render(Object.new, :name => 'Joe')

@@ -17,6 +17,11 @@ begin
       assert_equal "<p>Hello World!</p>\n", template.render
     end
 
+    test "can be rendered more than once" do
+      template = Tilt::HamlTemplate.new { |t| "%p Hello World!" }
+      3.times { template.render }
+    end
+
     test "passing locals" do
       template = Tilt::HamlTemplate.new { "%p= 'Hey ' + name + '!'" }
       assert_equal "<p>Hey Joe!</p>\n", template.render(Object.new, :name => 'Joe')

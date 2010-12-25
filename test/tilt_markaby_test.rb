@@ -26,6 +26,11 @@ begin
       assert_equal "<html></html>", tilt.render
     end
 
+    test "can be rendered more than once" do
+      tilt = ::Tilt::MarkabyTemplate.new { "html do; end" }
+      3.times { tilt.render }
+    end
+
     test "should evaluate a template file in the scope given" do
       scope = Object.new
       def scope.foo

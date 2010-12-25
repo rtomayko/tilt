@@ -18,6 +18,11 @@ begin
       assert_equal "Hello World!", template.render
     end
 
+    test "can be rendered more than once" do
+      template = Tilt::RadiusTemplate.new { |t| "Hello World!" }
+      3.times { template.render }
+    end
+
     test "passing locals" do
       template = Tilt::RadiusTemplate.new { "Hey <r:name />!" }
       assert_equal "Hey Joe!", template.render(nil, :name => 'Joe')
