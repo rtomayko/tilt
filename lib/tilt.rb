@@ -615,15 +615,18 @@ module Tilt
     def prepare; end
 
     def evaluate(scope, locals, &block)
-      xml = ::Nokogiri::XML::Builder.new
-      if data.respond_to?(:to_str)
-        locals[:xml] = xml
-        block &&= proc { yield.gsub(/^<\?xml version=\"1\.0\"\?>\n?/, "") }
-        evaluate_source(scope, locals, &block)
-      elsif data.kind_of?(Proc)
-        data.call(xml)
-      end
-      xml.to_xml
+      block &&= proc { yield .gsub(/^<\?xml version=\"1\.0\"\?>\n?/, "") }
+      return super(scope, locals, &block) if data.respond_to?(:to_str)
+      ::Nokogiri::XML::Builder.new.tap(&data).to_xml
+    end
+
+    def precompiled_preamble(locals)
+      return super if locals.include? :xml
+      "xml = ::Nokogiri::XML::Builder.new\n#{super}"
+    end
+
+    def precompiled_postamble(locals)
+      "xml.to_xml"
     end
 
     def precompiled_template(locals)
@@ -640,18 +643,23 @@ module Tilt
       require_template_library 'builder'
     end
 
-    def prepare
-    end
+    def prepare; end
 
     def evaluate(scope, locals, &block)
+      block &&= proc { yield .gsub(/^<\?xml version=\"1\.0\"\?>\n?/, "") }
+      return super(scope, locals, &block) if data.respond_to?(:to_str)
       xml = ::Builder::XmlMarkup.new(:indent => 2)
-      if data.respond_to?(:to_str)
-        locals[:xml] = xml
-        evaluate_source(scope, locals, &block)
-      elsif data.kind_of?(Proc)
-        data.call(xml)
-      end
+      data.call(xml)
       xml.target!
+    end
+
+    def precompiled_preamble(locals)
+      return super if locals.include? :xml
+      "xml = ::Builder::XmlMarkup.new(:indent => 2)\n#{super}"
+    end
+
+    def precompiled_postamble(locals)
+      "xml.target!"
     end
 
     def precompiled_template(locals)
