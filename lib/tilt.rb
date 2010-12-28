@@ -171,11 +171,11 @@ module Tilt
       # Redefine itself to use method compilation the next time:
       def self.evaluate(scope, locals, &block)
         method = compiled_method(locals.keys)
-        method.bind(scope).call(locals, &block)
+        method.bind(scope).call(locals, &prepared_yield(&block))
       end
 
       # Use instance_eval the first time:
-      evaluate_source(scope, locals, &block)
+      evaluate_source(scope, locals, &prepared_yield(&block))
     end
 
     # Generates all template source by combining the preamble, template, and
@@ -291,6 +291,10 @@ module Tilt
 
     def extract_magic_comment(script)
       script.slice(/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*$/)
+    end
+
+    def prepared_yield(&block)
+      block
     end
 
     # Special case Ruby 1.9.1's broken yield.
@@ -615,8 +619,7 @@ module Tilt
     def prepare; end
 
     def evaluate(scope, locals, &block)
-      block &&= proc { yield .gsub(/^<\?xml version=\"1\.0\"\?>\n?/, "") }
-      return super(scope, locals, &block) if data.respond_to?(:to_str)
+      return super if data.respond_to?(:to_str)
       ::Nokogiri::XML::Builder.new.tap(&data).to_xml
     end
 
@@ -632,6 +635,10 @@ module Tilt
     def precompiled_template(locals)
       data.to_str
     end
+
+    def prepared_yield
+      proc { yield.gsub(/^<\?xml version=\"1\.0\"\?>\n?/, "") } if block_given?
+    end
   end
   register 'nokogiri', NokogiriTemplate
 
@@ -646,7 +653,6 @@ module Tilt
     def prepare; end
 
     def evaluate(scope, locals, &block)
-      block &&= proc { yield .gsub(/^<\?xml version=\"1\.0\"\?>\n?/, "") }
       return super(scope, locals, &block) if data.respond_to?(:to_str)
       xml = ::Builder::XmlMarkup.new(:indent => 2)
       data.call(xml)

@@ -33,7 +33,7 @@ begin
 
     test "passing a block for yield" do
       template = Tilt::BuilderTemplate.new { "xml.em('Hey ' + yield + '!')" }
-      assert_equal "<em>Hey Joe!</em>\n", template.render { 'Joe' }
+      3.times { assert_equal "<em>Hey Joe!</em>\n", template.render { 'Joe' }}
     end
 
     test "block style templates" do
@@ -42,6 +42,16 @@ begin
           lambda { |xml| xml.em('Hey Joe!') }
         end
       assert_equal "<em>Hey Joe!</em>\n", template.render
+    end
+
+    test "allows nesting raw XML" do
+      subtemplate = Tilt::BuilderTemplate.new { "xml.em 'Hello World!'" }
+      template = Tilt::BuilderTemplate.new { "xml.strong { xml << yield }" }
+      3.times do
+        options = { :xml => Builder::XmlMarkup.new }
+        assert_equal "<strong>\n<em>Hello World!</em>\n</strong>\n",
+          template.render(options) { subtemplate.render(options) }
+      end
     end
   end
 rescue LoadError
