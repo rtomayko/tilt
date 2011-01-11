@@ -11,6 +11,11 @@ class StringTemplateTest < Test::Unit::TestCase
     assert_equal "Hello World!", template.render
   end
 
+  test "can be rendered more than once" do
+    template = Tilt::StringTemplate.new { |t| "Hello World!" }
+    3.times { assert_equal "Hello World!", template.render }
+  end
+
   test "passing locals" do
     template = Tilt::StringTemplate.new { 'Hey #{name}!' }
     assert_equal "Hey Joe!", template.render(Object.new, :name => 'Joe')

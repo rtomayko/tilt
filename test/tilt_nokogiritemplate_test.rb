@@ -16,6 +16,15 @@ begin
       assert_equal 'em', doc.root.name
     end
 
+    test "can be rendered more than once" do
+      template = Tilt::NokogiriTemplate.new { |t| "xml.em 'Hello World!'" }
+      3.times do
+        doc = Nokogiri.XML template.render
+        assert_equal 'Hello World!', doc.root.text
+        assert_equal 'em', doc.root.name
+      end
+    end
+
     test "passing locals" do
       template = Tilt::NokogiriTemplate.new { "xml.em('Hey ' + name + '!')" }
       doc = Nokogiri.XML template.render(Object.new, :name => 'Joe')
@@ -34,9 +43,11 @@ begin
 
     test "passing a block for yield" do
       template = Tilt::NokogiriTemplate.new { "xml.em('Hey ' + yield + '!')" }
-      doc = Nokogiri.XML template.render { 'Joe' }
-      assert_equal 'Hey Joe!', doc.root.text
-      assert_equal 'em', doc.root.name
+      3.times do
+        doc = Nokogiri.XML template.render { 'Joe' }
+        assert_equal 'Hey Joe!', doc.root.text
+        assert_equal 'em', doc.root.name
+      end
     end
 
     test "block style templates" do
@@ -52,10 +63,12 @@ begin
     test "allows nesting raw XML, API-compatible to Builder" do
       subtemplate = Tilt::NokogiriTemplate.new { "xml.em 'Hello World!'" }
       template = Tilt::NokogiriTemplate.new { "xml.strong { xml << yield }" }
-      options = { :xml => Nokogiri::XML::Builder.new }
-      doc = Nokogiri.XML(template.render(options) { subtemplate.render(options) })
-      assert_equal 'Hello World!', doc.root.text.strip
-      assert_equal 'strong', doc.root.name
+      3.times do
+        options = { :xml => Nokogiri::XML::Builder.new }
+        doc = Nokogiri.XML(template.render(options) { subtemplate.render(options) })
+        assert_equal 'Hello World!', doc.root.text.strip
+        assert_equal 'strong', doc.root.name
+      end
     end
   end
 rescue LoadError

@@ -10,14 +10,14 @@ begin
       Tilt.register('md', Tilt::BlueClothTemplate)
       Tilt.register('mkd', Tilt::BlueClothTemplate)
     end
-    
+
     teardown do
       # Need to revert to RDiscount, otherwise the RDiscount test will fail
       Tilt.register('markdown', Tilt::RDiscountTemplate)
       Tilt.register('md', Tilt::RDiscountTemplate)
       Tilt.register('mkd', Tilt::RDiscountTemplate)
     end
-    
+
     test "registered for '.markdown' files unless RDiscount is loaded" do
       unless defined?(RDiscount)
         assert_equal Tilt::BlueClothTemplate, Tilt['test.markdown']
@@ -39,6 +39,11 @@ begin
     test "preparing and evaluating templates on #render" do
       template = Tilt::BlueClothTemplate.new { |t| "# Hello World!" }
       assert_equal "<h1>Hello World!</h1>", template.render
+    end
+
+    test "can be rendered more than once" do
+      template = Tilt::BlueClothTemplate.new { |t| "# Hello World!" }
+      3.times { assert_equal "<h1>Hello World!</h1>", template.render }
     end
 
     test "smartypants when :smart is set" do

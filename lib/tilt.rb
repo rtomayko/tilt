@@ -175,11 +175,11 @@ module Tilt
       # Redefine itself to use method compilation the next time:
       def self.evaluate(scope, locals, &block)
         method = compiled_method(locals.keys)
-        method.bind(scope).call(locals, &block)
+        method.bind(scope).call(locals, &prepared_yield(&block))
       end
 
       # Use instance_eval the first time:
-      evaluate_source(scope, locals, &block)
+      evaluate_source(scope, locals, &prepared_yield(&block))
     end
 
     # Generates all template source by combining the preamble, template, and
@@ -298,6 +298,10 @@ module Tilt
       comment = script.slice(/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*$/)
       return comment if comment and not %w[ascii-8bit binary].include?($1.downcase)
       "# coding: #{@default_encoding}" if @default_encoding
+    end
+
+    def prepared_yield(&block)
+      block
     end
 
     # Special case Ruby 1.9.1's broken yield.
@@ -622,19 +626,25 @@ module Tilt
     def prepare; end
 
     def evaluate(scope, locals, &block)
-      xml = ::Nokogiri::XML::Builder.new
-      if data.respond_to?(:to_str)
-        locals[:xml] = xml
-        block &&= proc { yield.gsub(/^<\?xml version=\"1\.0\"\?>\n?/, "") }
-        super(scope, locals, &block)
-      elsif data.kind_of?(Proc)
-        data.call(xml)
-      end
-      xml.to_xml
+      return super if data.respond_to?(:to_str)
+      ::Nokogiri::XML::Builder.new.tap(&data).to_xml
+    end
+
+    def precompiled_preamble(locals)
+      return super if locals.include? :xml
+      "xml = ::Nokogiri::XML::Builder.new\n#{super}"
+    end
+
+    def precompiled_postamble(locals)
+      "xml.to_xml"
     end
 
     def precompiled_template(locals)
       data.to_str
+    end
+
+    def prepared_yield
+      proc { yield.gsub(/^<\?xml version=\"1\.0\"\?>\n?/, "") } if block_given?
     end
   end
   register 'nokogiri', NokogiriTemplate
@@ -647,18 +657,22 @@ module Tilt
       require_template_library 'builder'
     end
 
-    def prepare
-    end
+    def prepare; end
 
     def evaluate(scope, locals, &block)
+      return super(scope, locals, &block) if data.respond_to?(:to_str)
       xml = ::Builder::XmlMarkup.new(:indent => 2)
-      if data.respond_to?(:to_str)
-        locals[:xml] = xml
-        super(scope, locals, &block)
-      elsif data.kind_of?(Proc)
-        data.call(xml)
-      end
+      data.call(xml)
       xml.target!
+    end
+
+    def precompiled_preamble(locals)
+      return super if locals.include? :xml
+      "xml = ::Builder::XmlMarkup.new(:indent => 2)\n#{super}"
+    end
+
+    def precompiled_postamble(locals)
+      "xml.target!"
     end
 
     def precompiled_template(locals)
