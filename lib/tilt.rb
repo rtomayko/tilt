@@ -164,6 +164,10 @@ module Tilt
         raise NotImplementedError
       end
     end
+    
+    def evaluate(scope, locals, &block)
+      cached_evaluate(scope, locals, &block)
+    end
 
     # Process the template and return the result. The first time this
     # method is called, the template source is evaluated with instance_eval.
@@ -171,15 +175,15 @@ module Tilt
     # unbound method which will lead to better performance. In any case,
     # template executation is guaranteed to be performed in the scope object
     # with the locals specified and with support for yielding to the block.
-    def evaluate(scope, locals, &block)
+    def cached_evaluate(scope, locals, &block)
       # Redefine itself to use method compilation the next time:
-      def self.evaluate(scope, locals, &block)
+      def self.cached_evaluate(scope, locals, &block)
         method = compiled_method(locals.keys)
-        method.bind(scope).call(locals, &prepared_yield(&block))
+        method.bind(scope).call(locals, &block)
       end
 
       # Use instance_eval the first time:
-      evaluate_source(scope, locals, &prepared_yield(&block))
+      evaluate_source(scope, locals, &block)
     end
 
     # Generates all template source by combining the preamble, template, and
@@ -298,10 +302,6 @@ module Tilt
       comment = script.slice(/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*$/)
       return comment if comment and not %w[ascii-8bit binary].include?($1.downcase)
       "# coding: #{@default_encoding}" if @default_encoding
-    end
-
-    def prepared_yield(&block)
-      block
     end
 
     # Special case Ruby 1.9.1's broken yield.
@@ -624,10 +624,15 @@ module Tilt
     end
 
     def prepare; end
-
+    
     def evaluate(scope, locals, &block)
-      return super if data.respond_to?(:to_str)
-      ::Nokogiri::XML::Builder.new.tap(&data).to_xml
+      block &&= proc { yield.gsub(/^<\?xml version=\"1\.0\"\?>\n?/, "") }
+      
+      if data.respond_to?(:to_str)
+        super(scope, locals, &block)
+      else
+        ::Nokogiri::XML::Builder.new.tap(&data).to_xml
+      end
     end
 
     def precompiled_preamble(locals)
