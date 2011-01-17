@@ -1,6 +1,6 @@
 module Tilt
   TOPOBJECT = defined?(BasicObject) ? BasicObject : Object
-  VERSION = '1.2.1'
+  VERSION = '1.2.2'
 
   @template_mappings = {}
 
