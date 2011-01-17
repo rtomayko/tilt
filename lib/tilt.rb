@@ -647,10 +647,6 @@ module Tilt
     def precompiled_template(locals)
       data.to_str
     end
-
-    def prepared_yield
-      proc { yield.gsub(/^<\?xml version=\"1\.0\"\?>\n?/, "") } if block_given?
-    end
   end
   register 'nokogiri', NokogiriTemplate
 
