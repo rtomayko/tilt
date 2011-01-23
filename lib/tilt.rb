@@ -772,6 +772,23 @@ module Tilt
     end
   end
 
+  # Maruku markdown implementation. See:
+  # http://maruku.rubyforge.org/
+  class MarukuTemplate < Template
+    def initialize_engine
+      return if defined? ::Maruku
+      require_template_library 'maruku'
+    end
+
+    def prepare
+      @engine = Maruku.new(data, options)
+      @output = nil
+    end
+
+    def evaluate(scope, locals, &block)
+      @output ||= @engine.to_html
+    end
+  end
 
   # RedCloth implementation. See:
   # http://redcloth.org/
