@@ -773,6 +773,25 @@ module Tilt
   end
 
 
+  # Kramdown Markdown implementation. See:
+  # http://kramdown.rubyforge.org/
+  class KramdownTemplate < Template
+    def initialize_engine
+      return if defined? ::Kramdown
+      require_template_library 'kramdown'
+    end
+
+    def prepare
+      @engine = Kramdown::Document.new(data, options)
+      @output = nil
+    end
+
+    def evaluate(scope, locals, &block)
+      @output ||= @engine.to_html
+    end
+  end
+
+
   # RedCloth implementation. See:
   # http://redcloth.org/
   class RedClothTemplate < Template
