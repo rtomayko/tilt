@@ -753,7 +753,7 @@ module Tilt
   # BlueCloth Markdown implementation. See:
   # http://deveiate.org/projects/BlueCloth/
   #
-  # RDiscount is a simple text filter. It does not support +scope+ or
+  # BlueCloth is a simple text filter. It does not support +scope+ or
   # +locals+. The +:smartypants+ and +:escape_html+ options may be set true
   # to enable those flags on the underlying BlueCloth object.
   class BlueClothTemplate < Template
