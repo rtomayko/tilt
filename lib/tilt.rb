@@ -2,7 +2,7 @@ module Tilt
   TOPOBJECT = defined?(BasicObject) ? BasicObject : Object
   VERSION = '1.2.2'
 
-  @template_mappings = {}
+  @template_mappings = Hash.new { |h, k| h[k] = [] }
 
   # Hash of template path pattern => template implementation class mappings.
   def self.mappings
@@ -12,9 +12,18 @@ module Tilt
   # Register a template implementation by file extension.
   def self.register(ext, template_class)
     ext = ext.to_s.sub(/^\./, '')
-    mappings[ext.downcase] = template_class
+    mappings[ext.downcase].unshift(template_class).uniq!
   end
-
+  
+  # Makes a template class prefered for all its file extensions.
+  def self.prefer(template_class)
+    mappings.each do |ext, klasses|
+      if klasses.include?(template_class)
+        register(ext, template_class)
+      end
+    end
+  end
+  
   # Returns true when a template exists on an exact match of the provided file extension
   def self.registered?(ext)
     mappings.key?(ext.downcase)
@@ -34,11 +43,39 @@ module Tilt
   # extension. Return nil when no implementation is found.
   def self.[](file)
     pattern = file.to_s.downcase
-    unless registered?(pattern)
+    until pattern.empty? || registered?(pattern)
       pattern = File.basename(pattern)
-      pattern.sub!(/^[^.]*\.?/, '') until (pattern.empty? || registered?(pattern))
+      pattern.sub!(/^[^.]*\.?/, '') 
     end
-    @template_mappings[pattern]
+    klasses = @template_mappings[pattern]
+    
+    # Try to find an engine which is already loaded:
+    template = klasses.detect do |klass|
+      if klass.respond_to?(:engine_initialized?)
+        klass.engine_initialized?
+      end
+    end
+    
+    return template if template
+    
+    # Try each of the classes until one succeeds. If all of them fails,
+    # we'll raise the error of the first, prefered class.
+    first_failure = nil
+    
+    klasses.each do |klass|
+      begin
+        klass.new { '' }
+      rescue Exception => ex
+        first_failure ||= ex
+        next
+      else
+        return klass
+      end
+    end
+    
+    if first_failure
+      raise first_failure
+    end
   end
 
   # Deprecated module.
@@ -775,9 +812,6 @@ module Tilt
       @output ||= @engine.to_html
     end
   end
-  register 'markdown', RDiscountTemplate
-  register 'mkd', RDiscountTemplate
-  register 'md', RDiscountTemplate
 
 
   # BlueCloth Markdown implementation. See:
@@ -804,7 +838,16 @@ module Tilt
       @output ||= @engine.to_html
     end
   end
-
+  
+  register 'markdown', BlueClothTemplate
+  register 'mkd', BlueClothTemplate
+  register 'md', BlueClothTemplate
+  
+  register 'markdown', RDiscountTemplate
+  register 'mkd', RDiscountTemplate
+  register 'md', RDiscountTemplate
+  
+  
 
   # RedCloth implementation. See:
   # http://redcloth.org/
