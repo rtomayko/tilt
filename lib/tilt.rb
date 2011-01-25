@@ -69,6 +69,8 @@ module Tilt
     class << self
       attr_accessor :engine_initialized
       alias engine_initialized? engine_initialized
+
+      attr_accessor :default_mime_type
     end
 
     # Create a new template with the file, line, and options specified. By
@@ -474,6 +476,8 @@ module Tilt
   # Haml template implementation. See:
   # http://haml.hamptoncatlin.com/
   class HamlTemplate < Template
+    self.default_mime_type = 'text/html'
+
     def initialize_engine
       return if defined? ::Haml::Engine
       require_template_library 'haml'
@@ -533,6 +537,8 @@ module Tilt
   #
   # Sass templates do not support object scopes, locals, or yield.
   class SassTemplate < Template
+    self.default_mime_type = 'text/css'
+
     def initialize_engine
       return if defined? ::Sass::Engine
       require_template_library 'sass'
@@ -567,6 +573,8 @@ module Tilt
   #
   # Less templates do not support object scopes, locals, or yield.
   class LessTemplate < Template
+    self.default_mime_type = 'text/css'
+
     def initialize_engine
       return if defined? ::Less::Engine
       require_template_library 'less'
@@ -588,6 +596,8 @@ module Tilt
   #
   # CoffeeScript templates do not support object scopes, locals, or yield.
   class CoffeeScriptTemplate < Template
+    self.default_mime_type = 'application/javascript'
+
     @@default_no_wrap = false
 
     def self.default_no_wrap
@@ -618,6 +628,8 @@ module Tilt
   # Nokogiri template implementation. See:
   # http://nokogiri.org/
   class NokogiriTemplate < Template
+    self.default_mime_type = 'text/xml'
+
     def initialize_engine
       return if defined?(::Nokogiri)
       require_template_library 'nokogiri'
@@ -653,6 +665,8 @@ module Tilt
   # Builder template implementation. See:
   # http://builder.rubyforge.org/
   class BuilderTemplate < Template
+    self.default_mime_type = 'text/xml'
+
     def initialize_engine
       return if defined?(::Builder)
       require_template_library 'builder'
@@ -727,6 +741,8 @@ module Tilt
   # +locals+. The +:smart+ and +:filter_html+ options may be set true
   # to enable those flags on the underlying RDiscount object.
   class RDiscountTemplate < Template
+    self.default_mime_type = 'text/html'
+
     def flags
       [:smart, :filter_html].select { |flag| options[flag] }
     end
@@ -757,6 +773,8 @@ module Tilt
   # +locals+. The +:smartypants+ and +:escape_html+ options may be set true
   # to enable those flags on the underlying BlueCloth object.
   class BlueClothTemplate < Template
+    self.default_mime_type = 'text/html'
+
     def initialize_engine
       return if defined? ::BlueCloth
       require_template_library 'bluecloth'
@@ -800,6 +818,8 @@ module Tilt
   # 'rdoc/markup/to_html' at load time when using this template
   # engine.
   class RDocTemplate < Template
+    self.default_mime_type = 'text/html'
+
     def initialize_engine
       return if defined?(::RDoc::Markup)
       require_template_library 'rdoc/markup'
