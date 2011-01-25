@@ -379,9 +379,12 @@ module Tilt
     def self.default_output_variable=(name)
       @@default_output_variable = name
     end
+    
+    def self.engine_initialized?
+      defined? ::ERB
+    end
 
     def initialize_engine
-      return if defined? ::ERB
       require_template_library 'erb'
     end
 
@@ -438,8 +441,11 @@ module Tilt
   #                   the engine class instead of the default. All content
   #                   within <%= %> blocks will be automatically html escaped.
   class ErubisTemplate < ERBTemplate
+    def self.engine_initialized?
+      defined? ::Erubis
+    end
+    
     def initialize_engine
-      return if defined? ::Erubis
       require_template_library 'erubis'
     end
 
@@ -474,8 +480,11 @@ module Tilt
   # Haml template implementation. See:
   # http://haml.hamptoncatlin.com/
   class HamlTemplate < Template
+    def self.engine_initialized?
+      defined? ::Haml::Engine
+    end
+    
     def initialize_engine
-      return if defined? ::Haml::Engine
       require_template_library 'haml'
     end
 
@@ -533,8 +542,11 @@ module Tilt
   #
   # Sass templates do not support object scopes, locals, or yield.
   class SassTemplate < Template
+    def self.engine_initialized?
+      defined? ::Sass::Engine
+    end
+    
     def initialize_engine
-      return if defined? ::Sass::Engine
       require_template_library 'sass'
     end
 
@@ -567,8 +579,11 @@ module Tilt
   #
   # Less templates do not support object scopes, locals, or yield.
   class LessTemplate < Template
+    def self.engine_initialized?
+      defined? ::Less::Engine
+    end
+    
     def initialize_engine
-      return if defined? ::Less::Engine
       require_template_library 'less'
     end
 
@@ -597,9 +612,12 @@ module Tilt
     def self.default_no_wrap=(value)
       @@default_no_wrap = value
     end
-
+    
+    def self.engine_initialized?
+      defined? ::CoffeeScript
+    end
+    
     def initialize_engine
-      return if defined? ::CoffeeScript
       require_template_library 'coffee_script'
     end
 
@@ -618,8 +636,11 @@ module Tilt
   # Nokogiri template implementation. See:
   # http://nokogiri.org/
   class NokogiriTemplate < Template
+    def self.engine_initialized?
+      defined? ::Nokogiri
+    end
+    
     def initialize_engine
-      return if defined?(::Nokogiri)
       require_template_library 'nokogiri'
     end
 
@@ -653,8 +674,11 @@ module Tilt
   # Builder template implementation. See:
   # http://builder.rubyforge.org/
   class BuilderTemplate < Template
+    def self.engine_initialized?
+      defined? ::Builder
+    end
+    
     def initialize_engine
-      return if defined?(::Builder)
       require_template_library 'builder'
     end
 
@@ -697,8 +721,11 @@ module Tilt
   # It's suggested that your program require 'liquid' at load
   # time when using this template engine.
   class LiquidTemplate < Template
+    def self.engine_initialized?
+      defined? ::Liquid::Template
+    end
+    
     def initialize_engine
-      return if defined? ::Liquid::Template
       require_template_library 'liquid'
     end
 
@@ -731,8 +758,11 @@ module Tilt
       [:smart, :filter_html].select { |flag| options[flag] }
     end
 
+    def self.engine_initialized?
+      defined? ::RDiscount
+    end
+    
     def initialize_engine
-      return if defined? ::RDiscount
       require_template_library 'rdiscount'
     end
 
@@ -757,8 +787,11 @@ module Tilt
   # +locals+. The +:smartypants+ and +:escape_html+ options may be set true
   # to enable those flags on the underlying BlueCloth object.
   class BlueClothTemplate < Template
+    def self.engine_initialized?
+      defined? ::BlueCloth
+    end
+    
     def initialize_engine
-      return if defined? ::BlueCloth
       require_template_library 'bluecloth'
     end
 
@@ -776,8 +809,11 @@ module Tilt
   # RedCloth implementation. See:
   # http://redcloth.org/
   class RedClothTemplate < Template
+    def self.engine_initialized?
+      defined? ::RedCloth
+    end
+    
     def initialize_engine
-      return if defined? ::RedCloth
       require_template_library 'redcloth'
     end
 
@@ -800,8 +836,11 @@ module Tilt
   # 'rdoc/markup/to_html' at load time when using this template
   # engine.
   class RDocTemplate < Template
+    def self.engine_initialized?
+      defined? ::RDoc::Markup
+    end
+    
     def initialize_engine
-      return if defined?(::RDoc::Markup)
       require_template_library 'rdoc/markup'
       require_template_library 'rdoc/markup/to_html'
     end
@@ -822,8 +861,11 @@ module Tilt
   # Radius Template
   # http://github.com/jlong/radius/
   class RadiusTemplate < Template
+    def self.engine_initialized?
+      defined? ::Radius
+    end
+    
     def initialize_engine
-      return if defined? ::Radius
       require_template_library 'radius'
     end
 
@@ -866,8 +908,11 @@ module Tilt
       end
     end
 
+    def self.engine_initialized?
+      defined? ::Markaby
+    end
+    
     def initialize_engine
-      return if defined? ::Markaby
       require_template_library 'markaby'
     end
 
