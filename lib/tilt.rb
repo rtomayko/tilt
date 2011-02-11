@@ -918,4 +918,33 @@ module Tilt
     end
   end
   register 'mab', MarkabyTemplate
+
+
+  # Mustache
+  # https://github.com/defunkt/mustache
+  class MustacheTemplate < Template
+    def initialize_engine
+      return if defined? ::Mustache
+      require_template_library 'mustache'
+    end
+
+    def prepare
+      markup = ::Mustache.new
+      markup.template = data
+      @engine = markup
+    end
+
+    def evaluate(scope, locals, &block)
+      locals = locals.inject({}){ |h,(k,v)| h[k.to_s] = v ; h }
+      if scope.respond_to?(:to_h)
+        scope  = scope.to_h.inject({}){ |h,(k,v)| h[k.to_s] = v ; h }
+        locals = scope.merge(locals)
+      end
+      locals['yield'] = block.nil? ? '' : yield
+      locals['content'] = locals['yield']
+      @engine.render(locals)
+    end
+  end
+  register 'mustache', MustacheTemplate
+
 end

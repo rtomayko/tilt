@@ -37,6 +37,7 @@ Support for these template engines is included with the package:
     Markaby                    .mab              markaby
     Nokogiri                   .nokogiri         nokogiri
     CoffeeScript               .coffee           coffee-script (+node coffee)
+    Mustache                   .mustache         mustache
 
 These template engines ship with their own Tilt integration:
 
