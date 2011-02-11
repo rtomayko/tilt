@@ -38,6 +38,7 @@ Support for these template engines is included with the package:
     Nokogiri                   .nokogiri         nokogiri
     CoffeeScript               .coffee           coffee-script (+node coffee)
     Mustache                   .mustache         mustache
+    H2o                        .h2o              h2o
 
 These template engines ship with their own Tilt integration:
 

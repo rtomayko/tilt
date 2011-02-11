@@ -947,4 +947,30 @@ module Tilt
   end
   register 'mustache', MustacheTemplate
 
+
+  # H2o
+  # https://github.com/speedmax/h2o
+  class H2oTemplate < Template
+    def initialize_engine
+      return if defined? ::H2o
+      require_template_library 'h2o'
+    end
+
+    def prepare
+      @engine = H2o::Template.parse(data)
+    end
+
+    def evaluate(scope, locals, &block)
+      locals = locals.inject({}){ |h,(k,v)| h[k.to_s] = v ; h }
+      if scope.respond_to?(:to_h)
+        scope  = scope.to_h.inject({}){ |h,(k,v)| h[k.to_s] = v ; h }
+        locals = scope.merge(locals)
+      end
+      locals['yield'] = block.nil? ? '' : yield
+      locals['content'] = locals['yield']
+      @engine.render(locals)
+    end
+  end
+  register 'h2o', H2oTemplate
+
 end
