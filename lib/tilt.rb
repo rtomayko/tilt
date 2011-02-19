@@ -561,6 +561,8 @@ module Tilt
 
   # Sass's new .scss type template implementation.
   class ScssTemplate < SassTemplate
+    self.default_mime_type = 'text/css'
+
   private
     def sass_options
       options.merge(:filename => eval_file, :line => line, :syntax => :scss)
