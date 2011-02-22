@@ -454,7 +454,7 @@ module Tilt
     end
 
     def precompiled_preamble(locals)
-      [super, "#{@outvar} = ''"].join("\n")
+      [super, "#{@outvar} = _buf = ''"].join("\n")
     end
 
     def precompiled_postamble(locals)
