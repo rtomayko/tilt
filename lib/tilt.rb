@@ -446,19 +446,19 @@ module Tilt
     end
 
     def prepare
-      @options.merge!(:preamble => false, :postamble => false)
       @outvar = options.delete(:outvar) || self.class.default_output_variable
+      @options.merge!(:preamble => false, :postamble => false, :bufname => @outvar)
       engine_class = options.delete(:engine_class)
       engine_class = ::Erubis::EscapedEruby if options.delete(:escape_html)
       @engine = (engine_class || ::Erubis::Eruby).new(data, options)
     end
 
     def precompiled_preamble(locals)
-      [super, "#{@outvar} = _buf = ''"].join("\n")
+      [super, "#{@outvar} = ''"].join("\n")
     end
 
     def precompiled_postamble(locals)
-      ["_buf", super].join("\n")
+      [@outvar, super].join("\n")
     end
 
     # Erubis doesn't have ERB's line-off-by-one under 1.9 problem.
