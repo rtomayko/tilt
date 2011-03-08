@@ -2,6 +2,7 @@ module Tilt
   TOPOBJECT = defined?(BasicObject) ? BasicObject : Object
   VERSION = '1.2.2'
 
+  @preferred_mappings = Hash.new
   @template_mappings = Hash.new { |h, k| h[k] = [] }
 
   # Hash of template path pattern => template implementation class mappings.
@@ -13,20 +14,34 @@ module Tilt
   def self.register(ext, template_class)
     ext = ext.to_s.sub(/^\./, '')
     mappings[ext.downcase].unshift(template_class).uniq!
+    ext
   end
   
-  # Makes a template class prefered for all its file extensions.
-  def self.prefer(template_class)
-    mappings.each do |ext, klasses|
-      if klasses.include?(template_class)
-        register(ext, template_class)
+  # Makes a template class preferred for the given file extensions. If you
+  # don't provide any extensions, it will be preferred for all its already
+  # registered extensions:
+  # 
+  #   # Prefer RDiscount for its registered file extensions:
+  #   Tilt.prefer(Tilt::RDiscountTemplate)
+  #
+  #   # Prefer RDiscount only for the .md extensions:
+  #   Tilt.prefer(Tilt::RDiscountTemplate, '.md')
+  def self.prefer(template_class, *extensions)
+    if extensions.empty?
+      mappings.each do |ext, klass|
+        @preferred_mappings[ext] = template_class
+      end
+    else
+      extensions.each do |ext|
+        ext = register(ext, template_class)
+        @preferred_mappings[ext] = template_class
       end
     end
   end
   
   # Returns true when a template exists on an exact match of the provided file extension
   def self.registered?(ext)
-    mappings.key?(ext.downcase)
+    mappings.key?(ext.downcase) && !mappings[ext.downcase].empty?
   end
 
   # Create a new template for the given file using the file's extension
@@ -47,9 +62,15 @@ module Tilt
       pattern = File.basename(pattern)
       pattern.sub!(/^[^.]*\.?/, '') 
     end
+
+    # Try to find a preferred engine.
+    klass = @preferred_mappings[pattern]
+    return klass if klass
+
+    # Fall back to the general list of mappings.
     klasses = @template_mappings[pattern]
     
-    # Try to find an engine which is already loaded:
+    # Try to find an engine which is already loaded.
     template = klasses.detect do |klass|
       if klass.respond_to?(:engine_initialized?)
         klass.engine_initialized?
@@ -59,7 +80,7 @@ module Tilt
     return template if template
     
     # Try each of the classes until one succeeds. If all of them fails,
-    # we'll raise the error of the first, prefered class.
+    # we'll raise the error of the first class.
     first_failure = nil
     
     klasses.each do |klass|
@@ -73,9 +94,7 @@ module Tilt
       end
     end
     
-    if first_failure
-      raise first_failure
-    end
+    raise first_failure if first_failure
   end
 
   # Deprecated module.
