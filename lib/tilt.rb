@@ -2,7 +2,8 @@ module Tilt
   TOPOBJECT = defined?(BasicObject) ? BasicObject : Object
   VERSION = '1.2.2'
 
-  @template_mappings = {}
+  @preferred_mappings = Hash.new
+  @template_mappings = Hash.new { |h, k| h[k] = [] }
 
   # Hash of template path pattern => template implementation class mappings.
   def self.mappings
@@ -12,12 +13,35 @@ module Tilt
   # Register a template implementation by file extension.
   def self.register(ext, template_class)
     ext = ext.to_s.sub(/^\./, '')
-    mappings[ext.downcase] = template_class
+    mappings[ext.downcase].unshift(template_class).uniq!
+    ext
   end
-
+  
+  # Makes a template class preferred for the given file extensions. If you
+  # don't provide any extensions, it will be preferred for all its already
+  # registered extensions:
+  # 
+  #   # Prefer RDiscount for its registered file extensions:
+  #   Tilt.prefer(Tilt::RDiscountTemplate)
+  #
+  #   # Prefer RDiscount only for the .md extensions:
+  #   Tilt.prefer(Tilt::RDiscountTemplate, '.md')
+  def self.prefer(template_class, *extensions)
+    if extensions.empty?
+      mappings.each do |ext, klass|
+        @preferred_mappings[ext] = template_class
+      end
+    else
+      extensions.each do |ext|
+        ext = register(ext, template_class)
+        @preferred_mappings[ext] = template_class
+      end
+    end
+  end
+  
   # Returns true when a template exists on an exact match of the provided file extension
   def self.registered?(ext)
-    mappings.key?(ext.downcase)
+    mappings.key?(ext.downcase) && !mappings[ext.downcase].empty?
   end
 
   # Create a new template for the given file using the file's extension
@@ -34,11 +58,43 @@ module Tilt
   # extension. Return nil when no implementation is found.
   def self.[](file)
     pattern = file.to_s.downcase
-    unless registered?(pattern)
+    until pattern.empty? || registered?(pattern)
       pattern = File.basename(pattern)
-      pattern.sub!(/^[^.]*\.?/, '') until (pattern.empty? || registered?(pattern))
+      pattern.sub!(/^[^.]*\.?/, '') 
     end
-    @template_mappings[pattern]
+
+    # Try to find a preferred engine.
+    klass = @preferred_mappings[pattern]
+    return klass if klass
+
+    # Fall back to the general list of mappings.
+    klasses = @template_mappings[pattern]
+    
+    # Try to find an engine which is already loaded.
+    template = klasses.detect do |klass|
+      if klass.respond_to?(:engine_initialized?)
+        klass.engine_initialized?
+      end
+    end
+    
+    return template if template
+    
+    # Try each of the classes until one succeeds. If all of them fails,
+    # we'll raise the error of the first class.
+    first_failure = nil
+    
+    klasses.each do |klass|
+      begin
+        klass.new { '' }
+      rescue Exception => ex
+        first_failure ||= ex
+        next
+      else
+        return klass
+      end
+    end
+    
+    raise first_failure if first_failure
   end
 
   # Deprecated module.
@@ -381,9 +437,12 @@ module Tilt
     def self.default_output_variable=(name)
       @@default_output_variable = name
     end
+    
+    def self.engine_initialized?
+      defined? ::ERB
+    end
 
     def initialize_engine
-      return if defined? ::ERB
       require_template_library 'erb'
     end
 
@@ -440,8 +499,11 @@ module Tilt
   #                   the engine class instead of the default. All content
   #                   within <%= %> blocks will be automatically html escaped.
   class ErubisTemplate < ERBTemplate
+    def self.engine_initialized?
+      defined? ::Erubis
+    end
+    
     def initialize_engine
-      return if defined? ::Erubis
       require_template_library 'erubis'
     end
 
@@ -478,8 +540,11 @@ module Tilt
   class HamlTemplate < Template
     self.default_mime_type = 'text/html'
 
+    def self.engine_initialized?
+      defined? ::Haml::Engine
+    end
+    
     def initialize_engine
-      return if defined? ::Haml::Engine
       require_template_library 'haml'
     end
 
@@ -539,8 +604,11 @@ module Tilt
   class SassTemplate < Template
     self.default_mime_type = 'text/css'
 
+    def self.engine_initialized?
+      defined? ::Sass::Engine
+    end
+    
     def initialize_engine
-      return if defined? ::Sass::Engine
       require_template_library 'sass'
     end
 
@@ -577,8 +645,11 @@ module Tilt
   class LessTemplate < Template
     self.default_mime_type = 'text/css'
 
+    def self.engine_initialized?
+      defined? ::Less::Engine
+    end
+    
     def initialize_engine
-      return if defined? ::Less::Engine
       require_template_library 'less'
     end
 
@@ -609,9 +680,12 @@ module Tilt
     def self.default_no_wrap=(value)
       @@default_no_wrap = value
     end
-
+    
+    def self.engine_initialized?
+      defined? ::CoffeeScript
+    end
+    
     def initialize_engine
-      return if defined? ::CoffeeScript
       require_template_library 'coffee_script'
     end
 
@@ -632,8 +706,11 @@ module Tilt
   class NokogiriTemplate < Template
     self.default_mime_type = 'text/xml'
 
+    def self.engine_initialized?
+      defined? ::Nokogiri
+    end
+    
     def initialize_engine
-      return if defined?(::Nokogiri)
       require_template_library 'nokogiri'
     end
 
@@ -669,8 +746,11 @@ module Tilt
   class BuilderTemplate < Template
     self.default_mime_type = 'text/xml'
 
+    def self.engine_initialized?
+      defined? ::Builder
+    end
+    
     def initialize_engine
-      return if defined?(::Builder)
       require_template_library 'builder'
     end
 
@@ -713,8 +793,11 @@ module Tilt
   # It's suggested that your program require 'liquid' at load
   # time when using this template engine.
   class LiquidTemplate < Template
+    def self.engine_initialized?
+      defined? ::Liquid::Template
+    end
+    
     def initialize_engine
-      return if defined? ::Liquid::Template
       require_template_library 'liquid'
     end
 
@@ -749,8 +832,11 @@ module Tilt
       [:smart, :filter_html].select { |flag| options[flag] }
     end
 
+    def self.engine_initialized?
+      defined? ::RDiscount
+    end
+    
     def initialize_engine
-      return if defined? ::RDiscount
       require_template_library 'rdiscount'
     end
 
@@ -763,9 +849,6 @@ module Tilt
       @output ||= @engine.to_html
     end
   end
-  register 'markdown', RDiscountTemplate
-  register 'mkd', RDiscountTemplate
-  register 'md', RDiscountTemplate
 
 
   # BlueCloth Markdown implementation. See:
@@ -777,8 +860,11 @@ module Tilt
   class BlueClothTemplate < Template
     self.default_mime_type = 'text/html'
 
+    def self.engine_initialized?
+      defined? ::BlueCloth
+    end
+    
     def initialize_engine
-      return if defined? ::BlueCloth
       require_template_library 'bluecloth'
     end
 
@@ -791,13 +877,25 @@ module Tilt
       @output ||= @engine.to_html
     end
   end
-
+  
+  register 'markdown', BlueClothTemplate
+  register 'mkd', BlueClothTemplate
+  register 'md', BlueClothTemplate
+  
+  register 'markdown', RDiscountTemplate
+  register 'mkd', RDiscountTemplate
+  register 'md', RDiscountTemplate
+  
+  
 
   # RedCloth implementation. See:
   # http://redcloth.org/
   class RedClothTemplate < Template
+    def self.engine_initialized?
+      defined? ::RedCloth
+    end
+    
     def initialize_engine
-      return if defined? ::RedCloth
       require_template_library 'redcloth'
     end
 
@@ -822,8 +920,11 @@ module Tilt
   class RDocTemplate < Template
     self.default_mime_type = 'text/html'
 
+    def self.engine_initialized?
+      defined? ::RDoc::Markup
+    end
+    
     def initialize_engine
-      return if defined?(::RDoc::Markup)
       require_template_library 'rdoc/markup'
       require_template_library 'rdoc/markup/to_html'
     end
@@ -844,8 +945,11 @@ module Tilt
   # Radius Template
   # http://github.com/jlong/radius/
   class RadiusTemplate < Template
+    def self.engine_initialized?
+      defined? ::Radius
+    end
+    
     def initialize_engine
-      return if defined? ::Radius
       require_template_library 'radius'
     end
 
@@ -888,8 +992,11 @@ module Tilt
       end
     end
 
+    def self.engine_initialized?
+      defined? ::Markaby
+    end
+    
     def initialize_engine
-      return if defined? ::Markaby
       require_template_library 'markaby'
     end
 
