@@ -10,11 +10,23 @@ module Tilt
     @template_mappings
   end
 
+  def self.normalize(ext)
+    ext.to_s.downcase.sub(/^\./, '')
+  end
+
   # Register a template implementation by file extension.
-  def self.register(ext, template_class)
-    ext = ext.to_s.sub(/^\./, '')
-    mappings[ext.downcase].unshift(template_class).uniq!
-    ext
+  def self.register(template_class, *extensions)
+    if template_class.respond_to?(:to_str)
+      # Support register(ext, template_class) too
+      ext = template_class
+      template_class = extensions[0]
+      extensions = [ext]
+    end
+
+    extensions.each do |ext|
+      ext = normalize(ext)
+      mappings[ext].unshift(template_class).uniq!
+    end
   end
   
   # Makes a template class preferred for the given file extensions. If you
@@ -33,7 +45,8 @@ module Tilt
       end
     else
       extensions.each do |ext|
-        ext = register(ext, template_class)
+        ext = normalize(ext)
+        register(template_class, ext)
         @preferred_mappings[ext] = template_class
       end
     end
