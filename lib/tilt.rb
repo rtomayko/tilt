@@ -435,7 +435,7 @@ module Tilt
       @code
     end
   end
-  register 'str', StringTemplate
+  register StringTemplate, 'str'
 
 
   # ERB template implementation. See:
@@ -496,7 +496,7 @@ module Tilt
     end
   end
 
-  %w[erb rhtml].each { |ext| register ext, ERBTemplate }
+  register ERBTemplate, 'erb', 'rhtml'
 
 
   # Erubis template implementation. See:
@@ -545,7 +545,7 @@ module Tilt
       end
     end
   end
-  register 'erubis', ErubisTemplate
+  register ErubisTemplate, 'erb', 'rhtml', 'erubis'
 
 
   # Haml template implementation. See:
@@ -607,7 +607,7 @@ module Tilt
       end
     end
   end
-  register 'haml', HamlTemplate
+  register HamlTemplate, 'haml'
 
 
   # Sass template implementation. See:
@@ -638,7 +638,7 @@ module Tilt
       options.merge(:filename => eval_file, :line => line, :syntax => :sass)
     end
   end
-  register 'sass', SassTemplate
+  register SassTemplate, 'sass'
 
   # Sass's new .scss type template implementation.
   class ScssTemplate < SassTemplate
@@ -649,7 +649,7 @@ module Tilt
       options.merge(:filename => eval_file, :line => line, :syntax => :scss)
     end
   end
-  register 'scss', ScssTemplate
+  register ScssTemplate, 'scss'
 
   # Lessscss template implementation. See:
   # http://lesscss.org/
@@ -674,7 +674,7 @@ module Tilt
       @engine.to_css
     end
   end
-  register 'less', LessTemplate
+  register LessTemplate, 'less'
 
 
   # CoffeeScript template implementation. See:
@@ -711,7 +711,7 @@ module Tilt
       @output ||= CoffeeScript.compile(data, :no_wrap => @no_wrap)
     end
   end
-  register 'coffee', CoffeeScriptTemplate
+  register CoffeeScriptTemplate, 'coffee'
 
 
   # Nokogiri template implementation. See:
@@ -752,7 +752,7 @@ module Tilt
       data.to_str
     end
   end
-  register 'nokogiri', NokogiriTemplate
+  register NokogiriTemplate, 'nokogiri'
 
   # Builder template implementation. See:
   # http://builder.rubyforge.org/
@@ -789,7 +789,7 @@ module Tilt
       data.to_str
     end
   end
-  register 'builder', BuilderTemplate
+  register BuilderTemplate, 'builder'
 
 
   # Liquid template implementation. See:
@@ -829,7 +829,7 @@ module Tilt
       @engine.render(locals)
     end
   end
-  register 'liquid', LiquidTemplate
+  register LiquidTemplate, 'liquid'
 
 
   # Discount Markdown implementation. See:
@@ -891,13 +891,8 @@ module Tilt
     end
   end
   
-  register 'markdown', BlueClothTemplate
-  register 'mkd', BlueClothTemplate
-  register 'md', BlueClothTemplate
-  
-  register 'markdown', RDiscountTemplate
-  register 'mkd', RDiscountTemplate
-  register 'md', RDiscountTemplate
+  register BlueClothTemplate, 'markdown', 'mkd', 'md'
+  register RDiscountTemplate, 'markdown', 'mkd', 'md'
   
   
 
@@ -921,7 +916,7 @@ module Tilt
       @output ||= @engine.to_html
     end
   end
-  register 'textile', RedClothTemplate
+  register RedClothTemplate, 'textile'
 
 
   # RDoc template. See:
@@ -952,7 +947,7 @@ module Tilt
       @output ||= @engine.to_s
     end
   end
-  register 'rdoc', RDocTemplate
+  register RDocTemplate, 'rdoc'
 
 
   # Radius Template
@@ -989,7 +984,7 @@ module Tilt
       parser.parse(data)
     end
   end
-  register 'radius', RadiusTemplate
+  register RadiusTemplate, 'radius'
 
 
   # Markaby
@@ -1039,5 +1034,5 @@ module Tilt
       builder.to_s
     end
   end
-  register 'mab', MarkabyTemplate
+  register MarkabyTemplate, 'mab'
 end
