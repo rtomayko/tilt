@@ -6,12 +6,11 @@ require 'tempfile'
 
 class ERBTemplateTest < Test::Unit::TestCase
   test "registered for '.erb' files" do
-    assert_equal Tilt::ERBTemplate, Tilt['test.erb']
-    assert_equal Tilt::ERBTemplate, Tilt['test.html.erb']
+    assert Tilt.mappings['erb'].include?(Tilt::ERBTemplate)
   end
 
   test "registered for '.rhtml' files" do
-    assert_equal Tilt::ERBTemplate, Tilt['test.rhtml']
+    assert Tilt.mappings['rhtml'].include?(Tilt::ERBTemplate)
   end
 
   test "loading and evaluating templates on #render" do
@@ -91,17 +90,17 @@ class ERBTemplateTest < Test::Unit::TestCase
   end
 
   test "default non-stripping trim mode" do
-    template = Tilt.new('test.erb', 1) { "\n<%= 1 + 1 %>\n" }
+    template = Tilt::ERBTemplate.new('test.erb', 1) { "\n<%= 1 + 1 %>\n" }
     assert_equal "\n2\n", template.render
   end
 
   test "stripping trim mode" do
-    template = Tilt.new('test.erb', 1, :trim => '-') { "\n<%= 1 + 1 -%>\n" }
+    template = Tilt::ERBTemplate.new('test.erb', 1, :trim => '-') { "\n<%= 1 + 1 -%>\n" }
     assert_equal "\n2", template.render
   end
 
   test "shorthand whole line syntax trim mode" do
-    template = Tilt.new('test.erb', :trim => '%') { "\n% if true\nhello\n%end\n" }
+    template = Tilt::ERBTemplate.new('test.erb', :trim => '%') { "\n% if true\nhello\n%end\n" }
     assert_equal "\nhello\n", template.render
   end
 
@@ -188,17 +187,17 @@ class CompiledERBTemplateTest < Test::Unit::TestCase
   end
 
   test "default non-stripping trim mode" do
-    template = Tilt.new('test.erb') { "\n<%= 1 + 1 %>\n" }
+    template = Tilt::ERBTemplate.new('test.erb') { "\n<%= 1 + 1 %>\n" }
     assert_equal "\n2\n", template.render(Scope.new)
   end
 
   test "stripping trim mode" do
-    template = Tilt.new('test.erb', :trim => '-') { "\n<%= 1 + 1 -%>\n" }
+    template = Tilt::ERBTemplate.new('test.erb', :trim => '-') { "\n<%= 1 + 1 -%>\n" }
     assert_equal "\n2", template.render(Scope.new)
   end
 
   test "shorthand whole line syntax trim mode" do
-    template = Tilt.new('test.erb', :trim => '%') { "\n% if true\nhello\n%end\n" }
+    template = Tilt::ERBTemplate.new('test.erb', :trim => '%') { "\n% if true\nhello\n%end\n" }
     assert_equal "\nhello\n", template.render(Scope.new)
   end
 

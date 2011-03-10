@@ -5,35 +5,16 @@ begin
   require 'bluecloth'
 
   class BlueClothTemplateTest < Test::Unit::TestCase
-    setup do
-      Tilt.register('markdown', Tilt::BlueClothTemplate)
-      Tilt.register('md', Tilt::BlueClothTemplate)
-      Tilt.register('mkd', Tilt::BlueClothTemplate)
+    test "registered for '.md' files" do
+      assert Tilt.mappings['md'].include?(Tilt::BlueClothTemplate)
     end
 
-    teardown do
-      # Need to revert to RDiscount, otherwise the RDiscount test will fail
-      Tilt.register('markdown', Tilt::RDiscountTemplate)
-      Tilt.register('md', Tilt::RDiscountTemplate)
-      Tilt.register('mkd', Tilt::RDiscountTemplate)
+    test "registered for '.mkd' files" do
+      assert Tilt.mappings['mkd'].include?(Tilt::BlueClothTemplate)
     end
 
-    test "registered for '.markdown' files unless RDiscount is loaded" do
-      unless defined?(RDiscount)
-        assert_equal Tilt::BlueClothTemplate, Tilt['test.markdown']
-      end
-    end
-
-    test "registered for '.md' files unless RDiscount is loaded" do
-      unless defined?(RDiscount)
-        assert_equal Tilt::BlueClothTemplate, Tilt['test.md']
-      end
-    end
-
-    test "registered for '.mkd' files unless RDiscount is loaded" do
-      unless defined?(RDiscount)
-        assert_equal Tilt::BlueClothTemplate, Tilt['test.mkd']
-      end
+    test "registered for '.markdown' files" do
+      assert Tilt.mappings['markdown'].include?(Tilt::BlueClothTemplate)
     end
 
     test "preparing and evaluating templates on #render" do

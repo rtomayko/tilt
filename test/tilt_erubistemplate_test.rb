@@ -9,6 +9,16 @@ begin
       assert_equal Tilt::ErubisTemplate, Tilt['test.html.erubis']
     end
 
+    test "registered above ERB" do
+      %w[erb rhtml].each do |ext|
+        mappings = Tilt.mappings[ext]
+        erubis_idx = mappings.index(Tilt::ErubisTemplate)
+        erb_idx = mappings.index(Tilt::ERBTemplate)
+        assert erubis_idx < erb_idx,
+          "#{erubis_idx} should be lower than #{erb_idx}"
+      end
+    end
+
     test "preparing and evaluating templates on #render" do
       template = Tilt::ErubisTemplate.new { |t| "Hello World!" }
       assert_equal "Hello World!", template.render

@@ -5,16 +5,26 @@ begin
   require 'rdiscount'
 
   class RDiscountTemplateTest < Test::Unit::TestCase
-    test "registered for '.markdown' files" do
-      assert_equal Tilt::RDiscountTemplate, Tilt['test.markdown']
-    end
-
     test "registered for '.md' files" do
-      assert_equal Tilt::RDiscountTemplate, Tilt['test.md']
+      assert Tilt.mappings['md'].include?(Tilt::RDiscountTemplate)
     end
 
     test "registered for '.mkd' files" do
-      assert_equal Tilt::RDiscountTemplate, Tilt['test.mkd']
+      assert Tilt.mappings['mkd'].include?(Tilt::RDiscountTemplate)
+    end
+
+    test "registered for '.markdown' files" do
+      assert Tilt.mappings['markdown'].include?(Tilt::RDiscountTemplate)
+    end
+
+    test "registered above BlueCloth" do
+      %w[md mkd markdown].each do |ext|
+        mappings = Tilt.mappings[ext]
+        blue_idx = mappings.index(Tilt::BlueClothTemplate)
+        rdis_idx = mappings.index(Tilt::RDiscountTemplate)
+        assert rdis_idx < blue_idx,
+          "#{rdis_idx} should be lower than #{blue_idx}"
+      end
     end
 
     test "preparing and evaluating templates on #render" do
