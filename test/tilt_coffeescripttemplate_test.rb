@@ -20,7 +20,7 @@ begin
     end
 
     test "disabling coffee-script wrapper" do
-      template = Tilt::CoffeeScriptTemplate.new(:no_wrap => true) { |t| "puts 'Hello, World!'\n" }
+      template = Tilt::CoffeeScriptTemplate.new(:bare => true) { |t| "puts 'Hello, World!'\n" }
       assert_equal "puts('Hello, World!');", template.render
     end
   end

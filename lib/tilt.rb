@@ -684,14 +684,24 @@ module Tilt
   class CoffeeScriptTemplate < Template
     self.default_mime_type = 'application/javascript'
 
-    @@default_no_wrap = false
+    @@default_bare = true
 
-    def self.default_no_wrap
-      @@default_no_wrap
+    def self.default_bare
+      @@default_bare
     end
 
+    def self.default_bare=(value)
+      @@default_bare = value
+    end
+
+    # DEPRECATED
+    def self.default_no_wrap
+      @@default_bare
+    end
+
+    # DEPRECATED
     def self.default_no_wrap=(value)
-      @@default_no_wrap = value
+      @@default_bare = value
     end
 
     def self.engine_initialized?
@@ -703,12 +713,13 @@ module Tilt
     end
 
     def prepare
-      @no_wrap = options.key?(:no_wrap) ? options[:no_wrap] :
-        self.class.default_no_wrap
+      if !options.key?(:bare) || !options[:no_wrap]
+        options[:bare] = self.class.default_bare
+      end
     end
 
     def evaluate(scope, locals, &block)
-      @output ||= CoffeeScript.compile(data, :no_wrap => @no_wrap)
+      @output ||= CoffeeScript.compile(data, options)
     end
   end
   register CoffeeScriptTemplate, 'coffee'
