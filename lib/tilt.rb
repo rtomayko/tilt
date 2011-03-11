@@ -28,11 +28,11 @@ module Tilt
       mappings[ext].unshift(template_class).uniq!
     end
   end
-  
+
   # Makes a template class preferred for the given file extensions. If you
   # don't provide any extensions, it will be preferred for all its already
   # registered extensions:
-  # 
+  #
   #   # Prefer RDiscount for its registered file extensions:
   #   Tilt.prefer(Tilt::RDiscountTemplate)
   #
@@ -51,7 +51,7 @@ module Tilt
       end
     end
   end
-  
+
   # Returns true when a template exists on an exact match of the provided file extension
   def self.registered?(ext)
     mappings.key?(ext.downcase) && !mappings[ext.downcase].empty?
@@ -73,7 +73,7 @@ module Tilt
     pattern = file.to_s.downcase
     until pattern.empty? || registered?(pattern)
       pattern = File.basename(pattern)
-      pattern.sub!(/^[^.]*\.?/, '') 
+      pattern.sub!(/^[^.]*\.?/, '')
     end
 
     # Try to find a preferred engine.
@@ -82,20 +82,20 @@ module Tilt
 
     # Fall back to the general list of mappings.
     klasses = @template_mappings[pattern]
-    
+
     # Try to find an engine which is already loaded.
     template = klasses.detect do |klass|
       if klass.respond_to?(:engine_initialized?)
         klass.engine_initialized?
       end
     end
-    
+
     return template if template
-    
+
     # Try each of the classes until one succeeds. If all of them fails,
     # we'll raise the error of the first class.
     first_failure = nil
-    
+
     klasses.each do |klass|
       begin
         klass.new { '' }
@@ -106,7 +106,7 @@ module Tilt
         return klass
       end
     end
-    
+
     raise first_failure if first_failure
   end
 
@@ -235,7 +235,7 @@ module Tilt
         raise NotImplementedError
       end
     end
-    
+
     def evaluate(scope, locals, &block)
       cached_evaluate(scope, locals, &block)
     end
@@ -450,7 +450,7 @@ module Tilt
     def self.default_output_variable=(name)
       @@default_output_variable = name
     end
-    
+
     def self.engine_initialized?
       defined? ::ERB
     end
@@ -515,7 +515,7 @@ module Tilt
     def self.engine_initialized?
       defined? ::Erubis
     end
-    
+
     def initialize_engine
       require_template_library 'erubis'
     end
@@ -556,7 +556,7 @@ module Tilt
     def self.engine_initialized?
       defined? ::Haml::Engine
     end
-    
+
     def initialize_engine
       require_template_library 'haml'
     end
@@ -620,7 +620,7 @@ module Tilt
     def self.engine_initialized?
       defined? ::Sass::Engine
     end
-    
+
     def initialize_engine
       require_template_library 'sass'
     end
@@ -661,7 +661,7 @@ module Tilt
     def self.engine_initialized?
       defined? ::Less::Engine
     end
-    
+
     def initialize_engine
       require_template_library 'less'
     end
@@ -693,11 +693,11 @@ module Tilt
     def self.default_no_wrap=(value)
       @@default_no_wrap = value
     end
-    
+
     def self.engine_initialized?
       defined? ::CoffeeScript
     end
-    
+
     def initialize_engine
       require_template_library 'coffee_script'
     end
@@ -722,16 +722,16 @@ module Tilt
     def self.engine_initialized?
       defined? ::Nokogiri
     end
-    
+
     def initialize_engine
       require_template_library 'nokogiri'
     end
 
     def prepare; end
-    
+
     def evaluate(scope, locals, &block)
       block &&= proc { yield.gsub(/^<\?xml version=\"1\.0\"\?>\n?/, "") }
-      
+
       if data.respond_to?(:to_str)
         super(scope, locals, &block)
       else
@@ -762,7 +762,7 @@ module Tilt
     def self.engine_initialized?
       defined? ::Builder
     end
-    
+
     def initialize_engine
       require_template_library 'builder'
     end
@@ -809,7 +809,7 @@ module Tilt
     def self.engine_initialized?
       defined? ::Liquid::Template
     end
-    
+
     def initialize_engine
       require_template_library 'liquid'
     end
@@ -848,7 +848,7 @@ module Tilt
     def self.engine_initialized?
       defined? ::RDiscount
     end
-    
+
     def initialize_engine
       require_template_library 'rdiscount'
     end
@@ -876,7 +876,7 @@ module Tilt
     def self.engine_initialized?
       defined? ::BlueCloth
     end
-    
+
     def initialize_engine
       require_template_library 'bluecloth'
     end
@@ -890,11 +890,11 @@ module Tilt
       @output ||= @engine.to_html
     end
   end
-  
+
   register BlueClothTemplate, 'markdown', 'mkd', 'md'
   register RDiscountTemplate, 'markdown', 'mkd', 'md'
-  
-  
+
+
 
   # RedCloth implementation. See:
   # http://redcloth.org/
@@ -902,7 +902,7 @@ module Tilt
     def self.engine_initialized?
       defined? ::RedCloth
     end
-    
+
     def initialize_engine
       require_template_library 'redcloth'
     end
@@ -931,7 +931,7 @@ module Tilt
     def self.engine_initialized?
       defined? ::RDoc::Markup
     end
-    
+
     def initialize_engine
       require_template_library 'rdoc/markup'
       require_template_library 'rdoc/markup/to_html'
@@ -956,7 +956,7 @@ module Tilt
     def self.engine_initialized?
       defined? ::Radius
     end
-    
+
     def initialize_engine
       require_template_library 'radius'
     end
@@ -1003,7 +1003,7 @@ module Tilt
     def self.engine_initialized?
       defined? ::Markaby
     end
-    
+
     def initialize_engine
       require_template_library 'markaby'
     end
