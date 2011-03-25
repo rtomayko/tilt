@@ -16,7 +16,7 @@ text formats.
 
  * Less - `Tilt::LessTemplate`
  * Sass - `Tilt::SassTemplate`
- * [Markdown](#markdown) - `Tilt::RDiscountTemplate`
+ * [Markdown](#markdown) - `Tilt::RDiscountTemplate` and `Tilt::BlueClothTemplate`
  * [RDoc](#rdoc) - `Tilt::RDocTemplate`
 
 <a name='erb'></a>
@@ -32,7 +32,12 @@ An easy to use but powerful templating system for Ruby.
 ### Usage
 
 The `Tilt::ERBTemplate` class is registered for all files ending in `.erb` or
-`.rhtml` by default. ERB templates support custom evaluation scopes and locals:
+`.rhtml` by default, but with a *lower* priority than ErubisTemplate. If you
+specifically want to use ERB, it's recommended to use `#prefer`:
+
+    Tilt.prefer Tilt::ERBTemplate
+
+ERB templates support custom evaluation scopes and locals:
 
     >> require 'erb'
     >> template = Tilt.new('hello.html.erb', :trim => '<>')
@@ -85,11 +90,11 @@ Erubis is a fast, secure, and very extensible implementation of eRuby.
 
 ### Usage
 
-To use Erubis instead of ERB for all `.erb` and `.rhtml` files, register
-the extensions as follows:
+The `Tilt::ErubisTemplate` class is registered for all files ending in `.erb` or
+`.rhtml` by default, but with a *higher* priority than `ERBTemplate`. If you
+specifically want to use Erubis, it's recommended to use `#prefer`:
 
-    Tilt.register 'erb', Tilt::ErubisTemplate
-    Tilt.register 'rhtml', Tilt::ErubisTemplate
+    Tilt.prefer Tilt::ErubisTemplate
 
 ### Options
 
@@ -289,7 +294,7 @@ default. Liquid templates support locals and objects that respond to
 Or, use `Tilt::LiquidTemplate` directly to process strings:
 
     >> require 'haml'
-    >> template = Tilt::HamlTemplate.new { "<h1>Hello Liquid!</h1>" }
+    >> template = Tilt::LiquidTemplate.new { "<h1>Hello Liquid!</h1>" }
     => #<Tilt::LiquidTemplate @file=nil ...>
     >> template.render
     => "<h1>Hello Liquid!</h1>"

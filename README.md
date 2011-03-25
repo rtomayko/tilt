@@ -116,7 +116,7 @@ classes based on those associations.
 The `Tilt::register` method associates a filename pattern with a specific
 template implementation. To use ERB for files ending in a `.bar` extension:
 
-     >> Tilt.register 'bar', Tilt::ERBTemplate
+     >> Tilt.register Tilt::ERBTemplate, 'bar'
      >> Tilt.new('views/foo.bar')
      => #<Tilt::ERBTemplate @file="views/foo.bar" ...>
 
@@ -131,7 +131,7 @@ It's also possible to register template file mappings that are more specific
 than a file extension. To use Erubis for `bar.erb` but ERB for all other `.erb`
 files:
 
-     >> Tilt.register 'bar.erb', Tilt::ErubisTemplate
+     >> Tilt.register Tilt::ErubisTemplate, 'bar.erb'
      >> Tilt.new('views/foo.erb')
      => Tilt::ERBTemplate
      >> Tilt.new('views/bar.erb')
@@ -147,14 +147,37 @@ mappings:
   3. `html.erb`
   4. `erb`
 
-`Tilt::register` can also be used to select between alternative template
-engines. To use Erubis instead of ERB for `.erb` files:
+### Fallback mode
 
-    Tilt.register 'erb', Tilt::ErubisTemplate
+If there are more than one template class registered for a file extension, Tilt
+will automatically try to load the version that works on your machine:
 
-Or, use BlueCloth for markdown instead of RDiscount:
+  1. If any of the template engines has been loaded alreaedy: Use that one.
+  2. If not, it will try to initialize each of the classes with an empty template.
+  3. Tilt will use the first that doesn't raise an exception.
+  4. If however *all* of them failed, Tilt will raise the exception of the first
+     template engine, since that was the most preferred one.
 
-    Tilt.register 'markdown', Tilt::BlueClothTemplate
+Template classes that were registered *last* would be tried first. Because the
+Markdown extensions are registered like this:
+
+    Tilt.register Tilt::BlueClothTemplate, 'md'
+    Tilt.register Tilt::RDiscountTemplate, 'md'
+
+Tilt will first try RDiscount and then BlueCloth. You could say that RDiscount
+has a *higher priority* than BlueCloth.
+
+The fallback mode works nicely when you just need to render an ERB or Markdown
+template, but if you depend on a specific implementation, you should use #prefer:
+
+    # Prefer BlueCloth for all its registered extensions (markdown, mkd, md)
+    Tilt.prefer Tilt::BlueClothTemplate
+    
+    # Prefer Erubis for .erb only:
+    Tilt.prefer Tilt::ErubisTemplate, 'erb'
+
+When a file extension has a preferred template class, Tilt will *always* use
+that class, even if it raises an exception.
 
 Template Compilation
 --------------------
