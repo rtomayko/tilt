@@ -119,6 +119,12 @@ class CompiledStringTemplateTest < Test::Unit::TestCase
     assert_equal "Hello\nWorld!\n", template.render(Scope.new)
   end
 
+  
+  test "template with '}'" do
+    template = Tilt::StringTemplate.new { "Hello }" }
+    assert_equal "Hello }", template.render
+  end
+
   test "backtrace file and line reporting without locals" do
     data = File.read(__FILE__).split("\n__END__\n").last
     fail unless data[0] == ?<
