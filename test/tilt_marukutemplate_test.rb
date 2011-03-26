@@ -5,34 +5,25 @@ begin
   require 'maruku'
 
   class MarukuTemplateTest < Test::Unit::TestCase
-    setup do
-      Tilt.register('markdown', Tilt::MarukuTemplate)
-      Tilt.register('md', Tilt::MarukuTemplate)
-      Tilt.register('mkd', Tilt::MarukuTemplate)
+    test "registered for '.md' files" do
+      assert Tilt.mappings['md'].include?(Tilt::MarukuTemplate)
     end
 
-    teardown do
-      # Need to revert to RDiscount, otherwise the RDiscount test will fail
-      Tilt.register('markdown', Tilt::RDiscountTemplate)
-      Tilt.register('md', Tilt::RDiscountTemplate)
-      Tilt.register('mkd', Tilt::RDiscountTemplate)
+    test "registered for '.mkd' files" do
+      assert Tilt.mappings['mkd'].include?(Tilt::MarukuTemplate)
     end
 
-    test "registered for '.markdown' files unless RDiscount is loaded" do
-      unless defined?(RDiscount)
-        assert_equal Tilt::MarukuTemplate, Tilt['test.markdown']
-      end
+    test "registered for '.markdown' files" do
+      assert Tilt.mappings['markdown'].include?(Tilt::MarukuTemplate)
     end
 
-    test "registered for '.md' files unless RDiscount is loaded" do
-      unless defined?(RDiscount)
-        assert_equal Tilt::MarukuTemplate, Tilt['test.md']
-      end
-    end
-
-    test "registered for '.mkd' files unless RDiscount is loaded" do
-      unless defined?(RDiscount)
-        assert_equal Tilt::MarukuTemplate, Tilt['test.mkd']
+    test "registered above BlueCloth" do
+      %w[md mkd markdown].each do |ext|
+        mappings = Tilt.mappings[ext]
+        blue_idx = mappings.index(Tilt::BlueClothTemplate)
+        maru_idx = mappings.index(Tilt::MarukuTemplate)
+        assert maru_idx < blue_idx,
+          "#{maru_idx} should be lower than #{blue_idx}"
       end
     end
 
