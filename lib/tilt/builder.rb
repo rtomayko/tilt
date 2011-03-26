@@ -1,3 +1,5 @@
+require 'tilt/template'
+
 module Tilt
    # Builder template implementation. See:
   # http://builder.rubyforge.org/

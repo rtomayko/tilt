@@ -1,3 +1,5 @@
+require 'tilt/template'
+
 module Tilt
   # RedCloth implementation. See:
   # http://redcloth.org/

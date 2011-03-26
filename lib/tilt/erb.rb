@@ -1,3 +1,5 @@
+require 'tilt/template'
+
 module Tilt
   # ERB template implementation. See:
   # http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html

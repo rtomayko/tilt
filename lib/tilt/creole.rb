@@ -1,3 +1,5 @@
+require 'tilt/template'
+
 module Tilt
   # Creole implementation. See:
   # http://www.wikicreole.org/

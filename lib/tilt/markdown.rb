@@ -1,3 +1,5 @@
+require 'tilt/template'
+
 module Tilt
   # Discount Markdown implementation. See:
   # http://github.com/rtomayko/rdiscount

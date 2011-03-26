@@ -1,3 +1,5 @@
+require 'tilt/template'
+
 module Tilt
   # Liquid template implementation. See:
   # http://liquid.rubyforge.org/

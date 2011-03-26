@@ -1,3 +1,5 @@
+require 'tilt/template'
+
 module Tilt
   # CoffeeScript template implementation. See:
   # http://coffeescript.org/

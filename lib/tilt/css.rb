@@ -1,3 +1,5 @@
+require 'tilt/template'
+
 module Tilt
   # Sass template implementation. See:
   # http://haml.hamptoncatlin.com/
@@ -37,7 +39,7 @@ module Tilt
       options.merge(:filename => eval_file, :line => line, :syntax => :scss)
     end
   end
-  
+
    # Lessscss template implementation. See:
   # http://lesscss.org/
   #

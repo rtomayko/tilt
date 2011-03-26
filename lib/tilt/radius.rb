@@ -1,3 +1,5 @@
+require 'tilt/template'
+
 module Tilt
   # Radius Template
   # http://github.com/jlong/radius/
