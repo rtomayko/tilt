@@ -473,7 +473,7 @@ module Tilt
 
   require 'tilt/radius'
   register RadiusTemplate, 'radius'
-  
+
   require 'tilt/markdown'
   register BlueClothTemplate, 'markdown', 'mkd', 'md'
   register MarukuTemplate,    'markdown', 'mkd', 'md'
@@ -485,4 +485,7 @@ module Tilt
 
   require 'tilt/rdoc'
   register RDocTemplate, 'rdoc'
+
+  require 'tilt/creole'
+  register CreoleTemplate, 'creole'
 end
