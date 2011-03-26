@@ -477,6 +477,7 @@ module Tilt
   require 'tilt/markdown'
   register BlueClothTemplate, 'markdown', 'mkd', 'md'
   register MarukuTemplate,    'markdown', 'mkd', 'md'
+  register KramdownTemplate,  'markdown', 'mkd', 'md'
   register RDiscountTemplate, 'markdown', 'mkd', 'md'
 
   require 'tilt/textile'
