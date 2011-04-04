@@ -82,7 +82,7 @@ module Tilt
 
     def prepare
       @outvar = options.delete(:outvar) || self.class.default_output_variable
-      @options.merge!(:preamble => false, :postamble => false, :bufname => @outvar)
+      @options.merge!(:preamble => false, :postamble => false, :bufvar => @outvar)
       engine_class = options.delete(:engine_class)
       engine_class = ::Erubis::EscapedEruby if options.delete(:escape_html)
       @engine = (engine_class || ::Erubis::Eruby).new(data, options)
