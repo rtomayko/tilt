@@ -187,7 +187,7 @@ it on subsequent template invocations. Benchmarks show this yields a 5x-10x
 performance increase over evaluating the Ruby source on each invocation.
 
 Template compilation is currently supported for these template engines:
-StringTemplate, ERB, Erubis, Haml, and Builder.
+StringTemplate, ERB, Erubis, Haml, Nokogiri and Builder.
 
 LICENSE
 -------
