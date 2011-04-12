@@ -207,7 +207,7 @@ class CompiledERBTemplateTest < Test::Unit::TestCase
     f.puts('ふが <%= @hoge %>')
     f.close()
     @hoge = "ほげ"
-    erb = Tilt['erb'].new(f.path)
+    erb = Tilt::ERBTemplate.new(f.path)
     3.times { erb.render(self) }
     f.delete
   end
@@ -217,7 +217,7 @@ class CompiledERBTemplateTest < Test::Unit::TestCase
     f.puts('ふが <%= @hoge %>')
     f.close()
     @hoge = "ほげ"
-    erb = Tilt['erb'].new(f.path, :default_encoding => 'UTF-8')
+    erb = Tilt::ERBTemplate.new(f.path, :default_encoding => 'UTF-8')
     3.times { erb.render(self) }
     f.delete
   end
