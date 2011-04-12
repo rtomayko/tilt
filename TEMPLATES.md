@@ -1,33 +1,99 @@
 Tilt Templates
 ==============
 
+(See <https://github.com/rtomayko/tilt/blob/master/TEMPLATES.md> for a rendered,
+HTML-version of this file).
+
 While all Tilt templates use the same basic interface for template loading and
 evaluation, each varies in its capabilities and available options. Detailed
 documentation on each supported template engine is provided below.
 
- * [ERB](#erb) - `Tilt::ERBTemplate`
+There are also some file extensions that have several implementations
+(currently ERB and Markdown). These template classes have certain features
+which are guaranteed to work across all the implementations. If you wish to be
+compatible with all of these template classes, you should only depend on the
+cross-implementation features.
+
+ * [ERB](#erb) - Generic ERB implementation (backed by erb.rb or Erubis)
+ * [erb.rb](#erbrb) - `Tilt::ERBTemplate`
  * [Erubis](#erubis) - `Tilt::ErubisTemplate`
  * [Haml](#haml) - `Tilt::HamlTemplate`
  * [Liquid](#liquid) - `Tilt::LiquidTemplate`
+ * Nokogiri - `Tilt::NokogiriTemplate`
+ * Builder - `Tilt::BuilderTemplate`
+ * Markaby - `Tilt::MarkabyTemplate`
+ * [Radius](#radius) - `Tilt::RadiusTemplate`
 
-Tilt includes support for CSS processors like [lesscss](http://lesscss.org)
-and [sass](http://sass-lang.com/), in addition, it also supports simple
-text formats.
+Tilt also includes support for CSS processors like [LessCSS][lesscss] and
+[Sass][sass], [CoffeeScript][coffee-script] and some simple text formats.
 
  * Less - `Tilt::LessTemplate`
  * Sass - `Tilt::SassTemplate`
- * [Markdown](#markdown) - `Tilt::RDiscountTemplate` and `Tilt::BlueClothTemplate`
+ * Scss - `Tilt::ScssTemplate`
+ * CoffeeScript - `Tilt::CoffeeScriptTemplate`
+ * [Textile](#redcloth) - `Tilt::RedClothTemplate`
+ * Creole - `Tilt::CreoleTemplate`
  * [RDoc](#rdoc) - `Tilt::RDocTemplate`
+
+Tilt has extensive support for Markdown, backed by one of four different
+implementations (depending on which are available on your system):
+
+ * [Markdown](#markdown) - Generic Markdown implementation
+ * [RDiscount](#rdiscount) - `Tilt::RDiscountTemplate`
+ * BlueCloth - `Tilt::BlueClothTemplate`
+ * Kramdown - `Tilt::KramdownTemplate`
+ * Maruku - `Tilt::MarukuTemplate`
 
 <a name='erb'></a>
 ERB (`erb`, `rhtml`)
 --------------------
 
-An easy to use but powerful templating system for Ruby.
+ERB is a simple but powerful template languge for Ruby. In Tilt it's backed by
+[Erubis](#erubis) (if installed on your system) or by [erb.rb](#erbrb) (which
+is included in Ruby's standard library). This documentation applies to both
+implementations.
 
 ### Example
 
     Hello <%= world %>!
+    
+### Usage
+
+ERB templates support custom evaluation scopes and locals:
+
+    >> require 'erb'
+    >> template = Tilt.new('hello.html.erb')
+    >> template.render(self, :world => 'World!')
+    => "Hello World!"
+
+Or, use `Tilt['erb']` directly to process strings:
+
+    template = Tilt['erb'].new { "Hello <%= world %>!" }
+    template.render(self, :world => 'World!')
+
+### Options
+
+#### `:trim => trim`
+
+Omits newlines and spaces around certain lines (usually those that starts with
+`<%` and ends with `%>`). There isn't a specification for how trimming in ERB
+should work, so if you need more control over the whitespace, you should use
+[erb.rb](#erbrb) or [Erubis](#erubis) directly.
+
+
+#### `:outvar => '_erbout'`
+
+The name of the variable used to accumulate template output. This can be
+any valid Ruby expression but must be assignable. By default a local
+variable named `_erbout` is used.
+
+<a name='erbrb'></a>
+erb.rb (`erb`, `rhtml`)
+-----------------------
+
+[ERB](#erb) implementation available in Ruby's standard library.
+
+All the documentation of [ERB](#erb) applies in addition to the following:
 
 ### Usage
 
@@ -37,34 +103,20 @@ specifically want to use ERB, it's recommended to use `#prefer`:
 
     Tilt.prefer Tilt::ERBTemplate
 
-ERB templates support custom evaluation scopes and locals:
-
-    >> require 'erb'
-    >> template = Tilt.new('hello.html.erb', :trim => '<>')
-    => #<Tilt::ERBTemplate @file='hello.html.erb'>
-    >> template.render(self, :world => 'World!')
-    => "Hello World!"
-
-Or, use the `Tilt::ERBTemplate` class directly to process strings:
-
-    require 'erb'
-    template = Tilt::ERBTemplate.new(nil, :trim => '<>') { "Hello <%= world %>!" }
-    template.render(self, :world => 'World!')
-
 __NOTE:__ It's suggested that your program `require 'erb'` at load time when
 using this template engine within a threaded environment.
 
 ### Options
 
-#### `:trim => '-'`
+#### `:trim => true`
 
-The ERB trim mode flags. This is a string consisting
-of any combination of the following characters:
+The ERB trim mode flags. This is a string consisting of any combination of the
+following characters:
 
   * `'>'`  omits newlines for lines ending in `>`
   * `'<>'` omits newlines for lines starting with `<%` and ending in `%>`
-  * `'-'`  omits newlines for lines ending in `-%>`.
   * `'%'`  enables processing of lines beginning with `%`
+  * `true` is an alias of `<>`
 
 #### `:safe => nil`
 
@@ -83,10 +135,12 @@ variable named `_erbout` is used.
 
 
 <a name='erubis'></a>
-Erubis (`erubis`)
------------------
+Erubis (`erb`, `rhtml`, `erubis`)
+---------------------------------
 
-Erubis is a fast, secure, and very extensible implementation of eRuby.
+[Erubis][erubis] is a fast, secure, and very extensible implementation of [ERB](#erb).
+
+All the documentation of [ERB](#erb) applies in addition to the following:
 
 ### Usage
 
@@ -95,6 +149,9 @@ The `Tilt::ErubisTemplate` class is registered for all files ending in `.erb` or
 specifically want to use Erubis, it's recommended to use `#prefer`:
 
     Tilt.prefer Tilt::ErubisTemplate
+
+__NOTE:__ It's suggested that your program `require 'erubis'` at load time when
+using this template engine within a threaded environment.
 
 ### Options
 
@@ -119,30 +176,26 @@ variable named `_erbout` is used.
 
 Set pattern for embedded Ruby code.
 
-See the [ERB](#erb) template documentation for examples, usage, and options.
-
 #### `:trim => true`
 
-Delete spaces around '<% %>'. (But, spaces around '<%= %>' are preserved.)
+Delete spaces around `<% %>`. (But, spaces around `<%= %>` are preserved.)
 
 ### See also
 
-  * [Erubis Home](http://www.kuwata-lab.com/erubis/)
+  * [Erubis Home][erubis]
   * [Erubis User's Guide](http://www.kuwata-lab.com/erubis/users-guide.html)
 
-__NOTE:__ It's suggested that your program `require 'erubis'` at load time when
-using this template engine within a threaded environment.
 
 <a name='haml'></a>
 Haml (`haml`)
 -------------
 
-Haml is a markup language that’s used to cleanly and simply describe the HTML of
-any web document without the use of inline code. Haml functions as a replacement
-for inline page templating systems such as PHP, ASP, and ERB, the templating
-language used in most Ruby on Rails applications. However, Haml avoids the
-need for explicitly coding HTML into the template, because it itself is a
-description of the HTML, with some code to generate dynamic content.
+[Haml][haml] is a markup language that’s used to cleanly and simply describe
+the HTML of any web document without the use of inline code. Haml functions as
+a replacement for inline page templating systems such as PHP, ASP, and ERB, the
+templating language used in most Ruby on Rails applications. However, Haml
+avoids the need for explicitly coding HTML into the template, because it itself
+is a description of the HTML, with some code to generate dynamic content.
 ([more](http://haml-lang.com/about.html))
 
 
@@ -189,74 +242,21 @@ using this template engine within a threaded environment.
 
 ### Options
 
-#### `:format => :xhtml`
-
-Determines the output format. The default is `:xhtml`. Other options are
-`:html4` and `:html5`, which are identical to `:xhtml` except there are no
-self-closing tags, the XML prolog is ignored and correct DOCTYPEs are generated.
-
-#### `:escape_html => false`
-
-Sets whether or not to escape HTML-sensitive characters in script. If this is
-true, `=` behaves like `&=;` otherwise, it behaves like `!=`. Note that if this
-is set, `!=` should be used for yielding to subtemplates and rendering partials.
-Defaults to false.
-
-#### `:ugly => false`
-
-If set to true, Haml makes no attempt to properly indent or format the HTML
-output. This causes the rendering to be done much quicker than it would
-otherwise, but makes viewing the source unpleasant. Defaults to false.
-
-#### `:suppress_eval => false`
-
-Whether or not attribute hashes and Ruby scripts designated by `=` or `~` should
-be evaluated. If this is true, said scripts are rendered as empty strings.
-Defaults to false.
-
-#### `:attr_wrapper => "'"`
-
-The character that should wrap element attributes. This defaults to `'` (an
-apostrophe). Characters of this type within the attributes will be escaped (e.g.
-by replacing them with `&apos;`) if the character is an apostrophe or a
-quotation mark.
-
-#### `:autoclose => %w[meta img link br hr input area param col base]`
-
-A list of tag names that should be automatically self-closed if they have no
-content. Defaults to `['meta', 'img', 'link', 'br', 'hr', 'input', 'area',
-'param', 'col', 'base']`.
-
-#### `:preserve => %w[textarea pre]`
-
-A list of tag names that should automatically have their newlines preserved
-using the `Haml::Helpers#preserve` helper. This means that any content given on
-the same line as the tag will be preserved. For example, `%textarea= "Foo\nBar"`
-compiles to `<textarea>Foo&#x000A;Bar</textarea>`. Defaults to `['textarea',
-'pre']`.
-
-#### `:encoding => 'utf-8'`
-
-The encoding to use for the HTML output. Only available in Ruby 1.9 or higher.
-This can be a string or an Encoding Object. Note that Haml does not
-automatically re-encode Ruby values; any strings coming from outside the
-application should be converted before being passed into the Haml template.
-Defaults to `Encoding.default_internal` or, if that's not set, `"utf-8"`.
+Please see the [Haml Reference](http://haml-lang.com/docs/yardoc/file.HAML_REFERENCE.html#options) for all available options.
 
 ### See also
 
   * [#haml.docs](http://haml-lang.com/docs.html)
   * [Haml Tutorial](http://haml-lang.com/tutorial.html)
   * [Haml Reference](http://haml-lang.com/docs/yardoc/HAML_REFERENCE.md.html)
-  * [Whitespace Preservation](http://haml-lang.com/docs/yardoc/HAML_REFERENCE.md.html#whitespace_preservation)
 
 
 <a name='liquid'></a>
 Liquid (`liquid`)
 -----------------
 
-Liquid is for rendering safe templates which cannot affect the security
-of the server they are rendered on.
+[Liquid][liquid] is for rendering safe templates which cannot affect the
+security of the server they are rendered on.
 
 ### Example
 
@@ -308,95 +308,13 @@ time when using this template engine within a threaded environment.
   * [Liquid Docs](http://liquid.rubyforge.org/)
   * GitHub: [tobi/liquid](http://github.com/tobi/liquid/)
 
-<a name='markdown'></a>
-Markdown (`markdown`, `md`, `mkd`)
-----------------------------------
-
-Markdown is a lightweight markup language, created by John Gruber and
-Aaron Swartz. For any markup that is not covered by Markdown’s syntax,
-HTML is used.  Marking up plain text with Markdown markup is easy and
-Markdown formatted texts are readable.
-
-Markdown formatted texts are converted to HTML with the [RDiscount][]
-engine, which is a Ruby extension over the fast [Discount][] C library.
-
-### Example
-
-    Hello Markdown Templates
-    ========================
-
-    Hello World. This is a paragraph.
-
-### Usage
-
-To wrap a Markdown formatted document with a layout:
-
-    require 'erubis'
-    require 'rdiscount'
-    layout = Tilt::ErubisTemplate.new(nil, :pattern => '\{% %\}') do
-        "<!doctype html><title></title>{%= yield %}"
-    end
-    data = Tilt::RDiscountTemplate.new { "# hello tilt" }
-    layout.render { data.render }
-    # => "<!doctype html><title></title><h1>hello tilt</h1>\n"
-
-__NOTE:__ It's suggested that your program `require 'rdiscount'` at load time
-when using this template engine in a threaded environment.
-
-### Options
-
-RDiscount supports a variety of flags that control its behavior:
-
-#### `:smart => true|false`
-
-Set `true` to enable [Smarty Pants](http://daringfireball.net/projects/smartypants/)
-style punctuation replacement.
-
-#### `:filter_html => true|false`
-
-Set `true` disallow raw HTML in Markdown contents. HTML is converted to
-literal text by escaping `<` characters.
-
-### See also
-
- * [Markdown Syntax Documentation][markdown syntax]
- * GitHub: [rtomayko/rdiscount][rdiscount]
-
-[discount]: http://www.pell.portland.or.us/~orc/Code/discount/ "Discount"
-[rdiscount]: http://github.com/rtomayko/rdiscount/ "RDiscount"
-[markdown syntax]: (http://daringfireball.net/projects/markdown/syntax/) "Markdown Syntax"
-
-
-<a name='rdoc'></a>
-RDoc (`rdoc`)
--------------
-
-RDoc is the simple text markup system that comes with Ruby's standard
-library.
-
-### Usage
-
-__NOTE:__ It's suggested that your program `require 'rdoc/markup'` and
-`require 'rdoc/markup/to_html'` at load time when using this template
-engine in a threaded environment.
-
-### Example
-
-    = Hello RDoc Templates
-
-    Hello World. This is a paragraph.
-
-### See also
-
- * [RDoc](http://rdoc.sourceforge.net/doc/index.html)
-
 
 <a name='radius'></a>
 Radius (`radius`)
 -----------------
 
-Radius is the template language used by Radiant CMS. It is a tag
-language designed to be valid XML/HTML.
+[Radius][radius] is the template language used by [Radiant CMS][radiant]. It is
+a tag language designed to be valid XML/HTML.
 
 ### Example
 
@@ -440,5 +358,157 @@ The result will be:
 
 ### See also
 
-* [Radius](http://radius.rubyforge.org/)
-* [Radiant](http://radiantcms.org/)
+  * [Radius][radius]
+  * [Radiant CMS][radiant]
+
+
+<a name='textile'></a>
+Textile (`textile`)
+-------------------
+
+Textile is a lightweight markup language originally developed by Dean Allen and
+billed as a "humane Web text generator". Textile converts its marked-up text
+input to valid, well-formed XHTML and also inserts character entity references
+for apostrophes, opening and closing single and double quotation marks,
+ellipses and em dashes.
+
+Textile formatted texts are converted to HTML with the [RedCloth][redcloth]
+engine, which is a Ruby extension written in C.
+
+### Example
+
+    h1. Hello Textile Templates
+    
+    Hello World. This is a paragraph.
+
+### Usage
+
+__NOTE:__ It's suggested that your program `require 'redcloth'` at load time
+when using this template engine in a threaded environment.
+
+### See Also
+
+  * [RedCloth][redcloth]
+
+
+<a name='rdoc'></a>
+RDoc (`rdoc`)
+-------------
+
+[RDoc][rdoc] is the simple text markup system that comes with Ruby's standard
+library.
+
+### Example
+
+    = Hello RDoc Templates
+
+    Hello World. This is a paragraph.
+
+### Usage
+
+__NOTE:__ It's suggested that your program `require 'rdoc/markup'` and
+`require 'rdoc/markup/to_html'` at load time when using this template
+engine in a threaded environment.
+
+### See also
+
+ * [RDoc][rdoc]
+
+
+<a name='markdown'></a>
+Markdown (`markdown`, `md`, `mkd`)
+----------------------------------
+
+[Markdown][markdown] is a lightweight markup language, created by John Gruber
+and Aaron Swartz. For any markup that is not covered by Markdown’s syntax, HTML
+is used.  Marking up plain text with Markdown markup is easy and Markdown
+formatted texts are readable.
+
+Markdown formatted texts are converted to HTML with one of these libraries:
+
+  * [RDiscount](#rdiscount) - `Tilt::RDiscountTemplate`
+  * BlueCloth - `Tilt::BlueClothTemplate`
+  * Kramdown - `Tilt::KramdownTemplate`
+  * Maruku - `Tilt::MarukuTemplate`
+
+Tilt will use fallback mode (as documented in the README) for determining which
+library to use. RDiscount has highest priority - Maruku has lowest. 
+
+### Example
+
+    Hello Markdown Templates
+    ========================
+
+    Hello World. This is a paragraph.
+
+### Usage
+
+To wrap a Markdown formatted document with a layout:
+
+    layout = Tilt['erb'].new do
+      "<!doctype html><title></title><%= yield %>"
+    end
+    data = Tilt['md'].new { "# hello tilt" }
+    layout.render { data.render }
+    # => "<!doctype html><title></title><h1>hello tilt</h1>\n"
+
+### Options
+
+Every implementation of Markdown *should* support these options, but there are
+some known problems with the Kramdown and Maruku engines.
+
+#### `:smartypants => true|false`
+
+Set `true` to enable [Smarty Pants][smartypants]
+style punctuation replacement.
+
+#### `:escape_html => true|false`
+
+Set `true` disallow raw HTML in Markdown contents. HTML is converted to
+literal text by escaping `<` characters.
+
+### See also
+
+ * [Markdown Syntax Documentation](http://daringfireball.net/projects/markdown/syntax/)
+
+<a name='rdiscount'></a>
+RDiscount (`markdown`, `md`, `mkd`)
+-----------------------------------
+
+[Discount][discount] is an implementation of the Markdown markup language in C.
+[RDiscount][rdiscount] is a Ruby wrapper around Discount.
+
+All the documentation of [Markdown](#markdown) applies in addition to the following:
+
+### Usage
+
+The `Tilt::RDiscountTemplate` class is registered for all files ending in
+`.markdown`, `.md` or `.mkd` by default with the highest priority. If you
+specifically want to use RDiscount, it's recommended to use `#prefer`:
+
+    Tilt.prefer Tilt::RDiscountTemplate
+
+__NOTE:__ It's suggested that your program `require 'erubis'` at load time when
+using this template engine within a threaded environment.
+
+### See also
+
+  * [Discount][discount]
+  * [RDiscount][rdiscount]
+  * GitHub: [rtomayko/rdiscount][rdiscount]
+
+
+[lesscss]: http://lesscss.org/ "Less CSS"
+[sass]: http://sass-lang.com/ "Sass"
+[coffee-script]: http://jashkenas.github.com/coffee-script/ "Coffee Script"
+[erubis]: http://www.kuwata-lab.com/erubis/ "Erubis"
+[haml]: http://haml-lang.org/ "Haml"
+[liquid]: http://www.liquidmarkup.org/ "Liquid"
+[radius]: http://radius.rubyforge.org/ "Radius"
+[radiant]: http://radiantcms.org/ "Radiant CMS"
+[redcloth]: http://redcloth.org/ "RedCloth"
+[rdoc]: http://rdoc.rubyforge.org/ "RDoc"
+[discount]: http://www.pell.portland.or.us/~orc/Code/discount/ "Discount"
+[rdiscount]: http://github.com/rtomayko/rdiscount/ "RDiscount"
+[smartypants]: http://daringfireball.net/projects/smartypants/ "Smarty Pants"
+
