@@ -56,6 +56,7 @@ Gem::Specification.new do |s|
     test/tilt_lesstemplate_test.rb
     test/tilt_liquidtemplate_test.rb
     test/tilt_markaby_test.rb
+    test/tilt_markdown_test.rb
     test/tilt_marukutemplate_test.rb
     test/tilt_nokogiritemplate_test.rb
     test/tilt_radiustemplate_test.rb

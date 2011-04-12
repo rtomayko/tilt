@@ -10,8 +10,15 @@ module Tilt
   class RDiscountTemplate < Template
     self.default_mime_type = 'text/html'
 
+    ALIAS = {
+      :escape_html => :filter_html,
+      :smartypants => :smart
+    }
+
+    FLAGS = [:smart, :filter_html, :smartypants, :escape_html]
+
     def flags
-      [:smart, :filter_html].select { |flag| options[flag] }
+      FLAGS.select { |flag| options[flag] }.map { |flag| ALIAS[flag] || flag }
     end
 
     def self.engine_initialized?
@@ -84,6 +91,8 @@ module Tilt
   # Kramdown Markdown implementation. See:
   # http://kramdown.rubyforge.org/
   class KramdownTemplate < Template
+    DUMB_QUOTES = [39, 39, 34, 34]
+
     def self.engine_initialized?
       defined? ::Kramdown
     end
@@ -93,6 +102,7 @@ module Tilt
     end
 
     def prepare
+      options[:smart_quotes] = DUMB_QUOTES unless options[:smartypants]
       @engine = Kramdown::Document.new(data, options)
       @output = nil
     end
