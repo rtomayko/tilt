@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
 
   s.name = 'tilt'
   s.version = '1.2.2'
-  s.date = '2011-01-17'
+  s.date = '2011-04-12'
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
@@ -20,6 +20,21 @@ Gem::Specification.new do |s|
     TEMPLATES.md
     bin/tilt
     lib/tilt.rb
+    lib/tilt/builder.rb
+    lib/tilt/coffee.rb
+    lib/tilt/creole.rb
+    lib/tilt/css.rb
+    lib/tilt/erb.rb
+    lib/tilt/haml.rb
+    lib/tilt/liquid.rb
+    lib/tilt/markaby.rb
+    lib/tilt/markdown.rb
+    lib/tilt/nokogiri.rb
+    lib/tilt/radius.rb
+    lib/tilt/rdoc.rb
+    lib/tilt/string.rb
+    lib/tilt/template.rb
+    lib/tilt/textile.rb
     test/contest.rb
     test/markaby/locals.mab
     test/markaby/markaby.mab
@@ -32,12 +47,16 @@ Gem::Specification.new do |s|
     test/tilt_cache_test.rb
     test/tilt_coffeescripttemplate_test.rb
     test/tilt_compilesite_test.rb
+    test/tilt_creoletemplate_test.rb
     test/tilt_erbtemplate_test.rb
     test/tilt_erubistemplate_test.rb
+    test/tilt_fallback_test.rb
     test/tilt_hamltemplate_test.rb
+    test/tilt_kramdown_test.rb
     test/tilt_lesstemplate_test.rb
     test/tilt_liquidtemplate_test.rb
     test/tilt_markaby_test.rb
+    test/tilt_marukutemplate_test.rb
     test/tilt_nokogiritemplate_test.rb
     test/tilt_radiustemplate_test.rb
     test/tilt_rdiscounttemplate_test.rb
