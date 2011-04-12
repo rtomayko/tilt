@@ -17,13 +17,13 @@ begin
       assert Tilt.mappings['markdown'].include?(Tilt::MarukuTemplate)
     end
 
-    test "registered above BlueCloth" do
+    test "registered below Kramdown" do
       %w[md mkd markdown].each do |ext|
         mappings = Tilt.mappings[ext]
-        blue_idx = mappings.index(Tilt::BlueClothTemplate)
+        kram_idx = mappings.index(Tilt::KramdownTemplate)
         maru_idx = mappings.index(Tilt::MarukuTemplate)
-        assert maru_idx < blue_idx,
-          "#{maru_idx} should be lower than #{blue_idx}"
+        assert maru_idx > kram_idx,
+          "#{maru_idx} should be higher than #{kram_idx}"
       end
     end
 
