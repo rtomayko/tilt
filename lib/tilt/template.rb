@@ -186,7 +186,7 @@ module Tilt
     # source line offset, so adding code to the preamble does not effect line
     # reporting in Kernel::caller and backtraces.
     def precompiled_preamble(locals)
-      locals.map { |k,v| "#{k} = locals[:#{k}]" }.join("\n")
+      locals.map { |k,v| "#{k} = locals[#{k.inspect}]" }.join("\n")
     end
 
     # Generates postamble code for the precompiled template source. The
