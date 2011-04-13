@@ -121,6 +121,12 @@ class TiltTemplateTest < Test::Unit::TestCase
     assert inst.prepared?
   end
 
+  test "template_source with locals of strings" do
+    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{name}!' }
+    assert_equal "Hey Joe!", inst.render(Object.new, 'name' => 'Joe')
+    assert inst.prepared?
+  end
+
   class Person
     CONSTANT = "Bob"
 
