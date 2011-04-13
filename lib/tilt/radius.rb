@@ -8,6 +8,22 @@ module Tilt
       defined? ::Radius
     end
 
+    def self.context_class
+      @context_class ||= Class.new(Radius::Context) do
+        attr_accessor :tilt_scope
+
+        def tag_missing(name, attributes)
+          tilt_scope.__send__(name)
+        end
+
+        def dup
+          i = super
+          i.tilt_scope = tilt_scope
+          i
+        end
+      end
+    end
+
     def initialize_engine
       require_template_library 'radius'
     end
@@ -16,7 +32,8 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      context = Class.new(Radius::Context).new
+      context = self.class.context_class.new
+      context.tilt_scope = scope
       context.define_tag("yield") do
         block.call
       end
@@ -25,11 +42,7 @@ module Tilt
           value
         end
       end
-      (class << context; self; end).class_eval do
-        define_method :tag_missing do |tag, attr|
-          scope.__send__(tag)  # any way to support attr as args?
-        end
-      end
+
       options = {:tag_prefix => 'r'}.merge(@options)
       parser = Radius::Parser.new(context, options)
       parser.parse(data)
