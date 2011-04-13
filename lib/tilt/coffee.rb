@@ -37,7 +37,7 @@ module Tilt
     end
 
     def prepare
-      if !options.key?(:bare) || !options[:no_wrap]
+      if !options.key?(:bare) and !options.key?(:no_wrap)
         options[:bare] = self.class.default_bare
       end
     end
