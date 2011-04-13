@@ -216,10 +216,7 @@ module Tilt
     #
     # http://jira.codehaus.org/browse/JRUBY-2599
     #
-    # Additionally, JRuby's eval line reporting is off by one compared to
-    # all MRI versions tested.
-    #
-    # We redefine evaluate_source to work around both issues.
+    # We redefine evaluate_source to work around this issues.
     if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
       undef evaluate_source
       def evaluate_source(scope, locals, &block)
