@@ -224,7 +224,7 @@ module Tilt
       undef evaluate_source
       def evaluate_source(scope, locals, &block)
         source, offset = precompiled(locals)
-        file, lineno = eval_file, (line - offset) - 1
+        file, lineno = eval_file, (line - offset)
         scope.instance_eval { Kernel::eval(source, binding, file, lineno) }
       end
     end
