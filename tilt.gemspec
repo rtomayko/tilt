@@ -90,6 +90,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'RedCloth'
   s.add_development_dependency 'maruku'
   s.add_development_dependency 'creole'
+  s.add_development_dependency 'kramdown'
 
   s.extra_rdoc_files = %w[COPYING]
 
