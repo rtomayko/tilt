@@ -86,6 +86,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'nokogiri'
   s.add_development_dependency 'markaby'
   s.add_development_dependency 'coffee-script'
+  s.add_development_dependency 'bluecloth'
+  s.add_development_dependency 'RedCloth'
+  s.add_development_dependency 'maruku'
+  s.add_development_dependency 'creole'
 
   s.extra_rdoc_files = %w[COPYING]
 
