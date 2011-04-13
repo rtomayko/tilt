@@ -89,9 +89,9 @@ class ERBTemplateTest < Test::Unit::TestCase
     end
   end
 
-  test "default non-stripping trim mode" do
+  test "default stripping trim mode" do
     template = Tilt::ERBTemplate.new('test.erb', 1) { "\n<%= 1 + 1 %>\n" }
-    assert_equal "\n2\n", template.render
+    assert_equal "\n2", template.render
   end
 
   test "stripping trim mode" do
@@ -186,9 +186,9 @@ class CompiledERBTemplateTest < Test::Unit::TestCase
     end
   end
 
-  test "default non-stripping trim mode" do
+  test "default stripping trim mode" do
     template = Tilt::ERBTemplate.new('test.erb') { "\n<%= 1 + 1 %>\n" }
-    assert_equal "\n2\n", template.render(Scope.new)
+    assert_equal "\n2", template.render(Scope.new)
   end
 
   test "stripping trim mode" do
