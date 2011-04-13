@@ -48,9 +48,9 @@ begin
         fail 'should have raised an exception'
       rescue => boom
         assert_kind_of NameError, boom
-        line = boom.backtrace.first
+        line = boom.backtrace.grep(/^test\.haml:/).first
+        assert line, "Backtrace didn't contain test.haml"
         file, line, meth = line.split(":")
-        assert_equal 'test.haml', file
         assert_equal '12', line
       end
     end
@@ -108,9 +108,9 @@ begin
         fail 'should have raised an exception'
       rescue => boom
         assert_kind_of NameError, boom
-        line = boom.backtrace.first
+        line = boom.backtrace.grep(/^test\.haml:/).first
+        assert line, "Backtrace didn't contain test.haml"
         file, line, meth = line.split(":")
-        assert_equal 'test.haml', file
         assert_equal '12', line
       end
     end

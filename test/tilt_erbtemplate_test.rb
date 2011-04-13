@@ -66,9 +66,9 @@ class ERBTemplateTest < Test::Unit::TestCase
       fail 'should have raised an exception'
     rescue => boom
       assert_kind_of NameError, boom
-      line = boom.backtrace.first
+      line = boom.backtrace.grep(/^test\.erb:/).first
+      assert line, "Backtrace didn't contain test.erb"
       file, line, meth = line.split(":")
-      assert_equal 'test.erb', file
       assert_equal '13', line
     end
   end
@@ -163,9 +163,9 @@ class CompiledERBTemplateTest < Test::Unit::TestCase
       fail 'should have raised an exception'
     rescue => boom
       assert_kind_of NameError, boom
-      line = boom.backtrace.first
+      line = boom.backtrace.grep(/^test\.erb:/).first
+      assert line, "Backtrace didn't contain test.erb"
       file, line, meth = line.split(":")
-      assert_equal 'test.erb', file
       assert_equal '13', line
     end
   end

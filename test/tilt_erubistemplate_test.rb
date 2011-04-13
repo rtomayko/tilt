@@ -72,9 +72,9 @@ begin
         fail 'should have raised an exception'
       rescue => boom
         assert_kind_of NameError, boom
-        line = boom.backtrace.first
+        line = boom.backtrace.grep(/^test\.erubis:/).first
+        assert line, "Backtrace didn't contain test.erubis"
         file, line, meth = line.split(":")
-        assert_equal 'test.erubis', file
         assert_equal '13', line
       end
     end

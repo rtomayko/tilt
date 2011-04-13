@@ -16,8 +16,8 @@ class TiltFallbackTest < Test::Unit::TestCase
     def prepare;                       end
   end
 
-  FailTemplate2 = FailTemplate.dup
-  WinTemplate2  = WinTemplate.dup
+  FailTemplate2 = Class.new(FailTemplate)
+  WinTemplate2  = Class.new(WinTemplate)
 
   def set_ivar(obj, name, value)
     obj.instance_variable_set("@#{name}", value)

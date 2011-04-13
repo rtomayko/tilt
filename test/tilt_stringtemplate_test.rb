@@ -48,9 +48,9 @@ class StringTemplateTest < Test::Unit::TestCase
       fail 'should have raised an exception'
     rescue => boom
       assert_kind_of NameError, boom
-      line = boom.backtrace.first
+      line = boom.backtrace.grep(/^test\.str:/).first
+      assert line, "Backtrace didn't contain test.str"
       file, line, meth = line.split(":")
-      assert_equal 'test.str', file
       assert_equal '13', line
     end
   end
@@ -135,8 +135,9 @@ class CompiledStringTemplateTest < Test::Unit::TestCase
     rescue => boom
       assert_kind_of NameError, boom
       line = boom.backtrace.first
+      line = boom.backtrace.grep(/^test\.str:/).first
+      assert line, "Backtrace didn't contain test.str"
       file, line, meth = line.split(":")
-      assert_equal 'test.str', file
       assert_equal '13', line
     end
   end
