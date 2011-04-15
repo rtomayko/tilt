@@ -159,7 +159,7 @@ mappings:
 If there are more than one template class registered for a file extension, Tilt
 will automatically try to load the version that works on your machine:
 
-  1. If any of the template engines has been loaded alreaedy: Use that one.
+  1. If any of the template engines has been loaded already: Use that one.
   2. If not, it will try to initialize each of the classes with an empty template.
   3. Tilt will use the first that doesn't raise an exception.
   4. If however *all* of them failed, Tilt will raise the exception of the first
