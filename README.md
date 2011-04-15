@@ -33,6 +33,7 @@ Support for these template engines is included with the package:
     Builder                    .builder               builder
     Liquid                     .liquid                liquid
     RDiscount                  .markdown, .mkd, .md   rdiscount
+    Redcarpet                  .markdown, .mkd, .md   redcarpet
     BlueCloth                  .markdown, .mkd, .md   bluecloth
     Kramdown                   .markdown, .mkd, .md   kramdown
     Maruku                     .markdown, .mkd, .md   maruku
