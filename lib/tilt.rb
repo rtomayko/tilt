@@ -39,7 +39,8 @@ module Tilt
   #   Tilt.prefer(Tilt::RDiscountTemplate, '.md')
   def self.prefer(template_class, *extensions)
     if extensions.empty?
-      mappings.each do |ext, klass|
+      mappings.each do |ext, klasses|
+        next unless klasses.include? template_class
         @preferred_mappings[ext] = template_class
       end
     else

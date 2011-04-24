@@ -109,5 +109,24 @@ class TiltFallbackTest < Test::Unit::TestCase
       assert_equal FailTemplate, template
     end
   end
+
+  test ".prefer with no extension should only register for extensions associated with the engine" do
+    extensions = %w[md mkd markdown]
+
+    extensions.each do |ext|
+      Tilt.register(ext, FailTemplate)
+      Tilt.register(ext, WinTemplate)
+    end
+
+    Tilt.register('foo', WinTemplate)
+    Tilt.prefer(FailTemplate)
+
+    extensions.each do |ext|
+      template = Tilt[ext]
+      assert_equal FailTemplate, template
+    end
+
+    assert_equal WinTemplate, Tilt['foo']
+  end
 end
 
