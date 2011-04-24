@@ -109,5 +109,14 @@ class TiltFallbackTest < Test::Unit::TestCase
       assert_equal FailTemplate, template
     end
   end
+  
+  test ".prefer should only override extensions the preferred library is registered for"  do
+    Tilt.register("md", WinTemplate)
+    Tilt.register("mkd", FailTemplate)
+    Tilt.register("mkd", WinTemplate)
+    Tilt.prefer(FailTemplate)
+    assert_equal FailTemplate, Tilt["mkd"]
+    assert_equal WinTemplate, Tilt["md"]
+  end
 end
 
