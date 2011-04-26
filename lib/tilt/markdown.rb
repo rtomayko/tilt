@@ -39,6 +39,26 @@ module Tilt
     end
   end
 
+  # Upskirt Markdown implementation. See:
+  # https://github.com/tanoku/redcarpet
+  #
+  # Compatible to RDiscount
+  class RedcarpetTemplate < RDiscountTemplate
+    self.default_mime_type = 'text/html'
+
+    def self.engine_initialized?
+      defined? ::RedcarpetCompat
+    end
+
+    def initialize_engine
+      require_template_library 'redcarpet'
+    end
+
+    def prepare
+      @engine = RedcarpetCompat.new(data, *flags)
+      @output = nil
+    end
+  end
 
   # BlueCloth Markdown implementation. See:
   # http://deveiate.org/projects/BlueCloth/
