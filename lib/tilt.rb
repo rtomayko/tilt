@@ -17,9 +17,7 @@ module Tilt
   def self.register(template_class, *extensions)
     if template_class.respond_to?(:to_str)
       # Support register(ext, template_class) too
-      ext = template_class
-      template_class = extensions[0]
-      extensions = [ext]
+      extensions, template_class = [template_class], extensions[0]
     end
 
     extensions.each do |ext|
@@ -76,8 +74,8 @@ module Tilt
     end
 
     # Try to find a preferred engine.
-    klass = @preferred_mappings[pattern]
-    return klass if klass
+    preferred_klass = @preferred_mappings[pattern]
+    return preferred_klass if preferred_klass
 
     # Fall back to the general list of mappings.
     klasses = @template_mappings[pattern]
