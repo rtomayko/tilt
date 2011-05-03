@@ -54,8 +54,7 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      obj = super(scope, locals, &block)
-      decorate Yajl::Encoder.new.encode(obj), options
+      decorate super(scope, locals, &block), options
     end
 
     def precompiled_preamble(locals)
@@ -64,7 +63,7 @@ module Tilt
     end
 
     def precompiled_postamble(locals)
-      "json"
+      "Yajl::Encoder.new.encode(json)"
     end
 
     def precompiled_template(locals)
