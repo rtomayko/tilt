@@ -93,9 +93,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'creole'
   s.add_development_dependency 'kramdown'
 
-  s.extra_rdoc_files = %w[COPYING]
-
-  s.has_rdoc = true
   s.homepage = "http://github.com/rtomayko/tilt/"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Tilt", "--main", "Tilt"]
   s.require_paths = %w[lib]
