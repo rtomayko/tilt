@@ -72,9 +72,7 @@ Gem::Specification.new do |s|
   ]
   # = MANIFEST =
 
-  s.default_executable = 'tilt'
   s.executables = ['tilt']
-
   s.test_files = s.files.select {|path| path =~ /^test\/.*_test.rb/}
   s.add_development_dependency 'contest'
   s.add_development_dependency 'builder'
