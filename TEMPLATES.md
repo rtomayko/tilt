@@ -40,6 +40,7 @@ implementations (depending on which are available on your system):
 
  * [Markdown](#markdown) - Generic Markdown implementation
  * [RDiscount](#rdiscount) - `Tilt::RDiscountTemplate`
+ * Redcarpet - `Tilt::RedcarpetTemplate`
  * BlueCloth - `Tilt::BlueClothTemplate`
  * Kramdown - `Tilt::KramdownTemplate`
  * Maruku - `Tilt::MarukuTemplate`
@@ -427,6 +428,7 @@ formatted texts are readable.
 Markdown formatted texts are converted to HTML with one of these libraries:
 
   * [RDiscount](#rdiscount) - `Tilt::RDiscountTemplate`
+  * Redcarpet - `Tilt::RedcarpetTemplate`
   * BlueCloth - `Tilt::BlueClothTemplate`
   * Kramdown - `Tilt::KramdownTemplate`
   * Maruku - `Tilt::MarukuTemplate`
