@@ -8,7 +8,7 @@ module Tilt
   class CoffeeScriptTemplate < Template
     self.default_mime_type = 'application/javascript'
 
-    @@default_bare = true
+    @@default_bare = false
 
     def self.default_bare
       @@default_bare
