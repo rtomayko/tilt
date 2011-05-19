@@ -40,7 +40,8 @@ begin
 
       test "no options" do
         template = Tilt::CoffeeScriptTemplate.new { |t| "puts 'Hello, World!'\n" }
-        assert_equal "puts('Hello, World!');", template.render
+        assert_match "puts('Hello, World!');", template.render
+        assert_match "(function() {", template.render
       end
 
       test "overridden by :bare" do
