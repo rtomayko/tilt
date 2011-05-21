@@ -66,12 +66,8 @@ module MarkdownTests
   end
 
   def test_smarty_pants_true
-    if self.class.template == Tilt::RedcarpetTemplate
-      warn "\nsmartypants not yet fully supported by redcarpet (#{__FILE__}:#{__LINE__})"
-    else
-      html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
-      assert_equal "<p>Hello “World” — This is —– a test …</p>", html
-    end
+    html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
+    assert_equal "<p>Hello “World” — This is —– a test …</p>", html
   end
 end
 
