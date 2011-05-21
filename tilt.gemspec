@@ -90,6 +90,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'maruku'
   s.add_development_dependency 'creole'
   s.add_development_dependency 'kramdown'
+  s.add_development_dependency 'redcarpet'
 
   s.homepage = "http://github.com/rtomayko/tilt/"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Tilt", "--main", "Tilt"]
