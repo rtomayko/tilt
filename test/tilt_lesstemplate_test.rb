@@ -2,21 +2,23 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'less'
+	require 'less-js'
 
   class LessTemplateTest < Test::Unit::TestCase
-    test "is registered for '.less' files" do
+    test "is registered for '.lessc' files" do
       assert_equal Tilt::LessTemplate, Tilt['test.less']
     end
 
     test "compiles and evaluates the template on #render" do
-      template = Tilt::LessTemplate.new { |t| ".bg { background-color: #0000ff; } \n#main\n { .bg; }\n" }
-      assert_equal ".bg, #main { background-color: #0000ff; }\n", template.render
+      template = Tilt::LessTemplate.new { |t| ".bg { background-color: #0000ff; border: 3px * 2} \n#main\n { .bg; }\n" }
+      assert_equal ".bg {\n  background-color: #0000ff;\n  border: 6px;\n}\n#main {\n  background-color: #0000ff;\n  border: 6px;\n}\n" , template.render
     end
 
     test "can be rendered more than once" do
-      template = Tilt::LessTemplate.new { |t| ".bg { background-color: #0000ff; } \n#main\n { .bg; }\n" }
-      3.times { assert_equal ".bg, #main { background-color: #0000ff; }\n", template.render }
+      template = Tilt::LessTemplate.new { |t| ".bg { background-color: #0000ff; border: 3px * 2} \n#main\n { .bg; }\n" }
+      3.times do
+				assert_equal ".bg {\n  background-color: #0000ff;\n  border: 6px;\n}\n#main {\n  background-color: #0000ff;\n  border: 6px;\n}\n" , template.render
+			end
     end
   end
 

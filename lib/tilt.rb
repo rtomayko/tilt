@@ -149,7 +149,6 @@ module Tilt
   register SassTemplate, 'sass'
   register ScssTemplate, 'scss'
   register LessTemplate, 'less'
-  register LesscTemplate, 'lessc'
 
   require 'tilt/coffee'
   register CoffeeScriptTemplate, 'coffee'
