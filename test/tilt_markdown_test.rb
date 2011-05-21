@@ -36,6 +36,9 @@ module MarkdownTests
   end
 
   def test_escape_html_true
+    if self.class.template == Tilt::RedcarpetTemplate
+      flunk "redcarpet doesn't support :escape_html yet"
+    end
     html = nrender "Hello <b>World</b>", :escape_html => true
     assert_equal "<p>Hello &lt;b&gt;World&lt;/b&gt;</p>", html
   end
