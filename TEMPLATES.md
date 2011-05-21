@@ -28,6 +28,7 @@ Tilt also includes support for CSS processors like [LessCSS][lesscss] and
 [Sass][sass], [CoffeeScript][coffee-script] and some simple text formats.
 
  * Less - `Tilt::LessTemplate`
+ * Less [JavaScript] - `Tilt::LesscTemplate`
  * Sass - `Tilt::SassTemplate`
  * Scss - `Tilt::ScssTemplate`
  * CoffeeScript - `Tilt::CoffeeScriptTemplate`
