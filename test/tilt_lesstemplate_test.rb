@@ -5,7 +5,7 @@ begin
 	require 'less-js'
 
   class LessTemplateTest < Test::Unit::TestCase
-    test "is registered for '.lessc' files" do
+    test "is registered for '.less' files" do
       assert_equal Tilt::LessTemplate, Tilt['test.less']
     end
 
