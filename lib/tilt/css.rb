@@ -64,5 +64,29 @@ module Tilt
       @engine.to_css
     end
   end
+
+  # Lessscss template implementation. See:
+  # http://lesscss.org/
+  #
+  # Less templates do not support object scopes, locals, or yield.
+  # We're using the npm install lessc binary to compile less here.
+  class LesscTemplate < Template
+    self.default_mime_type = 'text/css'
+
+    def self.engine_initialized?
+      raise LoadError unless (%x[lessc -v 2>&1] =~ /\(LESS Compiler\) \[JavaScript\]/) != nil
+    end
+
+    def initialize_engine; end
+
+    def prepare; end
+
+    def evaluate(scope, locals, &block)
+      file = Tempfile.new("lessc")
+      file.write(data)
+      file.close
+      `lessc #{file.path}`
+    end
+  end
 end
 
