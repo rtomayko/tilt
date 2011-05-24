@@ -28,7 +28,7 @@ module Tilt
 
     def precompiled_preamble(locals)
       return super if locals.include? :xml
-      "xml = ::Nokogiri::XML::Builder.new\n#{super}"
+      "xml = ::Nokogiri::XML::Builder.new { |xml| }\n#{super}"
     end
 
     def precompiled_postamble(locals)

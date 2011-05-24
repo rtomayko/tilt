@@ -70,6 +70,17 @@ begin
         assert_equal 'strong', doc.root.name
       end
     end
+
+    test "doesn't modify self when template is a string" do
+      template = Tilt::NokogiriTemplate.new { "xml.root { xml.child @hello }" }
+      scope = Object.new
+      scope.instance_variable_set(:@hello, "Hello World!")
+
+      3.times do
+        doc = Nokogiri.XML(template.render(scope))
+        assert_equal "Hello World!", doc.text.strip
+      end
+    end
   end
 rescue LoadError
   warn "Tilt::NokogiriTemplate (disabled)"
