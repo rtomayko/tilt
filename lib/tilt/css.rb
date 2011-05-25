@@ -9,16 +9,21 @@ module Tilt
     self.default_mime_type = 'text/css'
 
     def self.engine_initialized?
-      defined?(::Sass::Engine) && defined?(::Sass::Plugin)
+      defined? ::Sass::Engine
     end
 
     def initialize_engine
       require_template_library 'sass'
-      require_template_library 'sass/plugin'
     end
 
     def prepare
-      @engine = ::Sass::Engine.new(data, ::Sass::Plugin.engine_options(sass_options))
+      if defined? ::Sass::Plugin
+        options = ::Sass::Plugin.engine_options(sass_options)
+      else
+        options = sass_options
+      end
+
+      @engine = ::Sass::Engine.new(data, options)
     end
 
     def evaluate(scope, locals, &block)
