@@ -2,8 +2,8 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'haml'
   require 'sass'
+  require 'sass/plugin'
 
   class SassTemplateTest < Test::Unit::TestCase
     test "is registered for '.sass' files" do
