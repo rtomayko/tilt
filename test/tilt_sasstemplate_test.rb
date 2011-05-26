@@ -3,7 +3,6 @@ require 'tilt'
 
 begin
   require 'sass'
-  require 'sass/plugin'
 
   class SassTemplateTest < Test::Unit::TestCase
     test "is registered for '.sass' files" do
@@ -18,17 +17,6 @@ begin
     test "can be rendered more than once" do
       template = Tilt::SassTemplate.new { |t| "#main\n  :background-color #0000f1" }
       3.times { assert_equal "#main {\n  background-color: #0000f1; }\n", template.render }
-    end
-
-    test "uses configuration from Sass::Plugin.engine_options" do
-      begin
-        orig_style = Sass::Plugin.options[:style]
-        Sass::Plugin.options[:style] = :compressed
-        template = Tilt::SassTemplate.new { |t| "#main\n  :background-color #0000f1" }
-        assert_equal "#main{background-color:#0000f1}\n", template.render
-      ensure
-        Sass::Plugin.options[:style] = orig_style
-      end
     end
   end
 
