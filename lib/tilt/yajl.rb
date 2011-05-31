@@ -54,7 +54,7 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      decorate super(scope, locals, &block), options
+      decorate super(scope, locals, &block)
     end
 
     def precompiled_preamble(locals)
@@ -77,7 +77,7 @@ module Tilt
     # options - The option Hash to customize the behavior.
     #
     # Returns the decorated String.
-    def decorate(json, options)
+    def decorate(json)
       callback, variable = options[:callback], options[:variable]
       if callback && variable
         "var #{variable} = #{json}; #{callback}(#{variable});"
