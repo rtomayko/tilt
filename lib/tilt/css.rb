@@ -17,13 +17,7 @@ module Tilt
     end
 
     def prepare
-      if defined? ::Sass::Plugin
-        options = ::Sass::Plugin.engine_options(sass_options)
-      else
-        options = sass_options
-      end
-
-      @engine = ::Sass::Engine.new(data, options)
+      @engine = ::Sass::Engine.new(data, sass_options)
     end
 
     def evaluate(scope, locals, &block)
