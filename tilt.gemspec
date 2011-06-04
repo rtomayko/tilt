@@ -80,7 +80,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'haml', '>= 2.2.11'
   s.add_development_dependency 'rdiscount'
   s.add_development_dependency 'liquid'
-  s.add_development_dependency 'less'
+  s.add_development_dependency 'less-js'
   s.add_development_dependency 'radius'
   s.add_development_dependency 'nokogiri'
   s.add_development_dependency 'markaby'

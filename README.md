@@ -29,7 +29,7 @@ Support for these template engines is included with the package:
     Haml                       .haml                  haml
     Sass                       .sass                  haml (< 3.1) or sass (>= 3.1)
     Scss                       .scss                  haml (< 3.1) or sass (>= 3.1)
-    Less CSS                   .less                  less
+    Less CSS                   .less                  less-js
     Builder                    .builder               builder
     Liquid                     .liquid                liquid
     RDiscount                  .markdown, .mkd, .md   rdiscount

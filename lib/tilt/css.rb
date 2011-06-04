@@ -48,19 +48,17 @@ module Tilt
     self.default_mime_type = 'text/css'
 
     def self.engine_initialized?
-      defined? ::Less::Engine
+      defined? ::LessJs
     end
 
     def initialize_engine
-      require_template_library 'less'
+      require_template_library 'less-js'
     end
 
-    def prepare
-      @engine = ::Less::Engine.new(data)
-    end
+    def prepare; end
 
     def evaluate(scope, locals, &block)
-      @engine.to_css
+      LessJs.compile(data)
     end
   end
 end
