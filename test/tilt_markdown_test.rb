@@ -1,5 +1,7 @@
 # coding: UTF-8
 require 'tilt'
+
+begin
 require 'nokogiri'
 
 module MarkdownTests
@@ -143,6 +145,10 @@ begin
   end
 rescue LoadError => boom
   # It should already be warned in the main tests
+end
+
+rescue LoadError
+  warn "Markdown tests need Nokogiri\n"
 end
 
 
