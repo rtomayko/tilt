@@ -48,7 +48,7 @@ module Tilt
     self.default_mime_type = 'text/css'
 
     def self.engine_initialized?
-      defined? ::Less::Engine
+      defined? ::Less
     end
 
     def initialize_engine
@@ -56,11 +56,16 @@ module Tilt
     end
 
     def prepare
-      @engine = ::Less::Engine.new(data)
+      if ::Less.const_defined? :Engine
+        @engine = ::Less::Engine.new(data)
+      else
+        parser  = ::Less::Parser.new(:filename => eval_file, :line => line)
+        @engine = parser.parse(data)
+      end
     end
 
     def evaluate(scope, locals, &block)
-      @engine.to_css
+      @output ||= @engine.to_css
     end
   end
 end
