@@ -183,4 +183,7 @@ module Tilt
 
   require 'tilt/creole'
   register CreoleTemplate, 'creole'
+
+  require 'tilt/yajl'
+  register YajlTemplate, 'yajl'
 end

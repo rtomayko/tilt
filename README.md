@@ -44,6 +44,7 @@ Support for these template engines is included with the package:
     Nokogiri                   .nokogiri              nokogiri
     CoffeeScript               .coffee                coffee-script (+ javascript)
     Creole (Wiki markup)       .creole                creole
+    Yajl                       .yajl                  yajl-ruby
 
 These template engines ship with their own Tilt integration:
 
@@ -194,7 +195,7 @@ it on subsequent template invocations. Benchmarks show this yields a 5x-10x
 performance increase over evaluating the Ruby source on each invocation.
 
 Template compilation is currently supported for these template engines:
-StringTemplate, ERB, Erubis, Haml, Nokogiri and Builder.
+StringTemplate, ERB, Erubis, Haml, Nokogiri, Builder and Yajl.
 
 LICENSE
 -------
