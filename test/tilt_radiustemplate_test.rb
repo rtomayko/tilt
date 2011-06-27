@@ -31,6 +31,14 @@ begin
     class ExampleRadiusScope
       def beer; 'wet'; end
       def whisky; 'wetter'; end
+      
+      def name(value)
+        value
+      end
+      
+      def combine(a, b)
+        a + b
+      end
     end
 
     test "combining scope and locals when scope responds" do
@@ -39,6 +47,22 @@ begin
       }
       scope = ExampleRadiusScope.new
       assert_equal "Beer is wet but Whisky is wetter.", template.render(scope)
+    end
+    
+    test "passing arguments to a scope method" do
+      template = Tilt::RadiusTemplate.new {
+        "Hey <r:name value='Joe'/>!"
+      }
+      scope = ExampleRadiusScope.new
+      assert_equal "Hey Joe!", template.render(scope)
+    end
+    
+    test "passing multiple arguments to a scope method order independent" do
+      template = Tilt::RadiusTemplate.new {
+        "<r:combine b='Joe!' a='Hey '/>"
+      }
+      scope = ExampleRadiusScope.new
+      assert_equal "Hey Joe!", template.render(scope)
     end
 
     test "precedence when locals and scope define same variables" do
