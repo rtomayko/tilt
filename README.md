@@ -51,6 +51,9 @@ These template engines ship with their own Tilt integration:
     ENGINE                     FILE EXTENSIONS   REQUIRED LIBRARIES
     -------------------------- ----------------- ----------------------------
     Slim                       .slim             slim (>= 0.7)
+    Embedded JavaScript                          sprockets
+    Embedded CoffeeScript                        sprockets
+    JST                                          sprockets
 
 See [TEMPLATES.md][t] for detailed information on template engine
 options and supported features.
