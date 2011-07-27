@@ -1,4 +1,7 @@
 # coding: utf-8
+if RUBY_VERSION >= '1.9.1'
+  Encoding.default_external = "UTF-8"
+end
 require 'contest'
 require 'tilt'
 require 'erb'
