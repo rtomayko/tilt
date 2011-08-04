@@ -40,14 +40,8 @@ begin
     test "smartypants when :smart is set" do
       template = Tilt::RedcarpetTemplate.new(:smart => true) { |t|
         "OKAY -- 'Smarty Pants'" }
-      assert_equal "<p>OKAY &mdash; &lsquo;Smarty Pants&rsquo;</p>\n",
+      assert_equal "<p>OKAY &ndash; &lsquo;Smarty Pants&rsquo;</p>\n",
         template.render
-    end
-
-    test "stripping HTML when :filter_html is set" do
-      template = Tilt::RedcarpetTemplate.new(:filter_html => true) { |t|
-        "HELLO <blink>WORLD</blink>" }
-      assert_equal "<p>HELLO WORLD</p>\n", template.render
     end
   end
 rescue LoadError => boom
