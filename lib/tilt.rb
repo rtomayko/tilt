@@ -181,8 +181,9 @@ module Tilt
   require 'tilt/rdoc'
   register RDocTemplate, 'rdoc'
 
-  require 'tilt/creole'
-  register CreoleTemplate, 'creole'
+  require 'tilt/wiki'
+  register CreoleTemplate,    'wiki', 'creole'
+  register WikiClothTemplate, 'wiki', 'mediawiki', 'mw'
 
   require 'tilt/yajl'
   register YajlTemplate, 'yajl'

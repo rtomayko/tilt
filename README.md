@@ -21,30 +21,31 @@ template engines included in the distribution.
 
 Support for these template engines is included with the package:
 
-    ENGINE                     FILE EXTENSIONS        REQUIRED LIBRARIES
-    -------------------------- ---------------------- ----------------------------
-    ERB                        .erb, .rhtml           none (included ruby stdlib)
-    Interpolated String        .str                   none (included ruby core)
-    Erubis                     .erb, .rhtml, .erubis  erubis
-    Haml                       .haml                  haml
-    Sass                       .sass                  haml (< 3.1) or sass (>= 3.1)
-    Scss                       .scss                  haml (< 3.1) or sass (>= 3.1)
-    Less CSS                   .less                  less
-    Builder                    .builder               builder
-    Liquid                     .liquid                liquid
-    RDiscount                  .markdown, .mkd, .md   rdiscount
-    Redcarpet                  .markdown, .mkd, .md   redcarpet
-    BlueCloth                  .markdown, .mkd, .md   bluecloth
-    Kramdown                   .markdown, .mkd, .md   kramdown
-    Maruku                     .markdown, .mkd, .md   maruku
-    RedCloth                   .textile               redcloth
-    RDoc                       .rdoc                  rdoc
-    Radius                     .radius                radius
-    Markaby                    .mab                   markaby
-    Nokogiri                   .nokogiri              nokogiri
-    CoffeeScript               .coffee                coffee-script (+ javascript)
-    Creole (Wiki markup)       .creole                creole
-    Yajl                       .yajl                  yajl-ruby
+    ENGINE                     FILE EXTENSIONS         REQUIRED LIBRARIES
+    -------------------------- ----------------------- ----------------------------
+    ERB                        .erb, .rhtml            none (included ruby stdlib)
+    Interpolated String        .str                    none (included ruby core)
+    Erubis                     .erb, .rhtml, .erubis   erubis
+    Haml                       .haml                   haml
+    Sass                       .sass                   haml (< 3.1) or sass (>= 3.1)
+    Scss                       .scss                   haml (< 3.1) or sass (>= 3.1)
+    Less CSS                   .less                   less
+    Builder                    .builder                builder
+    Liquid                     .liquid                 liquid
+    RDiscount                  .markdown, .mkd, .md    rdiscount
+    Redcarpet                  .markdown, .mkd, .md    redcarpet
+    BlueCloth                  .markdown, .mkd, .md    bluecloth
+    Kramdown                   .markdown, .mkd, .md    kramdown
+    Maruku                     .markdown, .mkd, .md    maruku
+    RedCloth                   .textile                redcloth
+    RDoc                       .rdoc                   rdoc
+    Radius                     .radius                 radius
+    Markaby                    .mab                    markaby
+    Nokogiri                   .nokogiri               nokogiri
+    CoffeeScript               .coffee                 coffee-script (+ javascript)
+    Creole (Wiki markup)       .wiki, .creole          creole
+    WikiCloth (Wiki markup)    .wiki, .mediawiki, .mw  wikicloth
+    Yajl                       .yajl                   yajl-ruby
 
 These template engines ship with their own Tilt integration:
 

@@ -9,6 +9,10 @@ begin
       assert_equal Tilt::CreoleTemplate, Tilt['test.creole']
     end
 
+    test "registered for '.wiki' files" do
+      assert Tilt.mappings['wiki'].include?(Tilt::CreoleTemplate)
+    end
+
     test "compiles and evaluates the template on #render" do
       template = Tilt::CreoleTemplate.new { |t| "= Hello World!" }
       assert_equal "<h1>Hello World!</h1>", template.render

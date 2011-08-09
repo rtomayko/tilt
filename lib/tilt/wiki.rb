@@ -25,4 +25,26 @@ module Tilt
       @output ||= @engine.to_html
     end
   end
+
+  # WikiCloth implementation. See:
+  # http://redcloth.org/
+  class WikiClothTemplate < Template
+    def self.engine_initialized?
+      defined? ::WikiCloth::Parser
+    end
+
+    def initialize_engine
+      require_template_library 'wikicloth'
+    end
+
+    def prepare
+      @parser = options.delete(:parser) || WikiCloth::Parser
+      @engine = @parser.new options.merge(:data => data)
+      @output = nil
+    end
+
+    def evaluate(scope, locals, &block)
+      @output ||= @engine.to_html
+    end
+  end
 end
