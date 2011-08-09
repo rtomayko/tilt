@@ -93,6 +93,13 @@ begin
   class MarkdownRedcarpetTest < Test::Unit::TestCase
     include MarkdownTests
     template Tilt::RedcarpetTemplate
+    # Doesn't support escaping
+    undef test_escape_html_true
+
+    def test_smarty_pants_true
+      html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
+      assert_equal "<p>Hello “World” – This is — a test …</p>", html
+    end
   end
 rescue LoadError => boom
   # It should already be warned in the main tests
