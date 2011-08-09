@@ -40,7 +40,7 @@ begin
     test "smartypants when :smart is set" do
       template = Tilt::RedcarpetTemplate.new(:smart => true) { |t|
         "OKAY -- 'Smarty Pants'" }
-      assert_equal "<p>OKAY &ndash; &lsquo;Smarty Pants&rsquo;</p>\n",
+      assert_match /<p>OKAY &[nm]dash; &lsquo;Smarty Pants&rsquo;<\/p>/,
         template.render
     end
   end

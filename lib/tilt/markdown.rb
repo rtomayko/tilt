@@ -41,9 +41,9 @@ module Tilt
 
   # Upskirt Markdown implementation. See:
   # https://github.com/tanoku/redcarpet
+  #
+  # Supports both Redcarpet 1.x and 2.x
   class RedcarpetTemplate < Template
-    self.default_mime_type = 'text/html'
-
     def self.engine_initialized?
       defined? ::Redcarpet
     end
@@ -52,38 +52,70 @@ module Tilt
       require_template_library 'redcarpet'
     end
 
-    def generate_renderer
-      renderer = options.delete(:renderer) || Redcarpet::Render::HTML
-      return renderer unless options.delete(:smartypants)
-      return renderer if renderer <= Redcarpet::Render::SmartyPants
-
-      if renderer == Redcarpet::Render::XHTML
-        Redcarpet::Render::SmartyHTML.new(:xhtml => true)
-      elsif renderer == Redcarpet::Render::HTML
-        Redcarpet::Render::SmartyHTML
-      elsif renderer.is_a? Class
-        Class.new(renderer) { include Redcarpet::Render::SmartyPants }
-      else
-        renderer.extend Redcarpet::Render::SmartyPants
-      end
-    end
-
     def prepare
-      # try to support the same aliases
-      RDiscountTemplate::ALIAS.each do |opt, aka|
-        next if options.key? opt or not options.key? aka
-        options[opt] = options.delete(aka)
-      end
-
-      # only raise an exception if someone is trying to enable :escape_html
-      options.delete(:escape_html) unless options[:escape_html]
-
-      @engine = Redcarpet::Markdown.new(generate_renderer, options)
-      @output = nil
+      klass = [Redcarpet1, Redcarpet2].detect { |e| e.engine_initialized? }
+      @engine = klass.new(file, line, options) { data }
     end
 
     def evaluate(scope, locals, &block)
-      @output ||= @engine.render(data)
+      @engine.evaluate(scope, locals, &block)
+    end
+
+    # Compatibility mode for Redcarpet 1.x
+    class Redcarpet1 < RDiscountTemplate
+      self.default_mime_type = 'text/html'
+
+      def self.engine_initialized?
+        defined? ::RedcarpetCompat
+      end
+
+      def prepare
+        @engine = RedcarpetCompat.new(data, *flags)
+        @output = nil
+      end
+    end
+
+    # Future proof mode for Redcarpet 2.x (not yet released)
+    class Redcarpet2 < Template
+      self.default_mime_type = 'text/html'
+
+      def self.engine_initialized?
+        defined? ::Redcarpet::Render
+      end
+
+      def generate_renderer
+        renderer = options.delete(:renderer) || Redcarpet::Render::HTML
+        return renderer unless options.delete(:smartypants)
+        return renderer if renderer <= Redcarpet::Render::SmartyPants
+
+        if renderer == Redcarpet::Render::XHTML
+          Redcarpet::Render::SmartyHTML.new(:xhtml => true)
+        elsif renderer == Redcarpet::Render::HTML
+          Redcarpet::Render::SmartyHTML
+        elsif renderer.is_a? Class
+          Class.new(renderer) { include Redcarpet::Render::SmartyPants }
+        else
+          renderer.extend Redcarpet::Render::SmartyPants
+        end
+      end
+
+      def prepare
+        # try to support the same aliases
+        RDiscountTemplate::ALIAS.each do |opt, aka|
+          next if options.key? opt or not options.key? aka
+          options[opt] = options.delete(aka)
+        end
+
+        # only raise an exception if someone is trying to enable :escape_html
+        options.delete(:escape_html) unless options[:escape_html]
+
+        @engine = Redcarpet::Markdown.new(generate_renderer, options)
+        @output = nil
+      end
+
+      def evaluate(scope, locals, &block)
+        @output ||= @engine.render(data)
+      end
     end
   end
 
