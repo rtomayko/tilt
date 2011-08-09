@@ -21,9 +21,19 @@ begin
       %w[md mkd markdown].each do |ext|
         mappings = Tilt.mappings[ext]
         blue_idx = mappings.index(Tilt::BlueClothTemplate)
-        rdis_idx = mappings.index(Tilt::RedcarpetTemplate)
-        assert rdis_idx < blue_idx,
-          "#{rdis_idx} should be lower than #{blue_idx}"
+        redc_idx = mappings.index(Tilt::RedcarpetTemplate)
+        assert redc_idx < blue_idx,
+          "#{redc_idx} should be lower than #{blue_idx}"
+      end
+    end
+
+    test "registered above RDiscount" do
+      %w[md mkd markdown].each do |ext|
+        mappings = Tilt.mappings[ext]
+        rdis_idx = mappings.index(Tilt::RDiscountTemplate)
+        redc_idx = mappings.index(Tilt::RedcarpetTemplate)
+        assert redc_idx < rdis_idx,
+          "#{redc_idx} should be lower than #{rdis_idx}"
       end
     end
 
