@@ -22,7 +22,6 @@ Gem::Specification.new do |s|
     lib/tilt.rb
     lib/tilt/builder.rb
     lib/tilt/coffee.rb
-    lib/tilt/creole.rb
     lib/tilt/css.rb
     lib/tilt/erb.rb
     lib/tilt/haml.rb
@@ -35,6 +34,8 @@ Gem::Specification.new do |s|
     lib/tilt/string.rb
     lib/tilt/template.rb
     lib/tilt/textile.rb
+    lib/tilt/wiki.rb
+    lib/tilt/yajl.rb
     test/contest.rb
     test/markaby/locals.mab
     test/markaby/markaby.mab
@@ -47,7 +48,6 @@ Gem::Specification.new do |s|
     test/tilt_cache_test.rb
     test/tilt_coffeescripttemplate_test.rb
     test/tilt_compilesite_test.rb
-    test/tilt_creoletemplate_test.rb
     test/tilt_erbtemplate_test.rb
     test/tilt_erubistemplate_test.rb
     test/tilt_fallback_test.rb
@@ -68,6 +68,8 @@ Gem::Specification.new do |s|
     test/tilt_stringtemplate_test.rb
     test/tilt_template_test.rb
     test/tilt_test.rb
+    test/tilt_wikiclothtemplate_test.rb
+    test/tilt_yajltemplate_test.rb
     tilt.gemspec
   ]
   # = MANIFEST =
