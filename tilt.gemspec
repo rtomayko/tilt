@@ -78,6 +78,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'builder'
   s.add_development_dependency 'erubis'
   s.add_development_dependency 'haml', '>= 2.2.11'
+  s.add_development_dependency 'sass'
   s.add_development_dependency 'rdiscount'
   s.add_development_dependency 'liquid'
   s.add_development_dependency 'less'
