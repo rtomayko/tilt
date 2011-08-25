@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'tilt'
-  s.version = '1.3.2'
-  s.date = '2011-05-26'
+  s.version = '1.3.3'
+  s.date = '2011-08-25'
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
   # = MANIFEST =
   s.files = %w[
     COPYING
+    Gemfile
     README.md
     Rakefile
     TEMPLATES.md
@@ -22,7 +23,6 @@ Gem::Specification.new do |s|
     lib/tilt.rb
     lib/tilt/builder.rb
     lib/tilt/coffee.rb
-    lib/tilt/creole.rb
     lib/tilt/css.rb
     lib/tilt/erb.rb
     lib/tilt/haml.rb
@@ -35,6 +35,8 @@ Gem::Specification.new do |s|
     lib/tilt/string.rb
     lib/tilt/template.rb
     lib/tilt/textile.rb
+    lib/tilt/wiki.rb
+    lib/tilt/yajl.rb
     test/contest.rb
     test/markaby/locals.mab
     test/markaby/markaby.mab
@@ -68,6 +70,8 @@ Gem::Specification.new do |s|
     test/tilt_stringtemplate_test.rb
     test/tilt_template_test.rb
     test/tilt_test.rb
+    test/tilt_wikiclothtemplate_test.rb
+    test/tilt_yajltemplate_test.rb
     tilt.gemspec
   ]
   # = MANIFEST =
