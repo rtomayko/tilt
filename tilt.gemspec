@@ -96,6 +96,5 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/rtomayko/tilt/"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Tilt", "--main", "Tilt"]
   s.require_paths = %w[lib]
-  s.rubyforge_project = 'wink'
   s.rubygems_version = '1.1.1'
 end
