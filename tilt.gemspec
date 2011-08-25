@@ -49,7 +49,6 @@ Gem::Specification.new do |s|
     test/tilt_cache_test.rb
     test/tilt_coffeescripttemplate_test.rb
     test/tilt_compilesite_test.rb
-    test/tilt_creoletemplate_test.rb
     test/tilt_erbtemplate_test.rb
     test/tilt_erubistemplate_test.rb
     test/tilt_fallback_test.rb
