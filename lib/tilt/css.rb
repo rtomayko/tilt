@@ -59,7 +59,7 @@ module Tilt
       if ::Less.const_defined? :Engine
         @engine = ::Less::Engine.new(data)
       else
-        parser  = ::Less::Parser.new(:filename => eval_file, :line => line)
+        parser  = ::Less::Parser.new(options.merge :filename => eval_file, :line => line)
         @engine = parser.parse(data)
       end
     end
