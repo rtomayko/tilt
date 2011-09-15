@@ -11,12 +11,20 @@ begin
 
     test "compiles and evaluates the template on #render" do
       template = Tilt::YajlTemplate.new { "json = { :integer => 3, :string => 'hello' }" }
-      assert_equal '{"integer":3,"string":"hello"}', template.render
+      output = template.render
+      result = Yajl::Parser.parse(output)
+      expect = {"integer" => 3,"string" => "hello"}
+      assert_equal expect, result
     end
 
     test "can be rendered more than once" do
       template = Tilt::YajlTemplate.new { "json = { :integer => 3, :string => 'hello' }" }
-      3.times { assert_equal '{"integer":3,"string":"hello"}', template.render }
+      expect = {"integer" => 3,"string" => "hello"}
+      3.times do
+        output = template.render
+        result = Yajl::Parser.parse(output)
+        assert_equal expect, result
+      end
     end
 
     test "evaluating ruby code" do
