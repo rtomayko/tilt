@@ -255,8 +255,11 @@ module Tilt
 
     def extract_magic_comment(script)
       comment = script.slice(/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*$/)
-      return comment if comment and not %w[ascii-8bit binary].include?($1.downcase)
-      "# coding: #{@default_encoding}" if @default_encoding
+      if comment && !%w[ascii-8bit binary].include?($1.downcase)
+        comment
+      elsif @default_encoding
+        "# coding: #{@default_encoding}"
+      end
     end
 
     # Special case Ruby 1.9.1's broken yield.
