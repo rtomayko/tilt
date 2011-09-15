@@ -24,5 +24,5 @@ begin
     end
   end
 rescue LoadError => boom
-  warn "Tilt::CreoleTemplate (disabled)\n"
+  warn "Tilt::CreoleTemplate (disabled)"
 end

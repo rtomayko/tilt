@@ -137,7 +137,7 @@ begin
     end
   end
 rescue LoadError => boom
-  warn "Tilt::ErubisTemplate (disabled)\n"
+  warn "Tilt::ErubisTemplate (disabled)"
 end
 
 __END__

@@ -28,5 +28,5 @@ begin
     end
   end
 rescue LoadError => boom
-  warn "Tilt::WikiClothTemplate (disabled)\n"
+  warn "Tilt::WikiClothTemplate (disabled)"
 end

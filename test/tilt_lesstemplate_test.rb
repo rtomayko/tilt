@@ -34,5 +34,5 @@ begin
   end
 
 rescue LoadError => boom
-  warn "Tilt::LessTemplate (disabled)\n"
+  warn "Tilt::LessTemplate (disabled)"
 end

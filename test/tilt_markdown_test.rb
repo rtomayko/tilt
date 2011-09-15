@@ -155,7 +155,7 @@ rescue LoadError => boom
 end
 
 rescue LoadError
-  warn "Markdown tests need Nokogiri\n"
+  warn "Markdown tests need Nokogiri"
 end
 
 

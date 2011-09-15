@@ -74,5 +74,5 @@ begin
   end
 
 rescue LoadError => boom
-  warn "Tilt::LiquidTemplate (disabled)\n"
+  warn "Tilt::LiquidTemplate (disabled)"
 end

@@ -57,5 +57,5 @@ begin
   end
 
 rescue LoadError => boom
-  warn "Tilt::CoffeeScriptTemplate (disabled)\n"
+  warn "Tilt::CoffeeScriptTemplate (disabled)"
 end

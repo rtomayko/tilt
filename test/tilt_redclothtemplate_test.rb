@@ -20,5 +20,5 @@ begin
     end
   end
 rescue LoadError => boom
-  warn "Tilt::RedClothTemplate (disabled)\n"
+  warn "Tilt::RedClothTemplate (disabled)"
 end

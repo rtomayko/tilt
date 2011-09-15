@@ -38,5 +38,5 @@ begin
     end
   end
 rescue LoadError => boom
-  warn "Tilt::KramdownTemplate (disabled)\n"
+  warn "Tilt::KramdownTemplate (disabled)"
 end

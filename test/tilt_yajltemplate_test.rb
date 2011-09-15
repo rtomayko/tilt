@@ -88,5 +88,5 @@ begin
 
   end
 rescue LoadError
-  warn "Tilt::YajlTemplateTest (disabled)\n"
+  warn "Tilt::YajlTemplateTest (disabled)"
 end

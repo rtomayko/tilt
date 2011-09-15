@@ -131,7 +131,7 @@ begin
     end
   end
 rescue LoadError => boom
-  warn "Tilt::HamlTemplate (disabled)\n"
+  warn "Tilt::HamlTemplate (disabled)"
 end
 
 __END__

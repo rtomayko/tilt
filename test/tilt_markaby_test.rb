@@ -84,5 +84,5 @@ begin
   end
 
 rescue LoadError => boom
-  warn "Tilt::MarkabyTemplate (disabled)\n"
+  warn "Tilt::MarkabyTemplate (disabled)"
 end

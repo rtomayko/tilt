@@ -51,5 +51,5 @@ begin
     end
   end
 rescue LoadError => boom
-  warn "Tilt::RDiscountTemplate (disabled)\n"
+  warn "Tilt::RDiscountTemplate (disabled)"
 end

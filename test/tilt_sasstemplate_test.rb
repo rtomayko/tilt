@@ -37,5 +37,5 @@ begin
   end
 
 rescue LoadError => boom
-  warn "Tilt::SassTemplate (disabled)\n"
+  warn "Tilt::SassTemplate (disabled)"
 end

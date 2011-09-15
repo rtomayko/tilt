@@ -55,5 +55,5 @@ begin
     end
   end
 rescue LoadError => boom
-  warn "Tilt::RedcarpetTemplate (disabled)\n"
+  warn "Tilt::RedcarpetTemplate (disabled)"
 end

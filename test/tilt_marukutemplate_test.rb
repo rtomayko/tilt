@@ -44,5 +44,5 @@ begin
     end
   end
 rescue LoadError => boom
-  warn "Tilt::MarukuTemplate (disabled)\n"
+  warn "Tilt::MarukuTemplate (disabled)"
 end
