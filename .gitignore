@@ -1,3 +1,4 @@
 /dist
 *.swp
 /Gemfile.lock
+/vendor

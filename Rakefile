@@ -1,5 +1,25 @@
+require 'rbconfig'
 require 'rake/testtask'
-task :default => :test
+task :default => [:setup, :test]
+
+# set GEM_HOME to use local ./vendor dir for tests
+vendor_dir = './vendor'
+ruby_version = RbConfig::CONFIG['ruby_version']
+gem_home = ENV['GEM_HOME'] = "#{vendor_dir}/#{RUBY_ENGINE}/#{ruby_version}"
+
+# Write the current version.
+task :version do
+  puts "#{RUBY_ENGINE} #{RUBY_VERSION} (#{gem_home})"
+end
+
+desc "Install gems to #{ENV['GEM_HOME']}"
+task :setup do
+  sh "
+    bundle check >/dev/null || {
+      echo 'Updating #{gem_home}' &&
+      bundle install --path='#{vendor_dir}'; }
+  ", :verbose => false
+end
 
 # SPECS =====================================================================
 
@@ -14,6 +34,7 @@ Rake::TestTask.new(:test) do |t|
   t.ruby_opts = ['-Itest']
   t.ruby_opts << '-rubygems' if defined? Gem
 end
+task :test => :version
 
 # PACKAGING =================================================================
 
