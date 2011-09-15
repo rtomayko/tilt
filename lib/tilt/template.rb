@@ -98,7 +98,7 @@ module Tilt
     def initialize_engine
     end
 
-    # Like Kernel::require but issues a warning urging a manual require when
+    # Like Kernel#require but issues a warning urging a manual require when
     # running under a threaded environment.
     def require_template_library(name)
       if Thread.list.size > 1
@@ -216,7 +216,7 @@ module Tilt
     #
     # http://jira.codehaus.org/browse/JRUBY-2599
     #
-    # We redefine evaluate_source to work around this issues.
+    # We redefine evaluate_source to work around this issue.
     if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
       undef evaluate_source
       def evaluate_source(scope, locals, &block)
