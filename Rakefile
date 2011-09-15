@@ -5,20 +5,23 @@ task :default => [:setup, :test]
 # set GEM_HOME to use local ./vendor dir for tests
 vendor_dir = './vendor'
 ruby_version = RbConfig::CONFIG['ruby_version']
-gem_home = ENV['GEM_HOME'] = "#{vendor_dir}/#{RUBY_ENGINE}/#{ruby_version}"
+ruby_engine = (defined?(RUBY_ENGINE) && RUBY_ENGINE) || 'ruby'
+gem_home = ENV['GEM_HOME'] = "#{vendor_dir}/#{ruby_engine}/#{ruby_version}"
 
 # Write the current version.
 task :version do
-  puts "#{RUBY_ENGINE} #{RUBY_VERSION} (#{gem_home})"
+  puts "#{ruby_engine} #{RUBY_VERSION} (#{gem_home})"
 end
 
 desc "Install gems to #{ENV['GEM_HOME']}"
 task :setup do
-  sh "
-    bundle check >/dev/null || {
-      echo 'Updating #{gem_home}' &&
-      bundle install --path='#{vendor_dir}'; }
-  ", :verbose => false
+  verbose false do
+    sh "
+      bundle check >/dev/null || {
+        echo 'Updating #{gem_home}' &&
+        bundle install --path='#{vendor_dir}'; }
+    "
+  end
 end
 
 # SPECS =====================================================================
