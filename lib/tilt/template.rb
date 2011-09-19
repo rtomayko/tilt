@@ -299,14 +299,60 @@ module Tilt
       method
     end
 
+    # Regexp used to find and remove magic comment lines from Ruby source.
+    MAGIC = /\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*?\n/mn
+
     # Checks for a Ruby 1.9 encoding comment on the first line of source.
-    # When found, source is modified in place to remove the line.
     #
-    # Returns the declared encoding name string or nil when no comment was
-    # present.
-    def extract_source_encoding(source)
-      if source.slice!(/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*?\n/m)
-        $1
+    # source - string to check for magic comment line
+    # remove - set true to remove the line from the string in place
+    #
+    # Returns the encoding name string or nil when no comment was present.
+    def extract_source_encoding(source, remove=false)
+      binary source do
+        slice = remove ? :slice! : :slice
+        $1 if source.__send__(slice, MAGIC)
+      end
+    end
+
+    # Extract encoding comment from source and mark the string's encoding. The
+    # string is modified in place. When no encoding is found, the encoding
+    # passed in the default argument is used. The remove argument can be set
+    # true to remove the magic comment line from the source string in place.
+    #
+    # This method is a no-op under Ruby < 1.9
+    if ''.respond_to?(:force_encoding)
+      def assign_source_encoding(source, default=nil, remove=false)
+        if encoding = extract_source_encoding(source, remove)
+          source.force_encoding(encoding)
+        elsif default
+          source.force_encoding(default)
+        else
+          source
+        end
+      end
+    else
+      def assign_source_encoding(source, *args)
+        source
+      end
+    end
+
+    # Temporarily convert string to BINARY/ASCII-8BIT for the duration of the
+    # block. The string is reset to its original encoding before this method
+    # returns. This combined with //n flagged regular expressions is one way
+    # to avoid encoding compatibility errors before a string's encoding is still
+    # in best guess mode.
+    if ''.respond_to?(:force_encoding)
+      def binary(string)
+        original_encoding = string.encoding
+        string.force_encoding 'BINARY'
+        yield
+      ensure
+        string.force_encoding original_encoding
+      end
+    else
+      def binary(string)
+        yield string
       end
     end
 

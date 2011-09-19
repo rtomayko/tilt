@@ -39,23 +39,9 @@ module Tilt
       @outvar = options[:outvar] || self.class.default_output_variable
       options[:trim] = '<>' if options[:trim].nil? || options[:trim] == true
       @engine = ::ERB.new(data, options[:safe], options[:trim], @outvar)
-      @source = assign_encoding(@engine.src)
+      encoding = data.respond_to?(:encoding) ? data.encoding : nil
+      @source = assign_source_encoding(@engine.src, encoding, remove=true)
       @data.force_encoding @source.encoding if @data.respond_to?(:force_encoding)
-    end
-
-    # Remove the magic encoding comment line from the generated source string in
-    # place and force the string to the detected encoding.
-    #
-    # Returns the modified source string.
-    def assign_encoding(source)
-      if source.respond_to?(:force_encoding)
-        if encoding = extract_source_encoding(source)
-          source.force_encoding encoding
-        else
-          source.force_encoding data.encoding
-        end
-      end
-      source
     end
 
     # Override to always return the generated source string.
@@ -116,7 +102,8 @@ module Tilt
       engine_class = options.delete(:engine_class)
       engine_class = ::Erubis::EscapedEruby if options.delete(:escape_html)
       @engine = (engine_class || ::Erubis::Eruby).new(data, options)
-      @source = assign_encoding(@engine.src)
+      encoding = data.respond_to?(:encoding) ? data.encoding : nil
+      @source = assign_source_encoding(@engine.src, encoding, remove=false)
       @data.force_encoding @source.encoding if @data.respond_to?(:force_encoding)
     end
 
