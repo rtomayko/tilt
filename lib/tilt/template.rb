@@ -228,9 +228,8 @@ module Tilt
 
     def compile_template_method(locals)
       source, offset = precompiled(locals)
-      offset += 5
       method_name = "__tilt_#{Thread.current.object_id.abs}"
-      Object.class_eval <<-RUBY, eval_file, line - offset
+      method_source = <<-RUBY
         #{extract_magic_comment source}
         TOPOBJECT.class_eval do
           def #{method_name}(locals)
@@ -238,12 +237,11 @@ module Tilt
             class << self
               this, locals = Thread.current[:tilt_vars]
               this.instance_eval do
-               #{source}
-              end
-            end
-          end
-        end
       RUBY
+      offset += method_source.count("\n")
+      method_source << source
+      method_source << "\nend;end;end;end"
+      Object.class_eval method_source, eval_file, line - offset
       unbind_compiled_method(method_name)
     end
 
