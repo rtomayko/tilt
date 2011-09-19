@@ -20,5 +20,5 @@ begin
     end
   end
 rescue LoadError => boom
-  warn "Tilt::RDocTemplate (disabled)"
+  warn "Tilt::RDocTemplate (disabled) [#{boom}]"
 end
