@@ -191,6 +191,21 @@ template, but if you depend on a specific implementation, you should use #prefer
 When a file extension has a preferred template class, Tilt will *always* use
 that class, even if it raises an exception.
 
+Encodings
+---------
+
+All Tilt template implementations must conform to defined behavior with regard
+to string encodings under MRI >= Ruby 1.9 and other encoding aware environments.
+The default evaluation context and output result string encodings are determined
+first by the template source encoding, which is detected as follows in order of
+preference:
+
+ - A magic encoding comment embedded in the template source (template specific).
+ - The source string's encoding, when provided to Tilt directly (i.e. the
+   template is not read from file by tilt).
+ - The `:default_encoding` option given when the template was initialized.
+ - The default system encoding (`Encoding.default_external`).
+
 Template Compilation
 --------------------
 

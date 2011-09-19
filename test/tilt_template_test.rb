@@ -48,6 +48,54 @@ class TiltTemplateTest < Test::Unit::TestCase
     MockTemplate.new { |template| "Hello World!" }
   end
 
+  ##
+  # Encodings
+
+  if ''.respond_to?(:encoding)
+    original_encoding = Encoding.default_external
+
+    setup do
+      @file = Tempfile.open('template')
+      @file.puts "stuff"
+      @file.close
+      @template = @file.path
+    end
+
+    teardown do
+      Encoding.default_external = original_encoding
+      Encoding.default_internal = nil
+      @file.delete
+    end
+
+    test "reading from file assumes default external encoding" do
+      Encoding.default_external = 'Big5'
+      inst = MockTemplate.new(@template)
+      assert_equal 'Big5', inst.data.encoding.to_s
+    end
+
+    test "reading from file with a :default_encoding overrides default external" do
+      Encoding.default_external = 'Big5'
+      inst = MockTemplate.new(@template, :default_encoding => 'GBK')
+      assert_equal 'GBK', inst.data.encoding.to_s
+    end
+
+    test "reading from file with default_internal set does no transcoding" do
+      Encoding.default_internal = 'utf-8'
+      Encoding.default_external = 'Big5'
+      inst = MockTemplate.new(@template)
+      assert_equal 'Big5', inst.data.encoding.to_s
+    end
+
+    test "using provided template data verbatim when given as string" do
+      Encoding.default_internal = 'Big5'
+      inst = MockTemplate.new(@template) { "blah".force_encoding('GBK') }
+      assert_equal 'GBK', inst.data.encoding.to_s
+    end
+  end
+
+  ##
+  # Engine Initialization
+
   class InitializingMockTemplate < Tilt::Template
     @@initialized_count = 0
     def self.initialized_count
