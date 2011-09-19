@@ -191,6 +191,84 @@ template, but if you depend on a specific implementation, you should use #prefer
 When a file extension has a preferred template class, Tilt will *always* use
 that class, even if it raises an exception.
 
+Encodings
+---------
+
+All Tilt template implementations must follow a few guidelines regarding string
+encodings under MRI >= Ruby 1.9 and other encoding aware environments. This
+section defines "good behavior" for template implementations that support
+multiple encodings.
+
+There are two places where encodings come into play:
+
+ - __Template source data encoding.__ When a template is read from the
+   filesystem, how do we know what encoding to set on the string? This is
+   complicated by the fact that many template formats support embedded magic
+   encoding declarations, while others mandate that template source data be in a
+   specific encoding (utf-8 only formats).
+
+ - __Render context and result encoding.__ In what encoding is the output being
+   generated in? It's often useful to guarantee that templates are evaluated in
+   utf-8 context and will generate utf-8 output regardless of the template's
+   source encoding. What effect does `Encoding.default_internal` have on
+   template execution and output?
+
+Tilt's encoding support aims only to provide a framework for answering these
+questions for each template engine. It does not attempt to define a single
+behavior that all templates must conform to because templates vary widely in
+encoding support.
+
+### Template Source Encoding
+
+The template source data may come from a file or from a string. In either case,
+the real template source encoding should be determined as follows in order of
+preference:
+
+ - Template specific encoding rules (e.g., utf-8 only formats).
+ - A (template specific) magic encoding comment embedded in the source string.
+ - The source string's existing encoding (string only).
+ - The `:default_encoding` option to `Template.new` (file only).
+ - `Encoding.default_external` - the default system encoding (file only)
+
+Some template file formats have strict encoding requirements. CoffeeScript is a
+utf-8 only format for instance. Template implementations are encouraged to use
+this type of information to constrain the detection logic defined above.
+
+### Render Context Encoding
+
+When the system internal encoding (`Encoding.default_internal`) *is not* set
+(MRI default), templates should be evaluated and produce a result string encoded
+the same as the template source data. e.g., A Big5 encoded template on disk will
+generate a Big5 result string and expect interpolated values to be Big5
+compatible.
+
+When `Encoding.default_internal` *is* set, templates should be converted from
+the template source encoding to the internal encoding *before* being compiled /
+evaluated and the result string should be encoded in the default internal
+encoding. For instance, when `default_internal` is set to UTF-8, a Big5 encoded
+template on disk will generate a UTF-8 result string and interpolated values
+must be utf-8 compatible.
+
+Templates that perform render context transcoding must allow these default
+behaviors to be controlled via the `:transcode` option:
+
+  - `:transcode => true` - Convert from template source encoding to the system
+    default internal encoding (`Encoding.default_internal`) before evaluating the
+    template. The result string is guaranteed to be in the default internal
+    encoding. Do nothing when `Encoding.default_internal` is nil.
+
+    This is the default behavior when no `:transcode` option is given.
+
+  - `:transcode => false` - Perform no encoding conversion. The result string
+    will have the same encoding as the detected template source string.
+
+    This is the default behavior when `Encoding.default_internal` is nil.
+
+  - `:transcode => 'utf-8'` - Ignore `Encoding.default_internal`. Instead,
+    convert from template source encoding to utf-8 before evaluating the
+    template. The result string is guaranteed to be utf-8 encoded. The encoding
+    value (`'utf-8'`) may be any valid encoding name or Encoding constant.
+
 Template Compilation
 --------------------
 

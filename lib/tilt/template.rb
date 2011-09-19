@@ -30,11 +30,17 @@ module Tilt
     end
 
     # Create a new template with the file, line, and options specified. By
-    # default, template data is read from the file. When a block is given,
-    # it should read template data and return as a String. When file is nil,
-    # a block is required.
+    # default, template data is read from file and assumed to be in the
+    # system default external encoding (Encoding.default_external). When a
+    # block is given, it should read template data and return a String with
+    # a best guess encoding.
     #
-    # All arguments are optional.
+    # The :default_encoding option is supported by most template engines. When
+    # set, data read from disk will be assumed to be in this encoding instead
+    # of Encoding.default_external. The option has no effect when a custom
+    # reader block is given.
+    #
+    # All arguments are optional but a file or block must be specified.
     def initialize(file=nil, line=1, options={}, &block)
       @file, @line, @options = nil, 1, {}
 
@@ -59,12 +65,11 @@ module Tilt
       # used to hold compiled template methods
       @compiled_method = {}
 
-      # used on 1.9 to set the encoding if it is not set elsewhere (like a magic comment)
-      # currently only used if template compiles to ruby
+      # Overrides Encoding.default_external when reading from filesystem
       @default_encoding = @options.delete :default_encoding
 
       # load template data and prepare (uses binread to avoid encoding issues)
-      @reader = block || lambda { |t| File.respond_to?(:binread) ? File.binread(@file) : File.read(@file) }
+      @reader = block || lambda { |t| read_template_file }
       @data = @reader.call(self)
       prepare
     end
@@ -98,6 +103,29 @@ module Tilt
     def initialize_engine
     end
 
+    # Read template data from file, possibly overriding the encoding based on
+    # the default_encoding option. This is used when the object is created with
+    # a file and no reader block.
+    #
+    # Unlike File.read, this method does not transcode into the system
+    # Encoding.default_internal encoding. The best guess encoding is set and
+    # available from data.encoding.
+    #
+    # Subclasses may override this method if they have specific knowledge about
+    # the file's encoding and can provide better default encoding support.
+    #
+    # Raise exception when file doesn't exist.
+    # Does not raise an exception when the file's data is invalid in the best
+    # guess encoding.
+    def read_template_file
+      data = File.open(file, 'rb') { |io| io.read }
+      if data.respond_to?(:force_encoding)
+        encoding = @default_encoding || Encoding.default_external
+        data.force_encoding(encoding)
+      end
+      data
+    end
+
     # Like Kernel#require but issues a warning urging a manual require when
     # running under a threaded environment.
     def require_template_library(name)
@@ -113,6 +141,14 @@ module Tilt
     # variables set in this method are available when #evaluate is called.
     #
     # Subclasses must provide an implementation of this method.
+    #
+    # The data attribute holds the template source string marked with the best
+    # guess encoding. When the template was read from the filesystem this will
+    # be either the :default_encoding provided when the template was created or
+    # the system default Encoding.default_external encoding. When the template
+    # data was provided via reader block, it will be in whatever encoding was
+    # set on the string originally. Subclasses are responsible for detecting
+    # template specific magic syntax encodings embedded in the template data.
     def prepare
       if respond_to?(:compile!)
         # backward compat with tilt < 0.6; just in case
@@ -156,18 +192,19 @@ module Tilt
     def precompiled(locals)
       preamble = precompiled_preamble(locals)
       template = precompiled_template(locals)
-      magic_comment = extract_magic_comment(template)
-      if magic_comment
-        # Magic comment e.g. "# coding: utf-8" has to be in the first line.
-        # So we copy the magic comment to the first line.
-        preamble = magic_comment + "\n" + preamble
+
+      source = ''
+      if source.respond_to?(:force_encoding)
+        source.force_encoding template.encoding
       end
-      parts = [
-        preamble,
-        template,
-        precompiled_postamble(locals)
-      ]
-      [parts.join("\n"), preamble.count("\n") + 1]
+
+      source << preamble
+      source << "\n"
+      source << template
+      source << "\n"
+      source << precompiled_postamble(locals)
+
+      [source, preamble.count("\n") + 1]
     end
 
     # A string containing the (Ruby) source code for the template. The
@@ -230,20 +267,29 @@ module Tilt
       source, offset = precompiled(locals)
       offset += 5
       method_name = "__tilt_#{Thread.current.object_id.abs}"
-      Object.class_eval <<-RUBY, eval_file, line - offset
-        #{extract_magic_comment source}
+      method_source = ""
+
+      if method_source.respond_to?(:force_encoding)
+        method_source.force_encoding source.encoding
+      end
+
+      method_source << <<-RUBY
         TOPOBJECT.class_eval do
           def #{method_name}(locals)
             Thread.current[:tilt_vars] = [self, locals]
             class << self
               this, locals = Thread.current[:tilt_vars]
               this.instance_eval do
-               #{source}
+      RUBY
+      method_source << source
+      method_source << <<-RUBY
               end
             end
           end
         end
       RUBY
+
+      Object.class_eval method_source, eval_file, line - offset
       unbind_compiled_method(method_name)
     end
 
@@ -253,12 +299,59 @@ module Tilt
       method
     end
 
-    def extract_magic_comment(script)
-      comment = script.slice(/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*$/)
-      if comment && !%w[ascii-8bit binary].include?($1.downcase)
-        comment
-      elsif @default_encoding
-        "# coding: #{@default_encoding}"
+    # Regexp used to find and remove magic comment lines from Ruby source.
+    MAGIC = /\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*?\n/mn
+
+    # Checks for a Ruby 1.9 encoding comment on the first line of source.
+    #
+    # source - string to check for magic comment line
+    # remove - set true to remove the line from the string in place
+    #
+    # Returns the encoding name string or nil when no comment was present.
+    def extract_source_encoding(source, remove=false)
+      binary source do
+        slice = remove ? :slice! : :slice
+        $1 if source.__send__(slice, MAGIC)
+      end
+    end
+
+    # Extract encoding comment from source and mark the string's encoding. The
+    # string is modified in place. When no encoding is found, the encoding
+    # passed in the default argument is used. The remove argument can be set
+    # true to remove the magic comment line from the source string in place.
+    #
+    # This method is a no-op under Ruby < 1.9
+    if ''.respond_to?(:force_encoding)
+      def assign_source_encoding(source, default=nil, remove=false)
+        if encoding = extract_source_encoding(source, remove)
+          source.force_encoding(encoding)
+        elsif default
+          source.force_encoding(default)
+        else
+          source
+        end
+      end
+    else
+      def assign_source_encoding(source, *args)
+        source
+      end
+    end
+
+    # Mark the string as BINARY/ASCII-8BIT for the duration of the block. The
+    # string is reset to its original encoding before this method returns. This
+    # combined with //n flagged regular expressions is one way to avoid encoding
+    # compatibility errors while a string's encoding is still in best guess mode.
+    if ''.respond_to?(:force_encoding)
+      def binary(string)
+        original_encoding = string.encoding
+        string.force_encoding 'BINARY'
+        yield
+      ensure
+        string.force_encoding original_encoding
+      end
+    else
+      def binary(string)
+        yield string
       end
     end
 

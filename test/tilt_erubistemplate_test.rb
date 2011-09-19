@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'contest'
 require 'tilt'
 
@@ -135,6 +136,68 @@ begin
       template = Tilt::ErubisTemplate.new(nil, options_hash) { |t| "Hello World!" }
       assert_equal({:escape_html => true}, options_hash)
     end
+
+    ##
+    # Encodings
+
+    if defined?(Encoding) && Encoding.respond_to?(:default_internal)
+      original_encoding = Encoding.default_external
+      setup do
+        Encoding.default_external = 'utf-8'
+        Encoding.default_internal = nil
+      end
+      teardown do
+        Encoding.default_external = original_encoding
+        Encoding.default_internal = nil
+      end
+
+      def tempfile(name='template')
+        f = Tempfile.open(name)
+        f.sync = true
+        yield f
+      ensure
+        f.close rescue nil
+        f.delete
+      end
+
+      test "producing default external encoded result string" do
+        Encoding.default_external = 'Shift_JIS'
+        tempfile do |f|
+          f.puts('ふが <%= @hoge %>'.encode('Shift_JIS'))
+          erb = Tilt::ErubisTemplate.new(f.path)
+          assert_equal 'Shift_JIS', erb.data.encoding.to_s
+          @hoge = "ほげ".encode('Shift_JIS')
+          assert_equal 'Shift_JIS', erb.render(self).encoding.to_s
+        end
+      end
+
+      test "producing default_encoding encoded result string" do
+        Encoding.default_external = 'Big5'
+        tempfile do |f|
+          f.puts('ふが <%= @hoge %>'.encode('Shift_JIS'))
+          erb = Tilt::ErubisTemplate.new(f.path, :default_encoding => 'Shift_JIS')
+          assert_equal 'Shift_JIS', erb.data.encoding.to_s
+          @hoge = "ほげ".encode('Shift_JIS')
+          assert_equal 'Shift_JIS', erb.render(self).encoding.to_s
+        end
+      end
+
+      # NOTE Erubis does not support ERB's magic comments.
+      # <%# coding: blah %> does not effect the template's encoding
+
+      # test "producing magic comment encoded result string" do
+      #   Encoding.default_external = 'Big5'
+      #   tempfile do |f|
+      #     f.puts('<%# coding: Shift_JIS %>'.encode('Shift_JIS'))
+      #     f.puts('ふが <%= @hoge %>'.encode('Shift_JIS'))
+      #     erb = Tilt::ErubisTemplate.new(f.path)
+      #     assert_equal 'Shift_JIS', erb.data.encoding.to_s
+      #     @hoge = "ほげ".encode('Shift_JIS')
+      #     assert_equal 'Shift_JIS', erb.render(self).encoding.to_s
+      #   end
+      # end
+    end
+
   end
 rescue LoadError => boom
   warn "Tilt::ErubisTemplate (disabled)"

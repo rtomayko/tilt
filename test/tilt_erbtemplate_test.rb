@@ -201,25 +201,62 @@ class CompiledERBTemplateTest < Test::Unit::TestCase
     assert_equal "\nhello\n", template.render(Scope.new)
   end
 
-  test "encoding with magic comment" do
-    f = Tempfile.open("template")
-    f.puts('<%# coding: UTF-8 %>')
-    f.puts('ふが <%= @hoge %>')
-    f.close()
-    @hoge = "ほげ"
-    erb = Tilt::ERBTemplate.new(f.path)
-    3.times { erb.render(self) }
-    f.delete
-  end
+  ##
+  # Encodings
 
-  test "encoding with :default_encoding" do
-    f = Tempfile.open("template")
-    f.puts('ふが <%= @hoge %>')
-    f.close()
-    @hoge = "ほげ"
-    erb = Tilt::ERBTemplate.new(f.path, :default_encoding => 'UTF-8')
-    3.times { erb.render(self) }
-    f.delete
+  if defined?(Encoding) && Encoding.respond_to?(:default_internal)
+    original_encoding = Encoding.default_external
+    setup do
+      Encoding.default_external = 'utf-8'
+      Encoding.default_internal = nil
+    end
+    teardown do
+      Encoding.default_external = original_encoding
+      Encoding.default_internal = nil
+    end
+
+    def tempfile(name='template')
+      f = Tempfile.open(name)
+      f.sync = true
+      yield f
+    ensure
+      f.close rescue nil
+      f.delete
+    end
+
+    test "producing default external encoded result string" do
+      Encoding.default_external = 'Shift_JIS'
+      tempfile do |f|
+        f.puts('ふが <%= @hoge %>'.encode('Shift_JIS'))
+        erb = Tilt::ERBTemplate.new(f.path)
+        assert_equal 'Shift_JIS', erb.data.encoding.to_s
+        @hoge = "ほげ".encode('Shift_JIS')
+        assert_equal 'Shift_JIS', erb.render(self).encoding.to_s
+      end
+    end
+
+    test "producing default_encoding encoded result string" do
+      Encoding.default_external = 'Big5'
+      tempfile do |f|
+        f.puts('ふが <%= @hoge %>'.encode('Shift_JIS'))
+        erb = Tilt::ERBTemplate.new(f.path, :default_encoding => 'Shift_JIS')
+        assert_equal 'Shift_JIS', erb.data.encoding.to_s
+        @hoge = "ほげ".encode('Shift_JIS')
+        assert_equal 'Shift_JIS', erb.render(self).encoding.to_s
+      end
+    end
+
+    test "producing magic comment encoded result string" do
+      Encoding.default_external = 'Big5'
+      tempfile do |f|
+        f.puts('<%# coding: Shift_JIS %>'.encode('Shift_JIS'))
+        f.puts('ふが <%= @hoge %>'.encode('Shift_JIS'))
+        erb = Tilt::ERBTemplate.new(f.path)
+        assert_equal 'Shift_JIS', erb.data.encoding.to_s
+        @hoge = "ほげ".encode('Shift_JIS')
+        assert_equal 'Shift_JIS', erb.render(self).encoding.to_s
+      end
+    end
   end
 end
 
