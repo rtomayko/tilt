@@ -337,11 +337,10 @@ module Tilt
       end
     end
 
-    # Temporarily convert string to BINARY/ASCII-8BIT for the duration of the
-    # block. The string is reset to its original encoding before this method
-    # returns. This combined with //n flagged regular expressions is one way
-    # to avoid encoding compatibility errors before a string's encoding is still
-    # in best guess mode.
+    # Mark the string as BINARY/ASCII-8BIT for the duration of the block. The
+    # string is reset to its original encoding before this method returns. This
+    # combined with //n flagged regular expressions is one way to avoid encoding
+    # compatibility errors while a string's encoding is still in best guess mode.
     if ''.respond_to?(:force_encoding)
       def binary(string)
         original_encoding = string.encoding
