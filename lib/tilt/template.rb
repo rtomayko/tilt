@@ -305,7 +305,7 @@ module Tilt
     # Returns the declared encoding name string or nil when no comment was
     # present.
     def extract_source_encoding(source)
-      if source.slice!(/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*?\n/mn)
+      if source.slice!(/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*?\n/m)
         $1
       end
     end
