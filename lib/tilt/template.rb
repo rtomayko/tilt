@@ -30,11 +30,17 @@ module Tilt
     end
 
     # Create a new template with the file, line, and options specified. By
-    # default, template data is read from the file. When a block is given,
-    # it should read template data and return as a String. When file is nil,
-    # a block is required.
+    # default, template data is read from file and assumed to be in the
+    # system default external encoding (Encoding.default_external). When a
+    # block is given, it should read template data and return a String with
+    # a best guess encoding.
     #
-    # All arguments are optional.
+    # The :default_encoding option is supported by most template engines. When
+    # set, data read from disk will be assumed to be in this encoding instead
+    # of Encoding.default_external. The option has no effect when a custom
+    # reader block is given.
+    #
+    # All arguments are optional but a file or block must be specified.
     def initialize(file=nil, line=1, options={}, &block)
       @file, @line, @options = nil, 1, {}
 
@@ -59,12 +65,11 @@ module Tilt
       # used to hold compiled template methods
       @compiled_method = {}
 
-      # used on 1.9 to set the encoding if it is not set elsewhere (like a magic comment)
-      # currently only used if template compiles to ruby
+      # Overrides Encoding.default_external when reading from filesystem
       @default_encoding = @options.delete :default_encoding
 
       # load template data and prepare (uses binread to avoid encoding issues)
-      @reader = block || lambda { |t| File.respond_to?(:binread) ? File.binread(@file) : File.read(@file) }
+      @reader = block || method(:read_template_file)
       @data = @reader.call(self)
       prepare
     end
@@ -96,6 +101,29 @@ module Tilt
     # the template class is initialized. This should be used to require the
     # underlying template library and perform any initial setup.
     def initialize_engine
+    end
+
+    # Read template data from file, possibly overriding the encoding based on
+    # the default_encoding option. This is used when the object is created with
+    # a file and no reader block.
+    #
+    # Unlike File.read, this method does not transcode into the system
+    # Encoding.default_internal encoding. The best guess encoding is set and
+    # available from data.encoding.
+    #
+    # Subclasses may override this method if they have specific knowledge about
+    # the file's encoding and can provide better default encoding support.
+    #
+    # Raise exception when file doesn't exist.
+    # Does not raise an exception when the file's data is invalid in the best
+    # guess encoding.
+    def read_template_file(template=self)
+      data = File.open(template.file, 'rb') { |io| io.read }
+      if data.respond_to?(:force_encoding)
+        encoding = @default_encoding || Encoding.default_external
+        data.force_encoding(encoding)
+      end
+      data
     end
 
     # Like Kernel#require but issues a warning urging a manual require when
