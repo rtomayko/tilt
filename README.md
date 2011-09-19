@@ -206,6 +206,29 @@ preference:
  - The `:default_encoding` option given when the template was initialized.
  - The default system encoding (`Encoding.default_external`).
 
+When the system internal encoding (`Encoding.default_internal`) is set,
+templates are transcoded from the detected template source encoding to the
+internal encoding *before* being compiled / evaluated. The result string is
+guaranteed to be in the internal encoding in this case.
+
+It's also possible to control the pre-evaluation encoding conversion step using
+the `:transcode` option when creating a template:
+
+ - `:transcode => true` - Convert from template source encoding to the system
+   default internal encoding (`Encoding.default_internal`) before evaluating the
+   template. The result string is guaranteed to be in the default internal
+   encoding. Do nothing when `Encoding.default_internal` is nil.
+
+   This is the default behavior when no `:transcode` option is given.
+
+ - `:transcode => false` - Perform no encoding conversion. The result string
+   will have the same encoding as the detected template source string.
+
+ - `:transcode => 'utf-8'` - Convert from template source encoding to utf-8
+   before evaluating the template. The result string is guaranteed to be utf-8
+   encoded. The encoding value (`'utf-8'`) may be any valid encoding name or
+   Encoding constant.
+
 Template Compilation
 --------------------
 
