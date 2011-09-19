@@ -141,6 +141,14 @@ module Tilt
     # variables set in this method are available when #evaluate is called.
     #
     # Subclasses must provide an implementation of this method.
+    #
+    # The data attribute holds the template source string marked with the best
+    # guess encoding. When the template was read from the filesystem this will
+    # be either the :default_encoding provided when the template was created or
+    # the system default Encoding.default_external encoding. When the template
+    # data was provided via reader block, it will be in whatever encoding was
+    # set on the string originally. Subclasses are responsible for detecting
+    # template specific magic syntax encodings embedded in the template data.
     def prepare
       if respond_to?(:compile!)
         # backward compat with tilt < 0.6; just in case
@@ -184,18 +192,19 @@ module Tilt
     def precompiled(locals)
       preamble = precompiled_preamble(locals)
       template = precompiled_template(locals)
-      magic_comment = extract_magic_comment(template)
-      if magic_comment
-        # Magic comment e.g. "# coding: utf-8" has to be in the first line.
-        # So we copy the magic comment to the first line.
-        preamble = magic_comment + "\n" + preamble
+
+      source = ''
+      if source.respond_to?(:force_encoding)
+        source.force_encoding template.encoding
       end
-      parts = [
-        preamble,
-        template,
-        precompiled_postamble(locals)
-      ]
-      [parts.join("\n"), preamble.count("\n") + 1]
+
+      source << preamble
+      source << "\n"
+      source << template
+      source << "\n"
+      source << precompiled_postamble(locals)
+
+      [source, preamble.count("\n") + 1]
     end
 
     # A string containing the (Ruby) source code for the template. The
@@ -258,20 +267,29 @@ module Tilt
       source, offset = precompiled(locals)
       offset += 5
       method_name = "__tilt_#{Thread.current.object_id.abs}"
-      Object.class_eval <<-RUBY, eval_file, line - offset
-        #{extract_magic_comment source}
+      method_source = ""
+
+      if method_source.respond_to?(:force_encoding)
+        method_source.force_encoding source.encoding
+      end
+
+      method_source << <<-RUBY
         TOPOBJECT.class_eval do
           def #{method_name}(locals)
             Thread.current[:tilt_vars] = [self, locals]
             class << self
               this, locals = Thread.current[:tilt_vars]
               this.instance_eval do
-               #{source}
+      RUBY
+      method_source << source
+      method_source << <<-RUBY
               end
             end
           end
         end
       RUBY
+
+      Object.class_eval method_source, eval_file, line - offset
       unbind_compiled_method(method_name)
     end
 
@@ -281,12 +299,14 @@ module Tilt
       method
     end
 
-    def extract_magic_comment(script)
-      comment = script.slice(/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*$/)
-      if comment && !%w[ascii-8bit binary].include?($1.downcase)
-        comment
-      elsif @default_encoding
-        "# coding: #{@default_encoding}"
+    # Checks for a Ruby 1.9 encoding comment on the first line of source.
+    # When found, source is modified in place to remove the line.
+    #
+    # Returns the declared encoding name string or nil when no comment was
+    # present.
+    def extract_source_encoding(source)
+      if source.slice!(/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*?\n/mn)
+        $1
       end
     end
 
