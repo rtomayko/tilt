@@ -193,29 +193,6 @@ module Tilt
     end
 
   private
-    # Evaluate the template source in the context of the scope object.
-    def evaluate_source(scope, locals, &block)
-      source, offset = precompiled(locals)
-      scope.instance_eval(source, eval_file, line - offset)
-    end
-
-    # JRuby doesn't allow Object#instance_eval to yield to the block it's
-    # closed over. This is by design and (ostensibly) something that will
-    # change in MRI, though no current MRI version tested (1.8.6 - 1.9.2)
-    # exhibits the behavior. More info here:
-    #
-    # http://jira.codehaus.org/browse/JRUBY-2599
-    #
-    # We redefine evaluate_source to work around this issue.
-    if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
-      undef evaluate_source
-      def evaluate_source(scope, locals, &block)
-        source, offset = precompiled(locals)
-        file, lineno = eval_file, (line - offset)
-        scope.instance_eval { Kernel::eval(source, binding, file, lineno) }
-      end
-    end
-
     def compile_template_method(locals)
       source, offset = precompiled(locals)
       method_name = "__tilt_#{Thread.current.object_id.abs}"
