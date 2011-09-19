@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'contest'
 require 'tilt'
 
@@ -54,8 +55,51 @@ begin
         assert_not_equal "puts('Hello, World!');", template.render
       end
     end
-  end
 
+    ##
+    # Encodings
+
+    if defined?(Encoding) && Encoding.respond_to?(:default_internal)
+      original_encoding = Encoding.default_external
+      setup    { Encoding.default_external = 'utf-8' }
+      teardown { Encoding.default_external = original_encoding }
+
+      def tempfile(name='template')
+        f = Tempfile.open(name)
+        f.sync = true
+        yield f
+      ensure
+        f.close rescue nil
+        f.delete
+      end
+
+      test "ignores default external encoding" do
+        tempfile do |f|
+          f.puts("console.log 'ふがほげ'")
+          Encoding.default_external = 'Shift_JIS'
+          template = Tilt::CoffeeScriptTemplate.new(f.path)
+          assert_equal 'UTF-8', template.data.encoding.to_s
+          assert_equal 'UTF-8', template.render(self).encoding.to_s
+        end
+      end
+
+      test "ignores :default_encoding option" do
+        tempfile do |f|
+          f.puts("console.log 'ふがほげ'")
+          template = Tilt::CoffeeScriptTemplate.new(f.path, :default_encoding => 'Shift_JIS')
+          assert_equal 'UTF-8', template.data.encoding.to_s
+          assert_equal 'UTF-8', template.render(self).encoding.to_s
+        end
+      end
+
+      test "transcodes input string to utf-8" do
+        string = "console.log 'ふがほげ'".encode("Shift_JIS")
+        template = Tilt::CoffeeScriptTemplate.new { string }
+        assert_equal 'UTF-8', template.data.encoding.to_s
+        assert_equal 'UTF-8', template.render(self).encoding.to_s
+      end
+    end
+  end
 rescue LoadError => boom
   warn "Tilt::CoffeeScriptTemplate (disabled)"
 end

@@ -69,7 +69,7 @@ module Tilt
       @default_encoding = @options.delete :default_encoding
 
       # load template data and prepare (uses binread to avoid encoding issues)
-      @reader = block || method(:read_template_file)
+      @reader = block || lambda { |t| read_template_file }
       @data = @reader.call(self)
       prepare
     end
@@ -117,8 +117,8 @@ module Tilt
     # Raise exception when file doesn't exist.
     # Does not raise an exception when the file's data is invalid in the best
     # guess encoding.
-    def read_template_file(template=self)
-      data = File.open(template.file, 'rb') { |io| io.read }
+    def read_template_file
+      data = File.open(file, 'rb') { |io| io.read }
       if data.respond_to?(:force_encoding)
         encoding = @default_encoding || Encoding.default_external
         data.force_encoding(encoding)
