@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'contest'
 require 'tilt'
 
@@ -51,6 +52,68 @@ begin
         options = { :xml => Builder::XmlMarkup.new }
         assert_equal "<strong>\n<em>Hello World!</em>\n</strong>\n",
           template.render(options) { subtemplate.render(options) }
+      end
+    end
+
+    ##
+    # Encodings
+
+    if defined?(Encoding) && Encoding.respond_to?(:default_internal)
+      original_encoding = Encoding.default_external
+      setup do
+        Encoding.default_external = 'utf-8'
+        Encoding.default_internal = nil
+      end
+      teardown do
+        Encoding.default_external = original_encoding
+        Encoding.default_internal = nil
+      end
+
+      def tempfile(name='template')
+        f = Tempfile.open(name)
+        f.sync = true
+        yield f
+      ensure
+        f.close rescue nil
+        f.delete
+      end
+
+      test "reading templates using default external encoding" do
+        Encoding.default_external = 'Shift_JIS'
+        tempfile do |f|
+          f.puts("xml.em 'ふが' + @hoge".encode('Shift_JIS'))
+          template = Tilt::BuilderTemplate.new(f.path)
+          assert_equal 'Shift_JIS', template.data.encoding.to_s
+          @hoge = "ほげ".encode('Shift_JIS')
+          assert_equal 'UTF-8', template.render(self).encoding.to_s
+        end
+      end
+
+      test "reading templates using :default_encoding option override" do
+        Encoding.default_external = 'Big5'
+        tempfile do |f|
+          f.puts("xml.em 'ふが' + @hoge".encode('Shift_JIS'))
+          template = Tilt::BuilderTemplate.new(f.path, :default_encoding => 'Shift_JIS')
+          assert_equal 'Shift_JIS', template.data.encoding.to_s
+          @hoge = "ほげ".encode('Shift_JIS')
+          assert_equal 'UTF-8', template.render(self).encoding.to_s
+        end
+      end
+
+      test "reading template with magic encoding comment" do
+        Encoding.default_external = 'Big5'
+        tempfile do |f|
+          f.puts("# coding: Shift_JIS".encode('Shift_JIS'))
+          f.puts("xml.em 'ふが' + @hoge".encode('Shift_JIS'))
+          # require 'ruby-debug'
+          # debugger
+          template = Tilt::BuilderTemplate.new(f.path)
+          assert_equal 'Shift_JIS', template.data.encoding.to_s
+          @hoge = "ほげ".encode('Shift_JIS')
+          output = template.render(self)
+          assert_equal 'UTF-8', output.encoding.to_s
+          assert_equal "<em>ふがほげ</em>\n", output
+        end
       end
     end
   end
