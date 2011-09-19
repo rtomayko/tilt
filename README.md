@@ -252,22 +252,22 @@ must be utf-8 compatible.
 Templates that perform render context transcoding must allow these default
 behaviors to be controlled via the `:transcode` option:
 
- - `:transcode => true` - Convert from template source encoding to the system
-   default internal encoding (`Encoding.default_internal`) before evaluating the
-   template. The result string is guaranteed to be in the default internal
-   encoding. Do nothing when `Encoding.default_internal` is nil.
+  - `:transcode => true` - Convert from template source encoding to the system
+    default internal encoding (`Encoding.default_internal`) before evaluating the
+    template. The result string is guaranteed to be in the default internal
+    encoding. Do nothing when `Encoding.default_internal` is nil.
 
-   This is the default behavior when no `:transcode` option is given.
+    This is the default behavior when no `:transcode` option is given.
 
- - `:transcode => false` - Perform no encoding conversion. The result string
-   will have the same encoding as the detected template source string.
+  - `:transcode => false` - Perform no encoding conversion. The result string
+    will have the same encoding as the detected template source string.
 
-   This is the default behavior when `Encoding.default_internal` is nil.
+    This is the default behavior when `Encoding.default_internal` is nil.
 
- - `:transcode => 'utf-8'` - Ignore `Encoding.default_internal`. Instead,
-   convert from template source encoding to utf-8 before evaluating the
-   template. The result string is guaranteed to be utf-8 encoded. The encoding
-   value (`'utf-8'`) may be any valid encoding name or Encoding constant.
+  - `:transcode => 'utf-8'` - Ignore `Encoding.default_internal`. Instead,
+    convert from template source encoding to utf-8 before evaluating the
+    template. The result string is guaranteed to be utf-8 encoded. The encoding
+    value (`'utf-8'`) may be any valid encoding name or Encoding constant.
 
 Template Compilation
 --------------------
