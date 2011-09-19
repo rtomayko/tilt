@@ -123,25 +123,15 @@ module Tilt
       end
     end
 
+    # Execute the compiled template and return the result string. Template
+    # evaluation is guaranteed to be performed in the scope object with the
+    # locals specified and with support for yielding to the block.
+    #
+    # This method is only used by source generating templates. Subclasses that
+    # override render() may not support all features.
     def evaluate(scope, locals, &block)
-      cached_evaluate(scope, locals, &block)
-    end
-
-    # Process the template and return the result. The first time this
-    # method is called, the template source is evaluated with instance_eval.
-    # On the sequential method calls it will compile the template to an
-    # unbound method which will lead to better performance. In any case,
-    # template executation is guaranteed to be performed in the scope object
-    # with the locals specified and with support for yielding to the block.
-    def cached_evaluate(scope, locals, &block)
-      # Redefine itself to use method compilation the next time:
-      def self.cached_evaluate(scope, locals, &block)
-        method = compiled_method(locals.keys)
-        method.bind(scope).call(locals, &block)
-      end
-
-      # Use instance_eval the first time:
-      evaluate_source(scope, locals, &block)
+      method = compiled_method(locals.keys)
+      method.bind(scope).call(locals, &block)
     end
 
     # Generates all template source by combining the preamble, template, and
