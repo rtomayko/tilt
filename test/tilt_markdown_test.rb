@@ -26,7 +26,7 @@ module MarkdownTests
     html.encode!("UTF-8") if html.respond_to?(:encode)
     normalize(html)
   end
-  
+
   def test_escape_html
     html = nrender "Hello <b>World</b>"
     assert_equal "<p>Hello <b>World</b></p>", html
@@ -133,7 +133,7 @@ rescue LoadError => boom
   # It should already be warned in the main tests
 end
 
-  
+
 begin
   require 'maruku'
 

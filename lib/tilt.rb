@@ -187,4 +187,7 @@ module Tilt
 
   require 'tilt/yajl'
   register YajlTemplate, 'yajl'
+
+  require 'tilt/mustache'
+  register MustacheTemplate, 'mustache', 'must', 'mt'
 end

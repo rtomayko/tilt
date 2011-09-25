@@ -32,6 +32,7 @@ Support for these template engines is included with the package:
     Less CSS                   .less                   less
     Builder                    .builder                builder
     Liquid                     .liquid                 liquid
+    Mustache                   .mustache, .must, .mt   mustache
     RDiscount                  .markdown, .mkd, .md    rdiscount
     Redcarpet                  .markdown, .mkd, .md    redcarpet
     BlueCloth                  .markdown, .mkd, .md    bluecloth
@@ -184,7 +185,7 @@ template, but if you depend on a specific implementation, you should use #prefer
 
     # Prefer BlueCloth for all its registered extensions (markdown, mkd, md)
     Tilt.prefer Tilt::BlueClothTemplate
-    
+
     # Prefer Erubis for .erb only:
     Tilt.prefer Tilt::ErubisTemplate, 'erb'
 
