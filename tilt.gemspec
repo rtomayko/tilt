@@ -99,6 +99,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'sass'
   s.add_development_dependency 'wikicloth'
   s.add_development_dependency 'yajl-ruby'
+  s.add_development_dependency 'erector'
 
   s.homepage = "http://github.com/rtomayko/tilt/"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Tilt", "--main", "Tilt"]
