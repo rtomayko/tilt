@@ -42,10 +42,10 @@ begin
       assert_equal "<li>bar</li>", tilt.render(scope)
     end
 
-    # test "should pass locals to the template" do
-    #   tilt = ::Tilt::ErectorTemplate.new("erector/locals.erector", &@block)
-    #   assert_equal "<li>bar</li>", tilt.render(Object.new, { :foo => "bar" })
-    # end
+    test "should pass locals to the template" do
+      tilt = ::Tilt::ErectorTemplate.new("erector/locals.erector", &@block)
+      assert_equal "<li>bar</li>", tilt.render(Object.new, { :foo => "bar" })
+    end
 
     test "should yield to the block given" do
       tilt = ::Tilt::ErectorTemplate.new("erector/yielding.erector", &@block)
