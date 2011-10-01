@@ -47,6 +47,11 @@ begin
       assert_equal "<li>bar</li>", tilt.render(Object.new, { :foo => "bar" })
     end
 
+    test "should pass locals to the template when key is string" do
+      tilt = ::Tilt::ErectorTemplate.new("erector/locals.erector", &@block)
+      assert_equal "<li>bar</li>", tilt.render(Object.new, { 'foo' => "bar" })
+    end
+
     test "should yield to the block given" do
       tilt = ::Tilt::ErectorTemplate.new("erector/yielding.erector", &@block)
       output = tilt.render(Object.new, {}) do

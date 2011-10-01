@@ -46,6 +46,7 @@ Support for these template engines is included with the package:
     Creole (Wiki markup)       .wiki, .creole          creole
     WikiCloth (Wiki markup)    .wiki, .mediawiki, .mw  wikicloth
     Yajl                       .yajl                   yajl-ruby
+    Erector                    .erector                erector
 
 These template engines ship with their own Tilt integration:
 

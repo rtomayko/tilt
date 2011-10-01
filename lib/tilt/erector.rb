@@ -10,14 +10,14 @@ module Tilt
           @_parent = object
         end
 
-        def method_missing name, *args, &block
-          assigns[name] || @_parent.send(name, *args, &block)
+        def method_missing(name, *args, &block)
+          instance_variable_get("@#{name}") || @_parent.send(name, *args, &block)
         end
         
-        def capture &block
+        def capture(&block)
           original, @_output = output, Erector::Output.new
           instance_eval &block
-          original.widgets.concat(output.widgets) # todo: test!!!
+          original.widgets.concat(output.widgets)
           output.to_s
         ensure
           @_output = original
@@ -53,10 +53,6 @@ module Tilt
           end
         CODE
       end
-
-      # if block
-      #   builder.__capture_erector_tilt__(&block)
-      # end
 
       builder.to_html
     end
