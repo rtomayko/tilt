@@ -4,6 +4,7 @@ module Tilt
   # Nokogiri template implementation. See:
   # http://nokogiri.org/
   class NokogiriTemplate < Template
+    DOCUMENT_HEADER = /^<\?xml version=\"1\.0\"\?>\n?/
     self.default_mime_type = 'text/xml'
 
     def self.engine_initialized?
@@ -16,11 +17,10 @@ module Tilt
 
     def prepare; end
 
-    def evaluate(scope, locals, &block)
-      block &&= proc { yield.gsub(/^<\?xml version=\"1\.0\"\?>\n?/, "") }
-
+    def evaluate(scope, locals)
       if data.respond_to?(:to_str)
-        super(scope, locals, &block)
+        wrapper = proc { yield.sub(DOCUMENT_HEADER, "") } if block_given?
+        super(scope, locals, &wrapper)
       else
         ::Nokogiri::XML::Builder.new.tap(&data).to_xml
       end
