@@ -2,6 +2,7 @@ require 'contest'
 require 'tilt'
 
 begin
+  require 'rdoc'
   require 'rdoc/markup'
   require 'rdoc/markup/to_html'
   class RDocTemplateTest < Test::Unit::TestCase
