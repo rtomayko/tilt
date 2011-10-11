@@ -407,9 +407,9 @@ library.
 
 ### Usage
 
-__NOTE:__ It's suggested that your program `require 'rdoc/markup'` and
-`require 'rdoc/markup/to_html'` at load time when using this template
-engine in a threaded environment.
+__NOTE:__ It's suggested that your program `require 'rdoc'`,
+`require 'rdoc/markup'`, and `require 'rdoc/markup/to_html'` at load time
+when using this template engine in a threaded environment.
 
 ### See also
 
