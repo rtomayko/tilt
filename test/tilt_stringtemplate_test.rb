@@ -119,7 +119,7 @@ class CompiledStringTemplateTest < Test::Unit::TestCase
     assert_equal "Hello\nWorld!\n", template.render(Scope.new)
   end
 
-  
+
   test "template with '}'" do
     template = Tilt::StringTemplate.new { "Hello }" }
     assert_equal "Hello }", template.render

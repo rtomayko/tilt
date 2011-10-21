@@ -57,7 +57,7 @@ implementations.
 ### Example
 
     Hello <%= world %>!
-    
+
 ### Usage
 
 ERB templates support custom evaluation scopes and locals:
@@ -379,7 +379,7 @@ engine, which is a Ruby extension written in C.
 ### Example
 
     h1. Hello Textile Templates
-    
+
     Hello World. This is a paragraph.
 
 ### Usage
@@ -434,7 +434,7 @@ Markdown formatted texts are converted to HTML with one of these libraries:
   * Maruku - `Tilt::MarukuTemplate`
 
 Tilt will use fallback mode (as documented in the README) for determining which
-library to use. RDiscount has highest priority - Maruku has lowest. 
+library to use. RDiscount has highest priority - Maruku has lowest.
 
 ### Example
 
