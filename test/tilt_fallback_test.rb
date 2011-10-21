@@ -5,7 +5,7 @@ class TiltFallbackTest < Test::Unit::TestCase
   class FailTemplate  < Tilt::Template
     def self.engine_initialized?; false end
     def prepare;                        end
-    
+
     def initialize_engine
       raise LoadError, "can't load #{self.class}"
     end
@@ -22,7 +22,7 @@ class TiltFallbackTest < Test::Unit::TestCase
   def set_ivar(obj, name, value)
     obj.instance_variable_set("@#{name}", value)
   end
-  
+
   def clear_ivar(obj, name)
     ivar = "@#{name}"
     value = obj.instance_variable_get(ivar)
@@ -49,7 +49,7 @@ class TiltFallbackTest < Test::Unit::TestCase
   test "returns the last registered template" do
     Tilt.register("md", WinTemplate)
     Tilt.register("md", WinTemplate2)
-    
+
     template = Tilt["md"]
     assert_equal WinTemplate2, template
   end
@@ -87,7 +87,7 @@ class TiltFallbackTest < Test::Unit::TestCase
   test ".prefer accepts multiple extensions" do
     extensions = %w[md mkd markdown]
     Tilt.prefer(FailTemplate, *extensions)
-    
+
     extensions.each do |ext|
       template = Tilt[ext]
       assert_equal FailTemplate, template
@@ -96,7 +96,7 @@ class TiltFallbackTest < Test::Unit::TestCase
 
   test ".prefer with no extension should use already registered extensions" do
     extensions = %w[md mkd markdown]
-    
+
     extensions.each do |ext|
       Tilt.register(ext, FailTemplate)
       Tilt.register(ext, WinTemplate)
@@ -109,7 +109,7 @@ class TiltFallbackTest < Test::Unit::TestCase
       assert_equal FailTemplate, template
     end
   end
-  
+
   test ".prefer should only override extensions the preferred library is registered for"  do
     Tilt.register("md", WinTemplate)
     Tilt.register("mkd", FailTemplate)
