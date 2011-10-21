@@ -184,7 +184,7 @@ template, but if you depend on a specific implementation, you should use #prefer
 
     # Prefer BlueCloth for all its registered extensions (markdown, mkd, md)
     Tilt.prefer Tilt::BlueClothTemplate
-    
+
     # Prefer Erubis for .erb only:
     Tilt.prefer Tilt::ErubisTemplate, 'erb'
 
