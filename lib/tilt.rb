@@ -175,6 +175,9 @@ module Tilt
   register RDiscountTemplate, 'markdown', 'mkd', 'md'
   register RedcarpetTemplate, 'markdown', 'mkd', 'md'
 
+  require 'tilt/tenjin'
+  register TenjinTemplate, 'rbhtml', 'tenjin'
+
   require 'tilt/textile'
   register RedClothTemplate, 'textile'
 
