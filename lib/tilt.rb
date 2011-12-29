@@ -135,6 +135,8 @@ module Tilt
 
   # Template Implementations ================================================
 
+  $:.unshift File.dirname(__FILE__)
+
   require 'tilt/string'
   register StringTemplate, 'str'
 
