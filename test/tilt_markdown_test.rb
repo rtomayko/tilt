@@ -110,7 +110,7 @@ begin
       .gsub(/^\s+/,"")
 
       html = nrender code, :fenced_code_blocks => true
-      assert_equal %Q{<pre><code class=\"ruby\">puts "hello world\"\n</code></pre>}, html
+      assert_equal %Q{<pre><code class="ruby">puts "hello world"\n</code></pre>}, html
     end
   end
 rescue LoadError => boom
