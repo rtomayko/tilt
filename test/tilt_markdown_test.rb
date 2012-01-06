@@ -100,6 +100,18 @@ begin
       html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
       assert_equal "<p>Hello “World” – This is — a test …</p>", html
     end
+
+    def test_fenced_code_blocks_with_lang
+      code = <<-COD
+      ```ruby
+      puts "hello world"
+      ```
+      COD
+      .gsub(/^\s+/,"")
+
+      html = nrender code, :fenced_code_blocks => true
+      assert_equal %Q{<pre><code class=\"ruby\">puts "hello world\"\n</code></pre>}, html
+    end
   end
 rescue LoadError => boom
   # It should already be warned in the main tests
