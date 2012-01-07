@@ -1,4 +1,4 @@
-Tilt
+Tilt [![Build Status](https://secure.travis-ci.org/rtomayko/tilt.png)](http://travis-ci.org/rtomayko/tilt) [![Dependency Status](https://gemnasium.com/rtomayko/tilt.png)](https://gemnasium.com/rtomayko/tilt)
 ====
 
 Tilt is a thin interface over a bunch of different Ruby template engines in
