@@ -73,7 +73,8 @@ begin
         json[:integer] = four
         nil
       } }
-      assert_equal '{"string":"hello","integer":4}', template.render
+      result = template.render
+      assert( (result == '{"string":"hello","integer":4}') || (result == '{"integer":4,"string":"hello"}') )
     end
 
     test "option callback" do
