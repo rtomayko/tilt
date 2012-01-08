@@ -27,9 +27,9 @@ Process ERB template:
   Answer: 4
 
 Define variables:
-  $ echo "Answer: <%= 2 + n %>" | tilt --locals="{:n=>40, :x=>0}"
+  $ echo "Answer: <%= 2 + n %>" | tilt -t erb --vars="{:n=>40}"
   Answer: 42
-  $ echo "Answer: <%= 2 + n %>" | tilt -Dn=40 -Dx=0
+  $ echo "Answer: <%= 2 + n.to_i %>" | tilt -t erb -Dn=40
   Answer: 42
 USAGE
 
