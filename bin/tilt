@@ -4,26 +4,48 @@ require 'optparse'
 require 'tilt'
 
 usage = <<USAGE
-Usage: tilt <options> <file>
-Process template <file> and write output to stdout. With no <file> or
+Usage: tilt <options> <files...>
+
+Process templates <file> and write output to stdout. With no <files> or
 when <file> is '-', read template from stdin and use the --type option
 to determine the template's type.
 
+Output can be written to files (rather than printing to stdout) using the
+--files option. In that case the output file for each file is the same as
+the input file, with the template extension removed, and the names of the
+output files are printed to stdout.  With no <files> or when a <file> is
+'-', read files from stdin.
+
+Adjust the output file locations with --input-dir and --output-dir, which
+describe the base dir for making relative paths, and the output directory.
+
 Options
-  -l, --list           List template engines + file patterns and exit
-  -t, --type=<pattern> Use this template engine; required if no <file>
-  -y, --layout=<file>  Use <file> as a layout template
+  -l, --list             List template engines + file patterns and exit
+  -t, --type=<pattern>   Use this template engine; required if no <file>
+  -y, --layout=<file>    Use <file> as a layout template
 
-  -D<name>=<value>     Define variable <name> as <value>
-  -o, --vars=<ruby>    Evaluate <ruby> to Hash and use for variables
+  -f, --files            Output to files rather than stdout
+  -i, --input-dir=<dir>  Use <dir> to determine relative paths for --files
+  -d, --output-dir=<dir> Use <dir> as the output dir for --files
 
-  -h, --help           Show this help message
+  -a, --attrs=<file>     Load file as YAML and use for variables
+  -D<name>=<value>       Define variable <name> as <value>
+  -o, --vars=<ruby>      Evaluate <ruby> to Hash and use for variables
+
+  -h, --help             Show this help message
 
 Convert markdown to HTML:
   $ tilt foo.markdown > foo.html
 
 Process ERB template:
   $ echo "Answer: <%= 2 + 2 %>" | tilt -t erb
+  Answer: 4
+
+Process to output file:
+  $ echo "Answer: <%= 2 + 2 %>" > foo.txt.erb
+  $ tilt --files foo.txt.erb
+  foo.txt
+  $ cat foo.txt
   Answer: 4
 
 Define variables:
