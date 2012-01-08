@@ -44,9 +44,11 @@ ARGV.options do |o|
   # list all available template engines
   o.on("-l", "--list") do
     groups = {}
-    Tilt.mappings.each do |pattern,engine|
-      key = engine.name.split('::').last.sub(/Template$/, '')
-      (groups[key] ||= []) << pattern
+    Tilt.mappings.each do |pattern,engines|
+      engines.each do |engine|
+        key = engine.name.split('::').last.sub(/Template$/, '')
+        (groups[key] ||= []) << pattern
+      end
     end
     groups.sort { |(k1,v1),(k2,v2)| k1 <=> k2 }.each do |engine,files|
       printf "%-15s %s\n", engine, files.sort.join(', ')
