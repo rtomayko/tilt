@@ -12,12 +12,12 @@ begin
 
     test "preparing and evaluating the template with #render" do
       template = Tilt::RDocTemplate.new { |t| "= Hello World!" }
-      assert_equal "<h1>Hello World!</h1>", template.render.strip
+      assert_equal "<h1 id=\"label-Hello+World%21\">Hello World!</h1>", template.render.strip
     end
 
     test "can be rendered more than once" do
       template = Tilt::RDocTemplate.new { |t| "= Hello World!" }
-      3.times { assert_equal "<h1>Hello World!</h1>", template.render.strip }
+      3.times { assert_equal "<h1 id=\"label-Hello+World%21\">Hello World!</h1>", template.render.strip }
     end
   end
 rescue LoadError => boom
