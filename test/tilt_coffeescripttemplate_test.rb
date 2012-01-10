@@ -23,16 +23,15 @@ begin
       str = "puts 'Hello, World!'\n"
 
       template = Tilt::CoffeeScriptTemplate.new(:bare => true) { str }
-      assert_equal "\nputs('Hello, World!');\n", template.render
+      assert_equal "puts('Hello, World!');", template.render
 
       template2 = Tilt::CoffeeScriptTemplate.new(:no_wrap => true) { str}
-      assert_equal "\nputs('Hello, World!');\n", template.render
+      assert_equal "puts('Hello, World!');", template.render
     end
 
     context "disabling coffee-script wrapper globally" do
       setup do
         @bare = Tilt::CoffeeScriptTemplate.default_bare
-        Tilt::CoffeeScriptTemplate.default_bare = true
       end
 
       teardown do
@@ -41,17 +40,18 @@ begin
 
       test "no options" do
         template = Tilt::CoffeeScriptTemplate.new { |t| "puts 'Hello, World!'\n" }
-        assert_equal "\nputs('Hello, World!');\n", template.render
+        assert_match "puts('Hello, World!');", template.render
+        assert_match "(function() {", template.render
       end
 
       test "overridden by :bare" do
         template = Tilt::CoffeeScriptTemplate.new(:bare => false) { "puts 'Hello, World!'\n" }
-        assert_not_equal "\nputs('Hello, World!');\n", template.render
+        assert_not_equal "puts('Hello, World!');", template.render
       end
 
       test "overridden by :no_wrap" do
         template = Tilt::CoffeeScriptTemplate.new(:no_wrap => false) { "puts 'Hello, World!'\n" }
-        assert_not_equal "\nputs('Hello, World!');\n", template.render
+        assert_not_equal "puts('Hello, World!');", template.render
       end
     end
   end
