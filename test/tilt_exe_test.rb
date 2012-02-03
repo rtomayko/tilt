@@ -171,12 +171,7 @@ class TiltExeTest < Test::Unit::TestCase
     assert_equal "Answer: 42\n", output
   end
 
-  # -o, --vars=<ruby>      Evaluate <ruby> to Hash and use for variables
-  test "-o evaluates ruby to variables" do
-    sh %{echo "Answer: <%= 2 + n %>" | #{tilt} -t erb -o "{:n=>40}"}
-    assert_equal "Answer: 42\n", output
-  end
-
+  # --vars=<ruby>      Evaluate <ruby> to Hash and use for variables
   test "--vars evaluates ruby to variables" do
     sh %{echo "Answer: <%= 2 + n %>" | #{tilt} -t erb --vars "{:n=>40}"}
     assert_equal "Answer: 42\n", output

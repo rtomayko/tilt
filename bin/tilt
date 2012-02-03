@@ -30,7 +30,7 @@ Options
 
   -a, --attrs=<file>     Load file as YAML and use for variables
   -D<name>=<value>       Define variable <name> as <value>
-  -o, --vars=<ruby>      Evaluate <ruby> to Hash and use for variables
+  --vars=<ruby>          Evaluate <ruby> to Hash and use for variables
 
   -h, --help             Show this help message
 
