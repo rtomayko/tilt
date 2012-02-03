@@ -79,98 +79,63 @@ class TiltExeTest < Test::Unit::TestCase
   end
 
   # -y, --layout=<file>    Use <file> as a layout template
-  test "-y renders into template" do
-    template = prepare('template.erb', "<%= 2 + 2 %>2")
-    layout = prepare('layout.erb', "Answer: <%= yield %>\n")
+  %w{-y --layout}.each do |opt|
+    test "#{opt} renders into template" do
+      template = prepare 'template.erb', "<%= 2 + 2 %>2"
+      layout   = prepare 'layout.erb', "Answer: <%= yield %>\n"
 
-    sh %{#{tilt} -y '#{layout}' '#{template}'}
-    assert_equal "Answer: 42\n", output
-  end
-
-  test "--layout renders into template" do
-    template = prepare('template.erb', "<%= 2 + 2 %>2")
-    layout = prepare('layout.erb', "Answer: <%= yield %>\n")
-
-    sh %{#{tilt} --layout '#{layout}' '#{template}'}
-    assert_equal "Answer: 42\n", output
-  end
-
-  # -f, --files            Output to files rather than stdout
-  test "-f outputs to input file basename minus extname" do
-    prepare_dir test_dir
-    Dir.chdir(test_dir) do
-      template = prepare('template.txt.erb', "Answer: <%= 2 + 2 %>2\n")
-
-      sh %{#{tilt} -f '#{template}'}
-      assert_equal "template.txt\n", output
-      assert_equal "Answer: 42\n", File.read('template.txt')
+      sh %{#{tilt} #{opt} '#{layout}' '#{template}'}
+      assert_equal "Answer: 42\n", output
     end
   end
 
-  test "--files outputs to input file basename minus extname" do
-    prepare_dir test_dir
-    Dir.chdir(test_dir) do
-      template = prepare('template.txt.erb', "Answer: <%= 2 + 2 %>2\n")
+  # -f, --files            Output to files rather than stdout
+  %w{-f --files}.each do |opt|
+    test "#{opt} outputs to input file basename minus extname" do
+      prepare_dir test_dir
+      Dir.chdir(test_dir) do
+        template = prepare 'template.txt.erb', "Answer: <%= 2 + 2 %>2\n"
 
-      sh %{#{tilt} --files '#{template}'}
-      assert_equal "template.txt\n", output
-      assert_equal "Answer: 42\n", File.read('template.txt')
+        sh %{#{tilt} #{opt} '#{template}'}
+        assert_equal "template.txt\n", output
+        assert_equal "Answer: 42\n", File.read('template.txt')
+      end
     end
   end
 
   # -i, --input-dir=<dir>  Use <dir> to determine relative paths for --files
-  test "-i sets base dir for relative paths under -o" do
-    template = prepare('input/template.txt.erb', "Answer: <%= 2 + 2 %>2\n")
-    input_dir = test_file('input')
-    output_dir = test_file('output')
+  %w{-i --input-dir}.each do |opt|
+    test "#{opt} sets base dir for relative paths under -o" do
+      template   = prepare('input/template.txt.erb', "Answer: <%= 2 + 2 %>2\n")
+      input_dir  = test_file('input')
+      output_dir = test_file('output')
 
-    sh %{#{tilt} -i '#{input_dir}' -o '#{output_dir}' -f '#{template}'}
-    assert_equal test_file('output/template.txt'), output.chomp("\n")
-    assert_equal "Answer: 42\n", content('output/template.txt')
-  end
-
-  test "--input-dir sets base dir for relative paths under --output-dir" do
-    template = prepare('input/template.txt.erb', "Answer: <%= 2 + 2 %>2\n")
-    input_dir = test_file('input')
-    output_dir = test_file('output')
-
-    sh %{#{tilt} --input-dir '#{input_dir}' --output-dir '#{output_dir}' --files '#{template}'}
-    assert_equal test_file('output/template.txt'), output.chomp("\n")
-    assert_equal "Answer: 42\n", content('output/template.txt')
+      sh %{#{tilt} #{opt} '#{input_dir}' -o '#{output_dir}' -f '#{template}'}
+      assert_equal test_file('output/template.txt'), output.chomp("\n")
+      assert_equal "Answer: 42\n", content('output/template.txt')
+    end
   end
 
   # -o, --output-dir=<dir> Use <dir> as the output dir for --files
-  test "-o sets the output dir for -f" do
-    template = prepare('template.txt.erb', "Answer: <%= 2 + 2 %>2\n")
-    output_dir = test_file('output')
+  %w{-o --output-dir}.each do |opt|
+    test "#{opt} sets the output dir for -f" do
+      template = prepare('template.txt.erb', "Answer: <%= 2 + 2 %>2\n")
+      output_dir = test_file('output')
 
-    sh %{#{tilt} -o '#{output_dir}' -f '#{template}'}
-    assert_equal test_file('output/template.txt'), output.chomp("\n")
-    assert_equal "Answer: 42\n", content('output/template.txt')
-  end
-
-  test "--output-dir sets the output dir for --files" do
-    template = prepare('template.txt.erb', "Answer: <%= 2 + 2 %>2\n")
-    output_dir = test_file('output')
-
-    sh %{#{tilt} --output-dir '#{output_dir}' --files '#{template}'}
-    assert_equal test_file('output/template.txt'), output.chomp("\n")
-    assert_equal "Answer: 42\n", content('output/template.txt')
+      sh %{#{tilt} #{opt} '#{output_dir}' -f '#{template}'}
+      assert_equal test_file('output/template.txt'), output.chomp("\n")
+      assert_equal "Answer: 42\n", content('output/template.txt')
+    end
   end
 
   # -a, --attrs=<file>     Load file as YAML and use for variables
-  test "-a loads a YAML file for variables" do
-    attrs = prepare('attrs.yml', "answer: 42")
+  %w{-a --attrs}.each do |opt|
+    test "#{opt} loads a YAML file for variables" do
+      attrs = prepare('attrs.yml', "answer: 42")
 
-    sh %{echo "Answer: <%= answer %>" | #{tilt} -t erb -a '#{attrs}'}
-    assert_equal "Answer: 42\n", output
-  end
-
-  test "--attrs loads a YAML file for variables" do
-    attrs = prepare('attrs.yml', "answer: 42")
-
-    sh %{echo "Answer: <%= answer %>" | #{tilt} -t erb --attrs '#{attrs}'}
-    assert_equal "Answer: 42\n", output
+      sh %{echo "Answer: <%= answer %>" | #{tilt} -t erb #{opt} '#{attrs}'}
+      assert_equal "Answer: 42\n", output
+    end
   end
 
   # -D<name>=<value>       Define variable <name> as <value>
@@ -186,14 +151,11 @@ class TiltExeTest < Test::Unit::TestCase
   end
 
   # -h, --help             Show this help message
-  test "-h prints help" do
-    sh %{#{tilt} -h}
-    assert_match(/Usage: tilt/, output)
-  end
-
-  test "--help prints help" do
-    sh %{#{tilt} --help}
-    assert_match(/Usage: tilt/, output)
+  %w{-h --help}.each do |opt|
+    test "#{opt} prints help" do
+      sh %{#{tilt} #{opt}}
+      assert_match(/Usage: tilt/, output)
+    end
   end
 
   #
