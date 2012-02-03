@@ -15,7 +15,7 @@ Options
   -y, --layout=<file>  Use <file> as a layout template
 
   -D<name>=<value>     Define variable <name> as <value>
-  -o, --vars=<ruby>    Evaluate <ruby> to Hash and use for variables
+  --vars=<ruby>        Evaluate <ruby> to Hash and use for variables
 
   -h, --help           Show this help message
 
