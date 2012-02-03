@@ -63,6 +63,14 @@ locals = {}
 ARGV.options do |o|
   o.program_name = script_name
 
+  # load attributes as YAML
+  o.on("-a", "--attrs=FILE") do |file|
+    require 'yaml'
+    hash = YAML.load_file(file)
+    abort "attrs must load a Hash, not #{hash.inspect}" if !hash.is_a?(Hash)
+    hash.each { |key, value| locals[key.to_sym] = value }
+  end
+
   # list all available template engines
   o.on("-l", "--list") do
     groups = {}
