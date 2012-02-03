@@ -2,6 +2,7 @@
 require 'ostruct'
 require 'optparse'
 require 'tilt'
+require 'fileutils'
 
 usage = <<USAGE
 Usage: tilt <options> <files...>
@@ -26,7 +27,7 @@ Options
 
   -f, --files            Output to files rather than stdout
   -i, --input-dir=<dir>  Use <dir> to determine relative paths for --files
-  -d, --output-dir=<dir> Use <dir> as the output dir for --files
+  -o, --output-dir=<dir> Use <dir> as the output dir for --files
 
   -a, --attrs=<file>     Load file as YAML and use for variables
   -D<name>=<value>       Define variable <name> as <value>
@@ -59,6 +60,9 @@ script_name = File.basename($0)
 pattern = nil
 layout = nil
 locals = {}
+files = false
+input_dir = Dir.pwd
+output_dir = Dir.pwd
 
 ARGV.options do |o|
   o.program_name = script_name
@@ -84,6 +88,21 @@ ARGV.options do |o|
       printf "%-15s %s\n", engine, files.sort.join(', ')
     end
     exit
+  end
+
+  # render to files, not stdout
+  o.on("-f", "--files") do
+    files = true
+  end
+
+  # set input dir for --files
+  o.on("-i", "--input-dir=DIR") do |dir|
+    input_dir = File.expand_path(dir)
+  end
+
+  # set output dir for --files
+  o.on("-o", "--output-dir=DIR") do |dir|
+    output_dir = File.expand_path(dir)
   end
 
   # the template type / pattern
@@ -139,4 +158,26 @@ output = template.render(self, locals)
 # process layout
 output = Tilt.new(layout).render(self, locals) { output } if layout
 
-$stdout.write(output)
+if files
+  outfile = file.chomp File.extname(file)
+  full_path = File.expand_path(outfile)
+  if full_path.index(input_dir) == 0
+    outfile = full_path[input_dir.length + 1, full_path.length - input_dir.length]
+  else
+    outfile = File.basename(full_path)
+  end
+  outfile = File.expand_path(outfile, output_dir)
+  outdir  = File.dirname(outfile)
+
+  unless File.exists?(outdir)
+    FileUtils.mkdir_p outdir
+  end
+
+  File.open(outfile, "w") {|io| io << output }
+  if outfile.index(Dir.pwd) == 0
+    outfile = outfile[Dir.pwd.length + 1, outfile.length - Dir.pwd.length]
+  end
+  $stdout.puts outfile
+else
+  $stdout.write(output)
+end

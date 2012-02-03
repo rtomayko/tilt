@@ -96,33 +96,41 @@ class TiltExeTest < Test::Unit::TestCase
   end
 
   # -f, --files            Output to files rather than stdout
-  test "-f outputs to input files minus extname" do
-    template = prepare('template.txt.erb', "Answer: <%= 2 + 2 %>2")
+  test "-f outputs to input file basename minus extname" do
+    prepare_dir test_dir
+    Dir.chdir(test_dir) do
+      template = prepare('template.txt.erb', "Answer: <%= 2 + 2 %>2\n")
 
-    sh %{#{tilt} -f '#{template}'}
-    assert_equal test_file('template.txt'), output.chomp("\n")
-    assert_equal "Answer: 42\n", content('template.txt')
+      sh %{#{tilt} -f '#{template}'}
+      assert_equal "template.txt\n", output
+      assert_equal "Answer: 42\n", File.read('template.txt')
+    end
   end
 
-  test "--files outputs to input files minus extname" do
-    sh %{#{tilt} --files '#{template}'}
-    assert_equal test_file('template.txt'), output.chomp("\n")
-    assert_equal "Answer: 42\n", content('template.txt')
+  test "--files outputs to input file basename minus extname" do
+    prepare_dir test_dir
+    Dir.chdir(test_dir) do
+      template = prepare('template.txt.erb', "Answer: <%= 2 + 2 %>2\n")
+
+      sh %{#{tilt} --files '#{template}'}
+      assert_equal "template.txt\n", output
+      assert_equal "Answer: 42\n", File.read('template.txt')
+    end
   end
 
   # -i, --input-dir=<dir>  Use <dir> to determine relative paths for --files
-  test "-i sets base dir for relative paths under -d" do
-    template = prepare('input/template.txt.erb', "Answer: <%= 2 + 2 %>2")
+  test "-i sets base dir for relative paths under -o" do
+    template = prepare('input/template.txt.erb', "Answer: <%= 2 + 2 %>2\n")
     input_dir = test_file('input')
     output_dir = test_file('output')
 
-    sh %{#{tilt} -i '#{input_dir}' -d '#{output_dir}' -f '#{template}'}
+    sh %{#{tilt} -i '#{input_dir}' -o '#{output_dir}' -f '#{template}'}
     assert_equal test_file('output/template.txt'), output.chomp("\n")
     assert_equal "Answer: 42\n", content('output/template.txt')
   end
 
   test "--input-dir sets base dir for relative paths under --output-dir" do
-    template = prepare('input/template.txt.erb', "Answer: <%= 2 + 2 %>2")
+    template = prepare('input/template.txt.erb', "Answer: <%= 2 + 2 %>2\n")
     input_dir = test_file('input')
     output_dir = test_file('output')
 
@@ -131,18 +139,18 @@ class TiltExeTest < Test::Unit::TestCase
     assert_equal "Answer: 42\n", content('output/template.txt')
   end
 
-  # -d, --output-dir=<dir> Use <dir> as the output dir for --files
-  test "-d sets the output dir for -f" do
-    template = prepare('template.txt.erb', "Answer: <%= 2 + 2 %>2")
+  # -o, --output-dir=<dir> Use <dir> as the output dir for --files
+  test "-o sets the output dir for -f" do
+    template = prepare('template.txt.erb', "Answer: <%= 2 + 2 %>2\n")
     output_dir = test_file('output')
 
-    sh %{#{tilt} -d '#{output_dir}' -f '#{template}'}
+    sh %{#{tilt} -o '#{output_dir}' -f '#{template}'}
     assert_equal test_file('output/template.txt'), output.chomp("\n")
     assert_equal "Answer: 42\n", content('output/template.txt')
   end
 
   test "--output-dir sets the output dir for --files" do
-    template = prepare('template.txt.erb', "Answer: <%= 2 + 2 %>2")
+    template = prepare('template.txt.erb', "Answer: <%= 2 + 2 %>2\n")
     output_dir = test_file('output')
 
     sh %{#{tilt} --output-dir '#{output_dir}' --files '#{template}'}
@@ -193,36 +201,37 @@ class TiltExeTest < Test::Unit::TestCase
   #
 
   test "documentation examples" do
-    prepare_dir "."
+    prepare_dir test_dir
+    Dir.chdir(test_dir) do
+      # Process ERB template:
+      #   $ echo "Answer: <%= 2 + 2 %>" | tilt -t erb
+      #   Answer: 4
+      sh %{echo "Answer: <%= 2 + 2 %>" | #{tilt} -t erb}
+      assert_equal "Answer: 4\n", output
 
-    # Process ERB template:
-    #   $ echo "Answer: <%= 2 + 2 %>" | tilt -t erb
-    #   Answer: 4
-    sh %{echo "Answer: <%= 2 + 2 %>" | #{tilt} -t erb}
-    assert_equal "Answer: 4\n", output
+      # Process to output file:
+      #   $ echo "Answer: <%= 2 + 2 %>" > foo.txt.erb
+      #   $ tilt --files foo.txt.erb
+      #   foo.txt
+      #   $ cat foo.txt
+      #   Answer: 4
+      sh %{echo "Answer: <%= 2 + 2 %>" > foo.txt.erb}
+      sh %{#{tilt} --files foo.txt.erb}
+      assert_equal "foo.txt\n", output
 
-    # Process to output file:
-    #   $ echo "Answer: <%= 2 + 2 %>" > foo.txt.erb
-    #   $ tilt --files foo.txt.erb
-    #   foo.txt
-    #   $ cat foo.txt
-    #   Answer: 4
-    sh %{echo "Answer: <%= 2 + 2 %>" > foo.txt.erb}
-    sh %{#{tilt} --files foo.txt.erb}
-    assert_equal "foo.txt\n", output
+      sh %{cat foo.txt}
+      assert_equal "Answer: 4\n", output
 
-    sh %{cat foo.txt}
-    assert_equal "Answer: 4\n", output
+      # Define variables:
+      #   $ echo "Answer: <%= 2 + n %>" | tilt -t erb --vars="{:n=>40}"
+      #   Answer: 42
+      #   $ echo "Answer: <%= 2 + n.to_i %>" | tilt -t erb -Dn=40
+      #   Answer: 42
+      sh %{echo "Answer: <%= 2 + n %>" | #{tilt} -t erb --vars="{:n=>40}"}
+      assert_equal "Answer: 42\n", output
 
-    # Define variables:
-    #   $ echo "Answer: <%= 2 + n %>" | tilt -t erb --vars="{:n=>40}"
-    #   Answer: 42
-    #   $ echo "Answer: <%= 2 + n.to_i %>" | tilt -t erb -Dn=40
-    #   Answer: 42
-    sh %{echo "Answer: <%= 2 + n %>" | #{tilt} -t erb --vars="{:n=>40}"}
-    assert_equal "Answer: 42\n", output
-
-    sh %{echo "Answer: <%= 2 + n.to_i %>" | #{tilt} -t erb -Dn=40}
-    assert_equal "Answer: 42\n", output
+      sh %{echo "Answer: <%= 2 + n.to_i %>" | #{tilt} -t erb -Dn=40}
+      assert_equal "Answer: 42\n", output
+    end
   end
 end
