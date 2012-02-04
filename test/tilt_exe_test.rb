@@ -34,7 +34,7 @@ class TiltExeTest < Test::Unit::TestCase
 
   def sh(cmd, expected_status=0)
     @output = `#{cmd}`
-    assert_equal expected_status, $?, "$ #{cmd}\n#{@output}"
+    assert_equal expected_status, $?.exitstatus, "$ #{cmd}\n#{@output}"
   end
 
   def path(file)
@@ -79,6 +79,14 @@ class TiltExeTest < Test::Unit::TestCase
     assert_equal "Answer: 42\n", output
   end
 
+  %w{-t --type}.each do |opt|
+    test "#{opt} prints error message on unknown type" do
+      template = prepare 'template.erb', "<%= 2 + 2 %>2"
+      sh %{#{tilt} -t 'unknown' '#{template}' 2>&1}, 1
+      assert_equal "template engine not found for: \"unknown\" (see 'tilt --help')\n", output
+    end
+  end
+
   # -y, --layout=<file>    Use <file> as a layout template
   %w{-y --layout}.each do |opt|
     test "#{opt} renders into template" do
@@ -87,6 +95,16 @@ class TiltExeTest < Test::Unit::TestCase
 
       sh %{#{tilt} #{opt} '#{layout}' '#{template}'}
       assert_equal "Answer: 42\n", output
+    end
+  end
+
+  %w{-y --layout}.each do |opt|
+    test "#{opt} prints error message for non-file" do
+      template = prepare 'template.erb', "<%= 2 + 2 %>2"
+      assert_equal false, File.exists?('not_a_file')
+
+      sh %{#{tilt} #{opt} not_a_file '#{template}' 2>&1}, 1
+      assert_equal "not a file: \"not_a_file\" (see 'tilt --help')\n", output
     end
   end
 
@@ -181,6 +199,26 @@ class TiltExeTest < Test::Unit::TestCase
     end
   end
 
+  %w{-a --attrs}.each do |opt|
+    test "#{opt} prints error for non-file" do
+      template = prepare 'template.erb', "<%= 2 + 2 %>2"
+      assert_equal false, File.exists?('not_a_file')
+
+      sh %{#{tilt} #{opt} not_a_file '#{template}' 2>&1}, 1
+      assert_equal "not a file: \"not_a_file\" (see 'tilt --help')\n", output
+    end
+  end
+
+  %w{-a --attrs}.each do |opt|
+    test "#{opt} prints error if YAML does not load to a hash" do
+      template = prepare 'template.erb', "<%= 2 + 2 %>2"
+      attrs = prepare('attrs.yml', "42")
+
+      sh %{#{tilt} #{opt} '#{attrs}' '#{template}' 2>&1}, 1
+      assert_equal "attrs must be a Hash, not 42 (see 'tilt --help')\n", output
+    end
+  end
+
   # -D<name>=<value>       Define variable <name> as <value>
   test "-D defines a variable" do
     sh %{echo "Answer: <%= 2 + n.to_i %>" | #{tilt} -t erb -Dn=40}
@@ -191,6 +229,14 @@ class TiltExeTest < Test::Unit::TestCase
   test "--vars evaluates ruby to variables" do
     sh %{echo "Answer: <%= 2 + n %>" | #{tilt} -t erb --vars "{:n=>40}"}
     assert_equal "Answer: 42\n", output
+  end
+
+  test "--vars prints error if ruby does not load to a hash" do
+    template = prepare 'template.erb', "<%= 2 + 2 %>2"
+    attrs = prepare('attrs.yml', "42")
+
+    sh %{#{tilt} --vars '42' '#{template}' 2>&1}, 1
+    assert_equal "vars must be a Hash, not 42 (see 'tilt --help')\n", output
   end
 
   # -h, --help             Show this help message
@@ -223,6 +269,21 @@ class TiltExeTest < Test::Unit::TestCase
 
     sh %{echo "C<%= 2 + 1 %>" | #{tilt} -t erb '#{a}' '#{b}' -}
     assert_equal "A1B2C3\n", output
+  end
+
+  test "tilt prints error message for non-file" do
+    assert_equal false, File.exists?('not_a_file')
+    sh %{#{tilt} not_a_file 2>&1}, 1
+    assert_equal "not a file: \"not_a_file\" (see 'tilt --help')\n", output
+
+    sh %{#{tilt} '#{Dir.pwd}' 2>&1}, 1
+    assert_equal "not a file: #{Dir.pwd.inspect} (see 'tilt --help')\n", output
+  end
+
+  test "tilt prints error message on unknown engine" do
+    file = prepare 'unknown.engine'
+    sh %{#{tilt} '#{file}' 2>&1}, 1
+    assert_equal "template engine not found for: #{file.inspect} (see 'tilt --help')\n", output
   end
 
   #

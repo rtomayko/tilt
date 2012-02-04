@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+begin
 require 'ostruct'
 require 'optparse'
 require 'tilt'
@@ -75,9 +76,26 @@ class TiltExe
     @pattern    = nil
   end
 
+  def merge(hash, source="locals")
+    unless hash.is_a?(Hash)
+      raise "#{source} must be a Hash, not #{hash.inspect}"
+    end
+
+    hash.each_pair { |key, value| locals[key.to_sym] = value }
+  end
+
   def engine_for(file)
-    engine = Tilt[pattern ? pattern : file]
-    raise "template engine not found for: #{pattern}" if engine.nil?
+    unless file == '-' || File.file?(file)
+      raise "not a file: #{file.inspect}"
+    end
+
+    epattern = pattern ? pattern : file
+    engine = Tilt[epattern]
+
+    if engine.nil?
+      raise "template engine not found for: #{epattern.inspect}"
+    end
+
     engine
   end
 
@@ -133,9 +151,10 @@ ARGV.options do |o|
   # load attributes as YAML
   o.on("-a", "--attrs=FILE") do |file|
     require 'yaml'
-    hash = YAML.load_file(file)
-    abort "attrs must load a Hash, not #{hash.inspect}" if !hash.is_a?(Hash)
-    hash.each { |key, value| exe.locals[key.to_sym] = value }
+    unless File.file?(file)
+      raise "not a file: #{file.inspect}"
+    end
+    exe.merge YAML.load_file(file), "attrs"
   end
 
   # list all available template engines
@@ -170,31 +189,25 @@ ARGV.options do |o|
 
   # the template type / pattern
   o.on("-t", "--type=PATTERN", String) do |val|
-    abort "unknown template type: #{val}" if Tilt[val].nil?
     exe.pattern = val
   end
 
   # pass template output into the specified layout template
   o.on("-y", "--layout=FILE", String)  do |file|
     paths = [file, "~/.tilt/#{file}", "/etc/tilt/#{file}"]
-    layout = paths.
-      map  { |p| File.expand_path(p) }.
-      find { |p| File.exist?(p) }
-    abort "no such layout: #{file}" if layout.nil?
-    exe.layout = Tilt.new(layout)
+    layout = paths.map  { |p| File.expand_path(p) }.find { |p| File.exist?(p) }
+    exe.layout = exe.engine_for(layout || file).new(layout)
   end
 
   # define a local variable
   o.on("-D", "--define=PAIR", String) do |pair|
     key, value = pair.split(/[=:]/, 2)
-    exe.locals[key.to_sym] = value
+    exe.merge(key => value)
   end
 
   # define local variables using a Ruby hash
   o.on("--vars=RUBY") do |ruby|
-    hash = eval(ruby)
-    abort "vars must be a Hash, not #{hash.inspect}" if !hash.is_a?(Hash)
-    hash.each { |key, value| exe.locals[key.to_sym] = value }
+    exe.merge eval(ruby), "vars"
   end
 
   o.on_tail("-h", "--help") { puts usage; exit }
@@ -220,4 +233,10 @@ ARGV.each do |file|
   else
     $stdout.puts exe.render_to_file(file)
   end
+end
+
+rescue
+  raise if $DEBUG
+  $stderr.puts "#{$!.message} (see '#{File.basename($0)} --help')"
+  exit 1
 end
