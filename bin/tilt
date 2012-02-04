@@ -7,18 +7,22 @@ require 'fileutils'
 usage = <<USAGE
 Usage: tilt <options> <files...>
 
-Process templates <file> and write output to stdout. With no <files> or
-when <file> is '-', read template from stdin and use the --type option
-to determine the template's type.
+Process templates <file> and write output to stdout. With no <files> or when
+<file> is '-', read template from stdin and use the --type option to determine
+the template's type.
 
 Output can be written to files (rather than printing to stdout) using the
---files option. In that case the output file for each file is the same as
-the input file, with the template extension removed, and the names of the
-output files are printed to stdout.  With no <files> or when a <file> is
-'-', read files from stdin.
+--files option. In that case the output file is the same as the input file
+with the template extension removed. For input files not relative to pwd, the
+output file is the basename of the input file. For example:
+
+  $pwd/path/to/template.txt.erb   => path/to/template.txt
+  /not/pwd/template.txt.erb       => template.txt
 
 Adjust the output file locations with --input-dir and --output-dir, which
-describe the base dir for making relative paths, and the output directory.
+describe the base dir for relative paths, and the output directory. The output
+files are printed to stdout. With no <files> or when a <file> is '-', read
+files from stdin.
 
 Options
   -l, --list             List template engines + file patterns and exit
@@ -138,6 +142,15 @@ ARGV.options do |o|
   o.parse!
 end
 
+# The part of path relative to dir, or nil if path is not relative to dir.
+def relative_path(path, dir)
+  if path.index(dir) == 0
+    path[dir.length + 1, path.length - dir.length]
+  else
+    nil
+  end
+end
+
 file = ARGV.first || '-'
 pattern = file if pattern.nil?
 abort "template type not given. see: #{$0} --help" if ['-', ''].include?(pattern)
@@ -159,13 +172,8 @@ output = template.render(self, locals)
 output = Tilt.new(layout).render(self, locals) { output } if layout
 
 if files
-  outfile = file.chomp File.extname(file)
-  full_path = File.expand_path(outfile)
-  if full_path.index(input_dir) == 0
-    outfile = full_path[input_dir.length + 1, full_path.length - input_dir.length]
-  else
-    outfile = File.basename(full_path)
-  end
+  outfile = File.expand_path(file).chomp File.extname(file)
+  outfile = relative_path(outfile, input_dir) || File.basename(outfile)
   outfile = File.expand_path(outfile, output_dir)
   outdir  = File.dirname(outfile)
 
@@ -174,10 +182,8 @@ if files
   end
 
   File.open(outfile, "w") {|io| io << output }
-  if outfile.index(Dir.pwd) == 0
-    outfile = outfile[Dir.pwd.length + 1, outfile.length - Dir.pwd.length]
-  end
-  $stdout.puts outfile
+
+  $stdout.puts(relative_path(outfile, Dir.pwd) || outfile)
 else
   $stdout.write(output)
 end
