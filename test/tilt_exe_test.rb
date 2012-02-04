@@ -117,15 +117,30 @@ class TiltExeTest < Test::Unit::TestCase
   end
 
   %w{-f --files}.each do |opt|
-    test "#{opt} handles multiple files" do
+    test "#{opt} reads files from stdin on -" do
       Dir.chdir(test_dir)
       a = prepare 'a.erb', "A<%= 2 - 1 %>"
       b = prepare 'b.erb', "B<%= 1 + 1 %>"
 
-      sh %{#{tilt} #{opt} '#{a}' '#{b}'}
+      sh %{ls *.erb | #{tilt} #{opt} -}
       assert_equal "a\nb\n", output
       assert_equal "A1", File.read('a')
       assert_equal "B2", File.read('b')
+    end
+  end
+
+  %w{-f --files}.each do |opt|
+    test "#{opt} handles multiple files" do
+      Dir.chdir(test_dir)
+      a = prepare 'a.erb', "A<%= 2 - 1 %>"
+      b = prepare 'b.erb', "B<%= 1 + 1 %>"
+      c = prepare 'c.erb', "C<%= 2 + 1 %>"
+
+      sh %{ls c.erb | #{tilt} #{opt} '#{a}' '#{b}' '-'}
+      assert_equal "a\nb\nc\n", output
+      assert_equal "A1", File.read('a')
+      assert_equal "B2", File.read('b')
+      assert_equal "C3", File.read('c')
     end
   end
 
@@ -197,12 +212,17 @@ class TiltExeTest < Test::Unit::TestCase
     assert_equal "Answer: 42\n", output
   end
 
+  test "tilt reads from stdin on -" do
+    sh %{echo "Answer: <%= 2 + 2 %>2" | #{tilt} -t erb -}
+    assert_equal "Answer: 42\n", output
+  end
+
   test "tilt renders multiple files" do
     a = prepare 'a.erb', "A<%= 2 - 1 %>"
     b = prepare 'b.erb', "B<%= 1 + 1 %>"
 
-    sh %{#{tilt} '#{a}' '#{b}'}
-    assert_equal "A1B2", output
+    sh %{echo "C<%= 2 + 1 %>" | #{tilt} -t erb '#{a}' '#{b}' -}
+    assert_equal "A1B2C3\n", output
   end
 
   #

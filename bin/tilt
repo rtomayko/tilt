@@ -60,23 +60,82 @@ Define variables:
   Answer: 42
 USAGE
 
-script_name = File.basename($0)
-pattern = nil
-layout = nil
-locals = {}
-files = false
-input_dir = Dir.pwd
-output_dir = Dir.pwd
+class TiltExe
+  attr_accessor :locals
+  attr_accessor :input_dir
+  attr_accessor :output_dir
+  attr_accessor :layout
+  attr_accessor :pattern
+
+  def initialize
+    @locals     = {}
+    @input_dir  = Dir.pwd
+    @output_dir = Dir.pwd
+    @layout     = nil
+    @pattern    = nil
+  end
+
+  def engine_for(file)
+    engine = Tilt[pattern ? pattern : file]
+    raise "template engine not found for: #{pattern}" if engine.nil?
+    engine
+  end
+
+  # The part of file relative to dir, or nil if file is not relative to dir.
+  def relative_path(file, dir)
+    if file.index(dir) == 0
+      file[dir.length + 1, file.length - dir.length]
+    else
+      nil
+    end
+  end
+
+  def output_file(file)
+    outfile = File.expand_path(file).chomp File.extname(file)
+    outfile = relative_path(outfile, input_dir) || File.basename(outfile)
+    outfile = File.expand_path(outfile, output_dir)
+    outdir  = File.dirname(outfile)
+
+    unless File.exists?(outdir)
+      FileUtils.mkdir_p outdir
+    end
+
+    outfile
+  end
+
+  def render_to_file(file)
+    outfile = output_file(file)
+    File.open(outfile, "w") {|io| io << render(file) }
+    relative_path(outfile, Dir.pwd) || outfile
+  end
+
+  def render(file)
+    template = engine_for(file).new(file) {
+      if file == '-'
+        $stdin.read
+      else
+        File.read(file)
+      end
+    }
+
+    output = template.render(Object.new, locals)
+    output = layout.render(Object.new, locals) { output } if layout
+    output
+  end
+end
+
+exe = TiltExe.new
+render_to_stdout = true
 
 ARGV.options do |o|
-  o.program_name = script_name
+  o.program_name = File.basename($0)
 
   # load attributes as YAML
   o.on("-a", "--attrs=FILE") do |file|
     require 'yaml'
     hash = YAML.load_file(file)
     abort "attrs must load a Hash, not #{hash.inspect}" if !hash.is_a?(Hash)
-    hash.each { |key, value| locals[key.to_sym] = value }
+    hash.each { |key, value| exe.locals[key.to_sym] = value }
   end
 
   # list all available template engines
@@ -96,23 +155,23 @@ ARGV.options do |o|
 
   # render to files, not stdout
   o.on("-f", "--files") do
-    files = true
+    render_to_stdout = false
   end
 
   # set input dir for --files
   o.on("-i", "--input-dir=DIR") do |dir|
-    input_dir = File.expand_path(dir)
+    exe.input_dir = File.expand_path(dir)
   end
 
   # set output dir for --files
   o.on("-o", "--output-dir=DIR") do |dir|
-    output_dir = File.expand_path(dir)
+    exe.output_dir = File.expand_path(dir)
   end
 
   # the template type / pattern
   o.on("-t", "--type=PATTERN", String) do |val|
     abort "unknown template type: #{val}" if Tilt[val].nil?
-    pattern = val
+    exe.pattern = val
   end
 
   # pass template output into the specified layout template
@@ -122,70 +181,43 @@ ARGV.options do |o|
       map  { |p| File.expand_path(p) }.
       find { |p| File.exist?(p) }
     abort "no such layout: #{file}" if layout.nil?
+    exe.layout = Tilt.new(layout)
   end
 
   # define a local variable
   o.on("-D", "--define=PAIR", String) do |pair|
     key, value = pair.split(/[=:]/, 2)
-    locals[key.to_sym] = value
+    exe.locals[key.to_sym] = value
   end
 
   # define local variables using a Ruby hash
   o.on("--vars=RUBY") do |ruby|
     hash = eval(ruby)
     abort "vars must be a Hash, not #{hash.inspect}" if !hash.is_a?(Hash)
-    hash.each { |key, value| locals[key.to_sym] = value }
+    hash.each { |key, value| exe.locals[key.to_sym] = value }
   end
 
   o.on_tail("-h", "--help") { puts usage; exit }
 
-  o.parse!
+end.parse!
+
+if ARGV.empty?
+  ARGV.unshift('-')
 end
 
-# The part of path relative to dir, or nil if path is not relative to dir.
-def relative_path(path, dir)
-  if path.index(dir) == 0
-    path[dir.length + 1, path.length - dir.length]
-  else
-    nil
-  end
-end
-
-ARGV.unshift('-') if ARGV.empty?
 ARGV.each do |file|
-  pattern = file if pattern.nil?
-  abort "template type not given. see: #{$0} --help" if ['-', ''].include?(pattern)
+  case
+  when render_to_stdout
+    $stdout.write exe.render(file)
+  when file == '-'
+    while infile = $stdin.gets
+      infile.strip!
 
-  engine = Tilt[pattern]
-  abort "template engine not found for: #{pattern}" if engine.nil?
-
-  template =
-    engine.new(file) {
-      if file == '-'
-        $stdin.read
-      else
-        File.read(file)
+      unless infile.empty?
+        $stdout.puts exe.render_to_file(infile)
       end
-    }
-  output = template.render(self, locals)
-
-  # process layout
-  output = Tilt.new(layout).render(self, locals) { output } if layout
-
-  if files
-    outfile = File.expand_path(file).chomp File.extname(file)
-    outfile = relative_path(outfile, input_dir) || File.basename(outfile)
-    outfile = File.expand_path(outfile, output_dir)
-    outdir  = File.dirname(outfile)
-
-    unless File.exists?(outdir)
-      FileUtils.mkdir_p outdir
     end
-
-    File.open(outfile, "w") {|io| io << output }
-
-    $stdout.puts(relative_path(outfile, Dir.pwd) || outfile)
   else
-    $stdout.write(output)
+    $stdout.puts exe.render_to_file(file)
   end
 end
