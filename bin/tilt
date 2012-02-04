@@ -24,7 +24,7 @@ describe the base dir for relative paths, and the output directory. The output
 files are printed to stdout. With no <files> or when a <file> is '-', read
 files from stdin.
 
-Options
+Options:
   -l, --list             List template engines + file patterns and exit
   -t, --type=<pattern>   Use this template engine; required if no <file>
   -y, --layout=<file>    Use <file> as a layout template
@@ -58,6 +58,11 @@ Define variables:
   Answer: 42
   $ echo "Answer: <%= 2 + n.to_i %>" | tilt -t erb -Dn=40
   Answer: 42
+
+To debug:
+
+  $ RUBYOPT=-d tilt ...
+
 USAGE
 
 class TiltExe
