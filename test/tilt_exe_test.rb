@@ -116,6 +116,19 @@ class TiltExeTest < Test::Unit::TestCase
     end
   end
 
+  %w{-f --files}.each do |opt|
+    test "#{opt} handles multiple files" do
+      Dir.chdir(test_dir)
+      a = prepare 'a.erb', "A<%= 2 - 1 %>"
+      b = prepare 'b.erb', "B<%= 1 + 1 %>"
+
+      sh %{#{tilt} #{opt} '#{a}' '#{b}'}
+      assert_equal "a\nb\n", output
+      assert_equal "A1", File.read('a')
+      assert_equal "B2", File.read('b')
+    end
+  end
+
   # -o, --output-dir=<dir> Use <dir> as the output dir for --files
   %w{-o --output-dir}.each do |opt|
     test "#{opt} sets the output dir for -f" do
@@ -171,6 +184,25 @@ class TiltExeTest < Test::Unit::TestCase
       sh %{#{tilt} #{opt}}
       assert_match(/Usage: tilt/, output)
     end
+  end
+
+  #
+  # tilt test
+  #
+
+  test "tilt renders input files to stdout" do
+    template = prepare 'template.erb', "Answer: <%= 2 + 2 %>2\n"
+
+    sh %{#{tilt} '#{template}'}
+    assert_equal "Answer: 42\n", output
+  end
+
+  test "tilt renders multiple files" do
+    a = prepare 'a.erb', "A<%= 2 - 1 %>"
+    b = prepare 'b.erb', "B<%= 1 + 1 %>"
+
+    sh %{#{tilt} '#{a}' '#{b}'}
+    assert_equal "A1B2", output
   end
 
   #

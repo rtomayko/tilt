@@ -151,39 +151,41 @@ def relative_path(path, dir)
   end
 end
 
-file = ARGV.first || '-'
-pattern = file if pattern.nil?
-abort "template type not given. see: #{$0} --help" if ['-', ''].include?(pattern)
+ARGV.unshift('-') if ARGV.empty?
+ARGV.each do |file|
+  pattern = file if pattern.nil?
+  abort "template type not given. see: #{$0} --help" if ['-', ''].include?(pattern)
 
-engine = Tilt[pattern]
-abort "template engine not found for: #{pattern}" if engine.nil?
+  engine = Tilt[pattern]
+  abort "template engine not found for: #{pattern}" if engine.nil?
 
-template =
-  engine.new(file) {
-    if file == '-'
-      $stdin.read
-    else
-      File.read(file)
+  template =
+    engine.new(file) {
+      if file == '-'
+        $stdin.read
+      else
+        File.read(file)
+      end
+    }
+  output = template.render(self, locals)
+
+  # process layout
+  output = Tilt.new(layout).render(self, locals) { output } if layout
+
+  if files
+    outfile = File.expand_path(file).chomp File.extname(file)
+    outfile = relative_path(outfile, input_dir) || File.basename(outfile)
+    outfile = File.expand_path(outfile, output_dir)
+    outdir  = File.dirname(outfile)
+
+    unless File.exists?(outdir)
+      FileUtils.mkdir_p outdir
     end
-  }
-output = template.render(self, locals)
 
-# process layout
-output = Tilt.new(layout).render(self, locals) { output } if layout
+    File.open(outfile, "w") {|io| io << output }
 
-if files
-  outfile = File.expand_path(file).chomp File.extname(file)
-  outfile = relative_path(outfile, input_dir) || File.basename(outfile)
-  outfile = File.expand_path(outfile, output_dir)
-  outdir  = File.dirname(outfile)
-
-  unless File.exists?(outdir)
-    FileUtils.mkdir_p outdir
+    $stdout.puts(relative_path(outfile, Dir.pwd) || outfile)
+  else
+    $stdout.write(output)
   end
-
-  File.open(outfile, "w") {|io| io << output }
-
-  $stdout.puts(relative_path(outfile, Dir.pwd) || outfile)
-else
-  $stdout.write(output)
 end
