@@ -6,26 +6,33 @@ class TiltExeTest < Test::Unit::TestCase
   TMP_DIR = File.join(PROJECT_DIR, "tmp")
   TILT = "ruby -I'#{PROJECT_DIR}/lib' '#{PROJECT_DIR}/bin/tilt'"
 
-  attr_accessor :test_dir
+  attr_accessor :method_dir
   attr_accessor :output
 
   def setup
     super
     @pwd = Dir.pwd
-    @test_dir = File.join(TMP_DIR, method_name)
+    @method_dir = File.join(TMP_DIR, method_name)
     @output = nil
 
-    FileUtils.rm_r(test_dir) if File.exists?(test_dir)
-    FileUtils.mkdir_p(test_dir)
+    FileUtils.rm_r(method_dir) if File.exists?(method_dir)
+    FileUtils.mkdir_p(method_dir)
   end
 
   def teardown
     Dir.chdir(@pwd)
     unless ENV['KEEP_OUTPUTS'] == "true"
-      FileUtils.rm_r(test_dir) if File.exists?(test_dir)
+      FileUtils.rm_r(method_dir) if File.exists?(method_dir)
       FileUtils.rm_r(TMP_DIR)  if Dir["#{TMP_DIR}/*"].empty?
     end
     super
+  end
+
+  unless instance_methods.include?('method_name')
+    # MiniTest uses __name__ instead of method_name
+    def method_name
+      __name__
+    end
   end
 
   def tilt
@@ -38,11 +45,11 @@ class TiltExeTest < Test::Unit::TestCase
   end
 
   def path(file)
-    File.expand_path(file, test_dir)
+    File.expand_path(file, method_dir)
   end
 
   def prepare(file, content=nil)
-    file = File.expand_path(file, test_dir)
+    file = File.expand_path(file, method_dir)
     dir  = File.dirname(file)
 
     unless File.exists?(dir)
@@ -109,7 +116,7 @@ class TiltExeTest < Test::Unit::TestCase
 
   %w{-f --files}.each do |opt|
     test "#{opt} outputs file named as relative path to input file minus extname" do
-      Dir.chdir(test_dir)
+      Dir.chdir(method_dir)
       template = prepare 'path/to/template.txt.erb', "Answer: <%= 2 + 2 %>2\n"
 
       sh %{#{tilt} #{opt} '#{template}'}
@@ -130,7 +137,7 @@ class TiltExeTest < Test::Unit::TestCase
     end
 
     test "#{opt} reads files from stdin on -" do
-      Dir.chdir(test_dir)
+      Dir.chdir(method_dir)
       a = prepare 'a.erb', "A<%= 2 - 1 %>"
       b = prepare 'b.erb', "B<%= 1 + 1 %>"
 
@@ -141,7 +148,7 @@ class TiltExeTest < Test::Unit::TestCase
     end
 
     test "#{opt} handles multiple files" do
-      Dir.chdir(test_dir)
+      Dir.chdir(method_dir)
       a = prepare 'a.erb', "A<%= 2 - 1 %>"
       b = prepare 'b.erb', "B<%= 1 + 1 %>"
       c = prepare 'c.erb', "C<%= 2 + 1 %>"
@@ -160,7 +167,7 @@ class TiltExeTest < Test::Unit::TestCase
 
   %w{-o --output-dir}.each do |opt|
     test "#{opt} sets the output dir for -f" do
-      Dir.chdir(test_dir)
+      Dir.chdir(method_dir)
       template = prepare 'path/to/template.txt.erb', "Answer: <%= 2 + 2 %>2\n"
 
       sh %{#{tilt} #{opt} output -f '#{template}'}
@@ -297,7 +304,7 @@ class TiltExeTest < Test::Unit::TestCase
   #
 
   test "documentation examples" do
-    Dir.chdir(test_dir)
+    Dir.chdir(method_dir)
     # Process ERB template:
     #   $ echo "Answer: <%= 2 + 2 %>" | tilt -t erb
     #   Answer: 4
