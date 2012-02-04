@@ -1,23 +1,43 @@
 #!/usr/bin/env ruby
-require 'ostruct'
+begin
+require 'fileutils'
 require 'optparse'
 require 'tilt'
 
 usage = <<USAGE
-Usage: tilt <options> <file>
-Process template <file> and write output to stdout. With no <file> or
-when <file> is '-', read template from stdin and use the --type option
-to determine the template's type.
+Usage: tilt <options> <files...>
 
-Options
-  -l, --list           List template engines + file patterns and exit
-  -t, --type=<pattern> Use this template engine; required if no <file>
-  -y, --layout=<file>  Use <file> as a layout template
+Process templates <file> and write output to stdout. With no <files> or when
+<file> is '-', read template from stdin and use the --type option to determine
+the template's type.
 
-  -D<name>=<value>     Define variable <name> as <value>
-  -o, --vars=<ruby>    Evaluate <ruby> to Hash and use for variables
+Output can be written to files (rather than printing to stdout) using the
+--files option. In that case the output file is the same as the input file
+with the template extension removed. For input files not relative to pwd, the
+output file is the basename of the input file. For example:
 
-  -h, --help           Show this help message
+  $pwd/path/to/template.txt.erb   => path/to/template.txt
+  /not/pwd/template.txt.erb       => template.txt
+
+Adjust the output file locations with --input-dir and --output-dir, which
+describe the base dir for relative paths, and the output directory. The output
+files are printed to stdout. With no <files> or when a <file> is '-', read
+files from stdin.
+
+Options:
+  -l, --list             List template engines + file patterns and exit
+  -t, --type=<pattern>   Use this template engine; required if no <file>
+  -y, --layout=<file>    Use <file> as a layout template
+
+  -f, --files            Output to files rather than stdout
+  -i, --input-dir=<dir>  Use <dir> to determine relative paths for --files
+  -o, --output-dir=<dir> Use <dir> as the output dir for --files
+
+  -a, --attrs=<file>     Load file as YAML and use for variables
+  -D<name>=<value>       Define variable <name> as <value>
+  --vars=<ruby>          Evaluate <ruby> to Hash and use for variables
+
+  -h, --help             Show this help message
 
 Convert markdown to HTML:
   $ tilt foo.markdown > foo.html
@@ -26,20 +46,120 @@ Process ERB template:
   $ echo "Answer: <%= 2 + 2 %>" | tilt -t erb
   Answer: 4
 
+Process to output file:
+  $ echo "Answer: <%= 2 + 2 %>" > foo.txt.erb
+  $ tilt --files foo.txt.erb
+  foo.txt
+  $ cat foo.txt
+  Answer: 4
+
 Define variables:
   $ echo "Answer: <%= 2 + n %>" | tilt -t erb --vars="{:n=>40}"
   Answer: 42
   $ echo "Answer: <%= 2 + n.to_i %>" | tilt -t erb -Dn=40
   Answer: 42
+
+To debug:
+
+  $ RUBYOPT=-d tilt ...
+
 USAGE
 
-script_name = File.basename($0)
-pattern = nil
-layout = nil
-locals = {}
+class TiltExe
+  attr_accessor :locals
+  attr_accessor :input_dir
+  attr_accessor :output_dir
+  attr_accessor :layout
+  attr_accessor :pattern
+
+  def initialize
+    @locals     = {}
+    @input_dir  = Dir.pwd
+    @output_dir = Dir.pwd
+    @layout     = nil
+    @pattern    = nil
+  end
+
+  def merge(hash, source="locals")
+    unless hash.is_a?(Hash)
+      raise "#{source} must be a Hash, not #{hash.inspect}"
+    end
+
+    hash.each_pair { |key, value| locals[key.to_sym] = value }
+  end
+
+  def engine_for(file)
+    unless file == '-' || File.file?(file)
+      raise "not a file: #{file.inspect}"
+    end
+
+    epattern = pattern ? pattern : file
+    engine = Tilt[epattern]
+
+    if engine.nil?
+      raise "template engine not found for: #{epattern.inspect}"
+    end
+
+    engine
+  end
+
+  # The part of file relative to dir, or nil if file is not relative to dir.
+  def relative_path(file, dir)
+    if file.index(dir) == 0
+      file[dir.length + 1, file.length - dir.length]
+    else
+      nil
+    end
+  end
+
+  def output_file(file)
+    outfile = File.expand_path(file).chomp File.extname(file)
+    outfile = relative_path(outfile, input_dir) || File.basename(outfile)
+    outfile = File.expand_path(outfile, output_dir)
+    outdir  = File.dirname(outfile)
+
+    unless File.exists?(outdir)
+      FileUtils.mkdir_p outdir
+    end
+
+    outfile
+  end
+
+  def render_to_file(file)
+    outfile = output_file(file)
+    File.open(outfile, "w") {|io| io << render(file) }
+    relative_path(outfile, Dir.pwd) || outfile
+  end
+
+  def render(file)
+    template = engine_for(file).new(file) {
+      if file == '-'
+        $stdin.read
+      else
+        File.read(file)
+      end
+    }
+
+    output = template.render(Object.new, locals)
+    output = layout.render(Object.new, locals) { output } if layout
+    output
+  end
+end
+
+exe = TiltExe.new
+render_to_stdout = true
 
 ARGV.options do |o|
-  o.program_name = script_name
+  o.program_name = File.basename($0)
+
+  # load attributes as YAML
+  o.on("-a", "--attrs=FILE") do |file|
+    require 'yaml'
+    unless File.file?(file)
+      raise "not a file: #{file.inspect}"
+    end
+    exe.merge YAML.load_file(file), "attrs"
+  end
 
   # list all available template engines
   o.on("-l", "--list") do
@@ -56,57 +176,71 @@ ARGV.options do |o|
     exit
   end
 
+  # render to files, not stdout
+  o.on("-f", "--files") do
+    render_to_stdout = false
+  end
+
+  # set input dir for --files
+  o.on("-i", "--input-dir=DIR") do |dir|
+    exe.input_dir = File.expand_path(dir)
+  end
+
+  # set output dir for --files
+  o.on("-o", "--output-dir=DIR") do |dir|
+    exe.output_dir = File.expand_path(dir)
+  end
+
   # the template type / pattern
   o.on("-t", "--type=PATTERN", String) do |val|
-    abort "unknown template type: #{val}" if Tilt[val].nil?
-    pattern = val
+    exe.pattern = val
   end
 
   # pass template output into the specified layout template
   o.on("-y", "--layout=FILE", String)  do |file|
     paths = [file, "~/.tilt/#{file}", "/etc/tilt/#{file}"]
-    layout = paths.
-      map  { |p| File.expand_path(p) }.
-      find { |p| File.exist?(p) }
-    abort "no such layout: #{file}" if layout.nil?
+    layout = paths.map  { |p| File.expand_path(p) }.find { |p| File.exist?(p) }
+    exe.layout = exe.engine_for(layout || file).new(layout)
   end
 
   # define a local variable
   o.on("-D", "--define=PAIR", String) do |pair|
     key, value = pair.split(/[=:]/, 2)
-    locals[key.to_sym] = value
+    exe.merge(key => value)
   end
 
   # define local variables using a Ruby hash
   o.on("--vars=RUBY") do |ruby|
-    hash = eval(ruby)
-    abort "vars must be a Hash, not #{hash.inspect}" if !hash.is_a?(Hash)
-    hash.each { |key, value| locals[key.to_sym] = value }
+    exe.merge eval(ruby), "vars"
   end
 
   o.on_tail("-h", "--help") { puts usage; exit }
 
-  o.parse!
+end.parse!
+
+if ARGV.empty?
+  ARGV.unshift('-')
 end
 
-file = ARGV.first || '-'
-pattern = file if pattern.nil?
-abort "template type not given. see: #{$0} --help" if ['-', ''].include?(pattern)
+ARGV.each do |file|
+  case
+  when render_to_stdout
+    $stdout.write exe.render(file)
+  when file == '-'
+    while infile = $stdin.gets
+      infile.strip!
 
-engine = Tilt[pattern]
-abort "template engine not found for: #{pattern}" if engine.nil?
-
-template =
-  engine.new(file) {
-    if file == '-'
-      $stdin.read
-    else
-      File.read(file)
+      unless infile.empty?
+        $stdout.puts exe.render_to_file(infile)
+      end
     end
-  }
-output = template.render(self, locals)
+  else
+    $stdout.puts exe.render_to_file(file)
+  end
+end
 
-# process layout
-output = Tilt.new(layout).render(self, locals) { output } if layout
-
-$stdout.write(output)
+rescue
+  raise if $DEBUG
+  $stderr.puts "#{$!.message} (see '#{File.basename($0)} --help')"
+  exit 1
+end
