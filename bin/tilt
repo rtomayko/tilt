@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
 begin
-require 'ostruct'
+require 'fileutils'
 require 'optparse'
 require 'tilt'
-require 'fileutils'
 
 usage = <<USAGE
 Usage: tilt <options> <files...>
