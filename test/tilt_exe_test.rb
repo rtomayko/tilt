@@ -54,32 +54,26 @@ class TiltExeTest < Test::Unit::TestCase
   end
 
   #
-  # options tests
+  # -l, --list
   #
 
-  # -l, --list             List template engines + file patterns and exit
-  test "-l prints template engines" do
-    sh %{#{tilt} -l}
-    assert_match(/String\s+str/, output)
+  %w{-l --list}.each do |opt|
+    test "#{opt} prints template engines" do
+      sh %{#{tilt} #{opt}}
+      assert_match(/String\s+str/, output)
+    end
   end
 
-  test "--list prints template engines" do
-    sh %{#{tilt} --list}
-    assert_match(/String\s+str/, output)
-  end
-
-  # -t, --type=<pattern>   Use this template engine; required if no <file>
-  test "-t sets template engine for template read via stdin" do
-    sh %{echo "Answer: <%= 2 + 2 %>2" | #{tilt} -t erb}
-    assert_equal "Answer: 42\n", output
-  end
-
-  test "--type sets template engine for template read via stdin" do
-    sh %{echo "Answer: <%= 2 + 2 %>2" | #{tilt} --type erb}
-    assert_equal "Answer: 42\n", output
-  end
+  #
+  # -t, --type=<pattern>
+  #
 
   %w{-t --type}.each do |opt|
+    test "#{opt} sets template engine for template read via stdin" do
+      sh %{echo "Answer: <%= 2 + 2 %>2" | #{tilt} #{opt} erb}
+      assert_equal "Answer: 42\n", output
+    end
+
     test "#{opt} prints error message on unknown type" do
       template = prepare 'template.erb', "<%= 2 + 2 %>2"
       sh %{#{tilt} -t 'unknown' '#{template}' 2>&1}, 1
@@ -87,7 +81,10 @@ class TiltExeTest < Test::Unit::TestCase
     end
   end
 
-  # -y, --layout=<file>    Use <file> as a layout template
+  #
+  # -y, --layout=<file>
+  #
+
   %w{-y --layout}.each do |opt|
     test "#{opt} renders into template" do
       template = prepare 'template.erb', "<%= 2 + 2 %>2"
@@ -96,9 +93,7 @@ class TiltExeTest < Test::Unit::TestCase
       sh %{#{tilt} #{opt} '#{layout}' '#{template}'}
       assert_equal "Answer: 42\n", output
     end
-  end
 
-  %w{-y --layout}.each do |opt|
     test "#{opt} prints error message for non-file" do
       template = prepare 'template.erb', "<%= 2 + 2 %>2"
       assert_equal false, File.exists?('not_a_file')
@@ -108,7 +103,10 @@ class TiltExeTest < Test::Unit::TestCase
     end
   end
 
-  # -f, --files            Output to files rather than stdout
+  #
+  # -f, --files
+  #
+
   %w{-f --files}.each do |opt|
     test "#{opt} outputs file named as relative path to input file minus extname" do
       Dir.chdir(test_dir)
@@ -118,9 +116,7 @@ class TiltExeTest < Test::Unit::TestCase
       assert_equal "path/to/template.txt\n", output
       assert_equal "Answer: 42\n", File.read('path/to/template.txt')
     end
-  end
 
-  %w{-f --files}.each do |opt|
     test "#{opt} uses input file basename for files not relative to self" do
       FileUtils.mkdir_p path('a')
       FileUtils.mkdir_p path('b')
@@ -132,9 +128,7 @@ class TiltExeTest < Test::Unit::TestCase
       assert_equal "template.txt\n", output
       assert_equal "Answer: 42\n", File.read(path("b/template.txt"))
     end
-  end
 
-  %w{-f --files}.each do |opt|
     test "#{opt} reads files from stdin on -" do
       Dir.chdir(test_dir)
       a = prepare 'a.erb', "A<%= 2 - 1 %>"
@@ -145,9 +139,7 @@ class TiltExeTest < Test::Unit::TestCase
       assert_equal "A1", File.read('a')
       assert_equal "B2", File.read('b')
     end
-  end
 
-  %w{-f --files}.each do |opt|
     test "#{opt} handles multiple files" do
       Dir.chdir(test_dir)
       a = prepare 'a.erb', "A<%= 2 - 1 %>"
@@ -162,7 +154,10 @@ class TiltExeTest < Test::Unit::TestCase
     end
   end
 
-  # -o, --output-dir=<dir> Use <dir> as the output dir for --files
+  #
+  # -o, --output-dir=<dir>
+  #
+
   %w{-o --output-dir}.each do |opt|
     test "#{opt} sets the output dir for -f" do
       Dir.chdir(test_dir)
@@ -174,7 +169,10 @@ class TiltExeTest < Test::Unit::TestCase
     end
   end
 
-  # -i, --input-dir=<dir>  Use <dir> to determine relative paths for --files
+  #
+  # -i, --input-dir=<dir>
+  #
+
   %w{-i --input-dir}.each do |opt|
     test "#{opt} sets base dir for relative paths" do
       FileUtils.mkdir_p path('a')
@@ -189,7 +187,10 @@ class TiltExeTest < Test::Unit::TestCase
     end
   end
 
-  # -a, --attrs=<file>     Load file as YAML and use for variables
+  #
+  # -a, --attrs=<file>
+  #
+
   %w{-a --attrs}.each do |opt|
     test "#{opt} loads a YAML file for variables" do
       attrs = prepare('attrs.yml', "answer: 42")
@@ -197,9 +198,7 @@ class TiltExeTest < Test::Unit::TestCase
       sh %{echo "Answer: <%= answer %>" | #{tilt} -t erb #{opt} '#{attrs}'}
       assert_equal "Answer: 42\n", output
     end
-  end
 
-  %w{-a --attrs}.each do |opt|
     test "#{opt} prints error for non-file" do
       template = prepare 'template.erb', "<%= 2 + 2 %>2"
       assert_equal false, File.exists?('not_a_file')
@@ -207,9 +206,7 @@ class TiltExeTest < Test::Unit::TestCase
       sh %{#{tilt} #{opt} not_a_file '#{template}' 2>&1}, 1
       assert_equal "not a file: \"not_a_file\" (see 'tilt --help')\n", output
     end
-  end
 
-  %w{-a --attrs}.each do |opt|
     test "#{opt} prints error if YAML does not load to a hash" do
       template = prepare 'template.erb', "<%= 2 + 2 %>2"
       attrs = prepare('attrs.yml', "42")
@@ -219,13 +216,19 @@ class TiltExeTest < Test::Unit::TestCase
     end
   end
 
-  # -D<name>=<value>       Define variable <name> as <value>
+  #
+  # -D<name>=<value>
+  #
+
   test "-D defines a variable" do
     sh %{echo "Answer: <%= 2 + n.to_i %>" | #{tilt} -t erb -Dn=40}
     assert_equal "Answer: 42\n", output
   end
 
-  # --vars=<ruby>      Evaluate <ruby> to Hash and use for variables
+  #
+  # --vars=<ruby>
+  #
+
   test "--vars evaluates ruby to variables" do
     sh %{echo "Answer: <%= 2 + n %>" | #{tilt} -t erb --vars "{:n=>40}"}
     assert_equal "Answer: 42\n", output
@@ -239,7 +242,10 @@ class TiltExeTest < Test::Unit::TestCase
     assert_equal "vars must be a Hash, not 42 (see 'tilt --help')\n", output
   end
 
-  # -h, --help             Show this help message
+  #
+  # -h, --help
+  #
+
   %w{-h --help}.each do |opt|
     test "#{opt} prints help" do
       sh %{#{tilt} #{opt}}
