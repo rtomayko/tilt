@@ -1,5 +1,6 @@
 require 'contest'
 require 'tilt'
+require 'tempfile'
 
 class TiltTemplateTest < Test::Unit::TestCase
 
@@ -21,6 +22,12 @@ class TiltTemplateTest < Test::Unit::TestCase
     inst = MockTemplate.new('foo.erb', 55) {}
     assert_equal 'foo.erb', inst.file
     assert_equal 55, inst.line
+  end
+
+  test "initializing with a tempfile" do
+    tempfile = Tempfile.new('tilt_template_test')
+    inst = MockTemplate.new(tempfile)
+    assert_equal File.basename(tempfile.path), inst.basename
   end
 
   test "uses correct eval_file" do
