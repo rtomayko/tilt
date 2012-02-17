@@ -5,6 +5,8 @@ module Tilt
   # the #prepare method and one of the #evaluate or #precompiled_template
   # methods.
   class Template
+    ENCODING_AWARE = "".respond_to?(:encoding)
+
     # Template source; loaded from a file or given directly.
     attr_reader :data
 
@@ -156,17 +158,20 @@ module Tilt
     def precompiled(locals)
       preamble = precompiled_preamble(locals)
       template = precompiled_template(locals)
-      magic_comment = extract_magic_comment(template)
-      if magic_comment
-        # Magic comment e.g. "# coding: utf-8" has to be in the first line.
-        # So we copy the magic comment to the first line.
-        preamble = magic_comment + "\n" + preamble
-      end
+
       parts = [
         preamble,
         template,
         precompiled_postamble(locals)
       ]
+
+      if ENCODING_AWARE && encoding = extract_encoding(template)
+        parts.each do |part|
+          part.force_encoding(encoding)
+          part.encode!
+        end
+      end
+
       [parts.join("\n"), preamble.count("\n") + 1]
     end
 
@@ -230,8 +235,8 @@ module Tilt
       source, offset = precompiled(locals)
       offset += 5
       method_name = "__tilt_#{Thread.current.object_id.abs}"
-      Object.class_eval <<-RUBY, eval_file, line - offset
-        #{extract_magic_comment source}
+
+      topobject = <<-RUBY
         TOPOBJECT.class_eval do
           def #{method_name}(locals)
             Thread.current[:tilt_vars] = [self, locals]
@@ -244,6 +249,13 @@ module Tilt
           end
         end
       RUBY
+
+      if ENCODING_AWARE
+        topobject.force_encoding(source.encoding)
+        topobject.encode!
+      end
+
+      Object.class_eval topobject, eval_file, line - offset
       unbind_compiled_method(method_name)
     end
 
@@ -253,10 +265,10 @@ module Tilt
       method
     end
 
-    def extract_magic_comment(script)
+    def extract_encoding(script)
       comment = script.slice(/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*$/)
-      return comment if comment and not %w[ascii-8bit binary].include?($1.downcase)
-      "# coding: #{@default_encoding}" if @default_encoding
+      return $1 if comment and not %w[ascii-8bit binary].include?($1.downcase)
+      @default_encoding if @default_encoding
     end
 
     # Special case Ruby 1.9.1's broken yield.
