@@ -98,7 +98,7 @@ begin
 
     def test_smarty_pants_true
       html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
-      assert_equal "<p>Hello “World” – This is — a test …</p>", html
+      assert_equal "<p>Hello “World'' – This is — a test …</p>", html
     end
   end
 rescue LoadError => boom
