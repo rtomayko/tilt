@@ -58,6 +58,13 @@ begin
       assert_match /<p>OKAY &ndash; &#39;Smarty Pants&#39;<\/p>/,
         template.render
     end
+
+    test "smartypants with a rendererer instance" do
+      template = Tilt::RedcarpetTemplate.new(:renderer => Redcarpet::Render::HTML.new(:hard_wrap => true), :smartypants => true) { |t|
+        "OKAY -- 'Smarty Pants'" }
+      assert_match /<p>OKAY &ndash; &#39;Smarty Pants&#39;<\/p>/,
+        template.render
+    end
   end
 rescue LoadError => boom
   warn "Tilt::RedcarpetTemplate (disabled)"
