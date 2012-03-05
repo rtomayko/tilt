@@ -86,7 +86,7 @@ module Tilt
       def generate_renderer
         renderer = options.delete(:renderer) || Redcarpet::Render::HTML
         return renderer unless options.delete(:smartypants)
-        return renderer if renderer <= Redcarpet::Render::SmartyPants
+        return renderer if renderer == Redcarpet::Render::SmartyPants
 
         if renderer == Redcarpet::Render::XHTML
           Redcarpet::Render::SmartyHTML.new(:xhtml => true)
