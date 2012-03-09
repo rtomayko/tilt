@@ -1,12 +1,23 @@
 require 'contest'
 require 'fileutils'
 
+# Test Strategy:
+#
+# These tests are setup to create a directory for each test method, named
+# like 'PROJECT_DIR/tmp/METHOD_NAME'.  It is one of many ways to make a
+# little sandbox for the tests, so that any created files easily accessible
+# to the developer.  By default they will be removed in the teardown method.
+# Set the environment variable KEEP_OUTPUTS=true to prevent their removal.
+#
 class TiltExeTest < Test::Unit::TestCase
   PROJECT_DIR = File.expand_path("../..", __FILE__)
   TMP_DIR = File.join(PROJECT_DIR, "tmp")
   TILT = "ruby -I'#{PROJECT_DIR}/lib' '#{PROJECT_DIR}/bin/tilt'"
 
+  # A test-specific directory
   attr_accessor :method_dir
+
+  # An accessor for the output of sh
   attr_accessor :output
 
   def setup
@@ -35,19 +46,24 @@ class TiltExeTest < Test::Unit::TestCase
     end
   end
 
+  # Returns the command to execute the tilt exe.
   def tilt
     TILT
   end
 
+  # Execute the shell command and assert the exit status.  Sets output.
   def sh(cmd, expected_status=0)
     @output = `#{cmd}`
     assert_equal expected_status, $?.exitstatus, "$ #{cmd}\n#{@output}"
   end
 
+  # The path to a file under the method dir.
   def path(file)
     File.expand_path(file, method_dir)
   end
 
+  # Create a file relative to the method dir with the specified content. 
+  # Creates directories as needed.
   def prepare(file, content=nil)
     file = File.expand_path(file, method_dir)
     dir  = File.dirname(file)
