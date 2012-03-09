@@ -55,8 +55,7 @@ begin
     test "smartypants when :smart is set" do
       template = Tilt::RedcarpetTemplate.new(:smartypants => true) { |t|
         "OKAY -- 'Smarty Pants'" }
-      assert_match /<p>OKAY &ndash; &#39;Smarty Pants&#39;<\/p>/,
-        template.render
+      assert_match(/<p>OKAY &ndash; &#39;Smarty Pants&#39;<\/p>/, template.render)
     end
   end
 rescue LoadError => boom

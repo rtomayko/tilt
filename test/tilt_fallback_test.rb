@@ -67,7 +67,7 @@ class TiltFallbackTest < Test::Unit::TestCase
     Tilt.register("md", FailTemplate2)
 
     exc = assert_raise(LoadError) { Tilt["md"] }
-    assert_match /FailTemplate2/, exc.message
+    assert_match(/FailTemplate2/, exc.message)
   end
 
   test ".prefer should also register the template" do
