@@ -5,6 +5,17 @@ begin
   require 'coffee_script'
 
   class CoffeeScriptTemplateTest < Test::Unit::TestCase
+
+    unless method_defined?(:assert_not_match)
+      # assert_not_match is missing on 1.8.7, which uses assert_no_match
+      def assert_not_match(a, b)
+        unless a.kind_of?(Regexp)
+          a = Regexp.new(Regexp.escape(a))
+        end
+        assert_no_match(a,b)
+      end
+    end
+
     test "is registered for '.coffee' files" do
       assert_equal Tilt::CoffeeScriptTemplate, Tilt['test.coffee']
     end
