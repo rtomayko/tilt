@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     lib/tilt/css.rb
     lib/tilt/erb.rb
     lib/tilt/haml.rb
+    lib/tilt/sweet.rb
     lib/tilt/liquid.rb
     lib/tilt/markaby.rb
     lib/tilt/markdown.rb
@@ -86,6 +87,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'creole'
   s.add_development_dependency 'erubis'
   s.add_development_dependency 'haml', '>= 2.2.11'
+  s.add_development_dependency 'sweet-lang'
   s.add_development_dependency 'kramdown'
   s.add_development_dependency 'less'
   s.add_development_dependency 'liquid'
