@@ -6,7 +6,7 @@ module Tilt
     self.default_mime_type = 'text/html'
 
     def self.engine_initialized?
-      defined? ::Sweet
+      defined? ::SweetLang
     end
 
     def initialize_engine
@@ -14,11 +14,11 @@ module Tilt
     end
 
     def prepare
-      @engine = ::Sweet.new.engine( data )
+      @engine = ::SweetLang::Sweet.new
     end
 
     def precompiled_template(locals)
-      @engine
+      @engine.engine( data )
     end
 
   end
