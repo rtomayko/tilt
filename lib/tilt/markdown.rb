@@ -37,6 +37,10 @@ module Tilt
     def evaluate(scope, locals, &block)
       @output ||= @engine.to_html
     end
+
+    def allows_script?
+      false
+    end
   end
 
   # Upskirt Markdown implementation. See:
@@ -59,6 +63,10 @@ module Tilt
 
     def evaluate(scope, locals, &block)
       @engine.evaluate(scope, locals, &block)
+    end
+
+    def allows_script?
+      false
     end
 
     # Compatibility mode for Redcarpet 1.x
@@ -116,6 +124,10 @@ module Tilt
       def evaluate(scope, locals, &block)
         @output ||= @engine.render(data)
       end
+
+      def allows_script?
+        false
+      end
     end
   end
 
@@ -140,6 +152,10 @@ module Tilt
     def evaluate(scope, locals, &block)
       @output ||= @engine.to_html
     end
+
+    def allows_script?
+      false
+    end
   end
 
   # Maruku markdown implementation. See:
@@ -160,6 +176,10 @@ module Tilt
 
     def evaluate(scope, locals, &block)
       @output ||= @engine.to_html
+    end
+
+    def allows_script?
+      false
     end
   end
 
@@ -184,6 +204,10 @@ module Tilt
 
     def evaluate(scope, locals, &block)
       @output ||= @engine.to_html
+    end
+
+    def allows_script?
+      false
     end
   end
 end

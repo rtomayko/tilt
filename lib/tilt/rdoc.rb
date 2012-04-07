@@ -29,5 +29,9 @@ module Tilt
     def evaluate(scope, locals, &block)
       @output ||= @engine.to_s
     end
+
+    def allows_script?
+      false
+    end
   end
 end

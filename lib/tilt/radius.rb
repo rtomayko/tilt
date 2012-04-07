@@ -47,5 +47,9 @@ module Tilt
       parser = Radius::Parser.new(context, options)
       parser.parse(data)
     end
+
+    def allows_script?
+      false
+    end
   end
 end

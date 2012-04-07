@@ -92,6 +92,15 @@ module Tilt
       file || '(__TEMPLATE__)'
     end
 
+    # Whether or not this template engine allows executing Ruby script
+    # within the template. If this is false, +scope+ and +locals+ will
+    # generally not be used, nor will the provided block be avaiable 
+    # via +yield+.
+    # This should be overridden by template subclasses.
+    def allows_script?
+      true
+    end
+
   protected
     # Called once and only once for each template subclass the first time
     # the template class is initialized. This should be used to require the
