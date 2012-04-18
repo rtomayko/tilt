@@ -187,4 +187,7 @@ module Tilt
 
   require 'tilt/yajl'
   register YajlTemplate, 'yajl'
+
+  require 'tilt/erector'
+  register ErectorTemplate,  'erector'
 end
