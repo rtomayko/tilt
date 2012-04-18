@@ -67,6 +67,9 @@ module Tilt
       # load template data and prepare (uses binread to avoid encoding issues)
       @reader = block || lambda { |t| File.respond_to?(:binread) ? File.binread(@file) : File.read(@file) }
       @data = @reader.call(self)
+      # if block given and it returns an array,
+      # first array element will be used as source and second as offset.
+      block && @data.is_a?(Array) && (@precompiled = @data) && (@data = '')
       prepare
     end
 
@@ -90,6 +93,39 @@ module Tilt
     # The filename used in backtraces to describe the template.
     def eval_file
       file || '(__TEMPLATE__)'
+    end
+
+    # return source and offset of template to be rendered.
+    # useful on caching scenarios, when template should be compiled and stored as string,
+    # then simply rendered by another engine instance without being complied.
+    # it accepts locals hash or just locals keys to be used by template
+    # and will fill locals hash with one provided at #render.
+    #
+    #    >> template = Tilt::ERBTemplate.new { 'some <%= rand %> <%= var %>' }
+    #    >> cache = template.precompile :var
+    #    >> File.open('/tmp/tilt-precompiled-cache', 'w'){|f| f << Marshal.dump(cache) }
+    #    >> tpl = Tilt::ERBTemplate.new{ Marshal.load(File.read('/tmp/tilt-precompiled-cache')) }
+    #    >> tpl.render(nil, var: :number)
+    #    => "some 0.1140015018087982 number"
+    #
+    #    n = 100_000
+    #    data = 'some <%= rand %> <%= var %>'
+    #    template = Tilt::ERBTemplate.new { data }
+    #    cache = template.precompile :var
+    #    Benchmark.bm do |bm|
+    #      bm.report { n.times { Tilt::ERBTemplate.new { data }.render(nil, var: :val) } }
+    #      bm.report { n.times { Tilt::ERBTemplate.new { cache }.render(nil, var: :val) } }
+    #    end
+    #          user     system      total        real
+    #     14.550000   0.090000  14.640000 ( 14.670182)
+    #     10.360000   0.060000  10.420000 ( 10.423461)
+    def precompile *locals_keys
+      locals = locals_keys.inject({}) do |locals, key|
+        key.is_a?(Hash) ?
+            key.keys.each { |k| locals.update(k => nil) } :
+            locals.update(key => nil)
+      end
+      precompiled locals
     end
 
   protected
@@ -145,6 +181,7 @@ module Tilt
     # offset. In most cases, overriding the #precompiled_template method is
     # easier and more appropriate.
     def precompiled(locals)
+      return @precompiled if @precompiled
       preamble = precompiled_preamble(locals)
       template = precompiled_template(locals)
       magic_comment = extract_magic_comment(template)

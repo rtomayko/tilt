@@ -23,6 +23,7 @@ cross-implementation features.
  * Builder - `Tilt::BuilderTemplate`
  * Markaby - `Tilt::MarkabyTemplate`
  * [Radius](#radius) - `Tilt::RadiusTemplate`
+ * [Tenjin](#tenjin) - `Tilt::TenjinTemplate`
 
 Tilt also includes support for CSS processors like [LessCSS][lesscss] and
 [Sass][sass], [CoffeeScript][coffee-script] and some simple text formats.
@@ -498,7 +499,44 @@ using this template engine within a threaded environment.
   * [Discount][discount]
   * [RDiscount][rdiscount]
   * GitHub: [rtomayko/rdiscount][rdiscount]
+  
+<a name='tenjin'></a>
+Tenjin (`rbhtml`, `tenjin`)
+-----------------------------------
 
+Tenjin is very similiar to [Erubis], but has some unique features like different syntax for escaped/not-escaped output. It has very few builtins and is generally aimed to be fast and simple instead of full-featured.
+
+### Configuration
+
+#### `:engine => Tilt::TenjinTemplate.engine | instance of Tenjin::Engine | Hash of options`
+Tenjin can handle multiple different tenjin-engines at once. This makes it possible to configure for example the used buffertype, precompilation and the syntax. You can specify which engine to use by the :engine key. See also: [Tenjin Engine documentation](http://www.kuwata-lab.com/tenjin/rbtenjin-users-guide.html#dev-engineclass).
+
+    # Change the templateclasse:
+    Tilt['tenjin'].new('tpl', :engine => { :templateclass => Tenjin::ArrayBufferTemplate })
+    
+### Example
+
+#### Hello World
+    >> tpl = Tilt.new('tpl.tenjin'){ 'Hello #{name} '}
+    >> tpl.render(nil, :name => "World")
+    => "Hello World"
+
+#### Adding Helpers
+    >> module Foo
+    >>   def foo
+    >>     "BAR!"
+    >>   end
+    >> end
+    >> Tilt[:tenjin].engine.use(Foo)
+    >> tpl = Tilt.new('tpl.tenjin'){ 'Hello #{foo}'}
+    >> tpl.render
+    => "Hello BAR!"
+
+### Differences to bare Tenjin
+
+  * Tenjin caches by default to files. Tilt replaces this behavior with method-caching.
+  * :preamble and :postamble options are always enabled for templates, since they are needed to setup the buffer.
+  * Tilt circumvents the Tenjin file-methods for templates loaded through Tilt. Therefore the Tenjin file options on Tenjin::Engine are completly ignored for these templates. For templates loaded trough Tenjin like the design template, these options are still effective.
 
 [lesscss]: http://lesscss.org/ "Less CSS"
 [sass]: http://sass-lang.com/ "Sass"
@@ -513,4 +551,4 @@ using this template engine within a threaded environment.
 [discount]: http://www.pell.portland.or.us/~orc/Code/discount/ "Discount"
 [rdiscount]: http://github.com/rtomayko/rdiscount/ "RDiscount"
 [smartypants]: http://daringfireball.net/projects/smartypants/ "Smarty Pants"
-
+[tenjin]: http://www.kuwata-lab.com/tenjin/ "Tenjin"

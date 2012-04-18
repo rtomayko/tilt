@@ -135,6 +135,8 @@ module Tilt
 
   # Template Implementations ================================================
 
+  $:.unshift File.dirname(__FILE__)
+
   require 'tilt/string'
   register StringTemplate, 'str'
 
@@ -174,6 +176,9 @@ module Tilt
   register BlueClothTemplate, 'markdown', 'mkd', 'md'
   register RDiscountTemplate, 'markdown', 'mkd', 'md'
   register RedcarpetTemplate, 'markdown', 'mkd', 'md'
+
+  require 'tilt/tenjin'
+  register TenjinTemplate, 'rbhtml', 'tenjin'
 
   require 'tilt/textile'
   register RedClothTemplate, 'textile'
