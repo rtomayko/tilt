@@ -294,7 +294,7 @@ default. Liquid templates support locals and objects that respond to
 
 Or, use `Tilt::LiquidTemplate` directly to process strings:
 
-    >> require 'haml'
+    >> require 'liquid'
     >> template = Tilt::LiquidTemplate.new { "<h1>Hello Liquid!</h1>" }
     => #<Tilt::LiquidTemplate @file=nil ...>
     >> template.render
