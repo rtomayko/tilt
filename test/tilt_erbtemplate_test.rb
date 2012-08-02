@@ -89,6 +89,11 @@ class ERBTemplateTest < Test::Unit::TestCase
     end
   end
 
+  test "explicit disabling of trim mode" do
+    template = Tilt::ERBTemplate.new('test.erb', 1, :trim => false) { "\n<%= 1 + 1 %>\n" }
+    assert_equal "\n2\n", template.render
+  end
+
   test "default stripping trim mode" do
     template = Tilt::ERBTemplate.new('test.erb', 1) { "\n<%= 1 + 1 %>\n" }
     assert_equal "\n2", template.render
