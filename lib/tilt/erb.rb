@@ -24,7 +24,7 @@ module Tilt
 
     def prepare
       @outvar = options[:outvar] || self.class.default_output_variable
-      options[:trim] = '<>' if options[:trim].nil? || options[:trim] == true
+      options[:trim] = '<>' if !(options[:trim] == false) && (options[:trim].nil? || options[:trim] == true)
       @engine = ::ERB.new(data, options[:safe], options[:trim], @outvar)
     end
 
