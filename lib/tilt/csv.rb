@@ -7,10 +7,10 @@ module Tilt
     end
 
     def self.engine
-      if RUBY_VERSION >= '1.9.0'
-        defined? ::CSV
-      else
-        defined? ::FasterCSV
+      if RUBY_VERSION >= '1.9.0' && defined? ::CSV
+        ::CSV
+      elsif defined? ::FasterCSV
+        ::FasterCSV 
       end
     end
 
