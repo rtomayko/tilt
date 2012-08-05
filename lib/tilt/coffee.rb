@@ -45,6 +45,10 @@ module Tilt
     def evaluate(scope, locals, &block)
       @output ||= CoffeeScript.compile(data, options)
     end
+
+    def allows_script?
+      false
+    end
   end
 end
 

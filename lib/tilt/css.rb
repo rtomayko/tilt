@@ -24,6 +24,10 @@ module Tilt
       @output ||= @engine.render
     end
 
+    def allows_script?
+      false
+    end
+
   private
     def sass_options
       options.merge(:filename => eval_file, :line => line, :syntax => :sass)
@@ -66,6 +70,10 @@ module Tilt
 
     def evaluate(scope, locals, &block)
       @output ||= @engine.to_css
+    end
+
+    def allows_script?
+      false
     end
   end
 end
