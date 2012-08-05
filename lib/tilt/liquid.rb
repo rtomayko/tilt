@@ -37,5 +37,9 @@ module Tilt
       locals['content'] = locals['yield']
       @engine.render(locals)
     end
+
+    def allows_script?
+      false
+    end
   end
 end
