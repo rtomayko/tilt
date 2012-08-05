@@ -227,28 +227,5 @@ module Tilt
         "# coding: #{@default_encoding}"
       end
     end
-
-    # Special case Ruby 1.9.1's broken yield.
-    #
-    # http://github.com/rtomayko/tilt/commit/20c01a5
-    # http://redmine.ruby-lang.org/issues/show/3601
-    #
-    # Remove when 1.9.2 dominates 1.9.1 installs in the wild.
-    if RUBY_VERSION =~ /^1.9.1/
-      undef compile_template_method
-      def compile_template_method(locals)
-        source, offset = precompiled(locals)
-        offset += 1
-        method_name = "__tilt_#{Thread.current.object_id}"
-        Object.class_eval <<-RUBY, eval_file, line - offset
-          TOPOBJECT.class_eval do
-            def #{method_name}(locals)
-              #{source}
-            end
-          end
-        RUBY
-        unbind_compiled_method(method_name)
-      end
-    end
   end
 end
