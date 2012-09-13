@@ -88,22 +88,22 @@ module Tilt
       self.default_mime_type = 'text/html'
 
       def self.engine_initialized?
-        defined? ::Redcarpet::Render
+        defined? ::Redcarpet::Render and defined? ::Redcarpet::Markdown
       end
 
       def generate_renderer
-        renderer = options.delete(:renderer) || Redcarpet::Render::HTML
+        renderer = options.delete(:renderer) || ::Redcarpet::Render::HTML
         return renderer unless options.delete(:smartypants)
-        return renderer if renderer <= Redcarpet::Render::SmartyPants
+        return renderer if renderer <= ::Redcarpet::Render::SmartyPants
 
-        if renderer == Redcarpet::Render::XHTML
-          Redcarpet::Render::SmartyHTML.new(:xhtml => true)
-        elsif renderer == Redcarpet::Render::HTML
-          Redcarpet::Render::SmartyHTML
+        if renderer == ::Redcarpet::Render::XHTML
+          ::Redcarpet::Render::SmartyHTML.new(:xhtml => true)
+        elsif renderer == ::Redcarpet::Render::HTML
+          ::Redcarpet::Render::SmartyHTML
         elsif renderer.is_a? Class
-          Class.new(renderer) { include Redcarpet::Render::SmartyPants }
+          Class.new(renderer) { include ::Redcarpet::Render::SmartyPants }
         else
-          renderer.extend Redcarpet::Render::SmartyPants
+          renderer.extend ::Redcarpet::Render::SmartyPants
         end
       end
 
@@ -117,7 +117,7 @@ module Tilt
         # only raise an exception if someone is trying to enable :escape_html
         options.delete(:escape_html) unless options[:escape_html]
 
-        @engine = Redcarpet::Markdown.new(generate_renderer, options)
+        @engine = ::Redcarpet::Markdown.new(generate_renderer, options)
         @output = nil
       end
 
