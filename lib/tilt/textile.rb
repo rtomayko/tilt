@@ -14,6 +14,7 @@ module Tilt
 
     def prepare
       @engine = RedCloth.new(data)
+      options.each {|k, v| @engine.send("#{k}=", v)}
       @output = nil
     end
 
