@@ -134,6 +134,12 @@ class TiltTemplateTest < Test::Unit::TestCase
     assert inst.prepared?
   end
 
+  test "template_source with locals of invalid variable names" do
+    inst = SourceGeneratingMockTemplate.new { |t| '1 + 2 = #{Math::PI.to_i}' }
+    assert_equal "1 + 2 = 3", inst.render(Object.new, 'Math::PI' => '42')
+    assert inst.prepared?
+  end
+
   class Person
     CONSTANT = "Bob"
 
