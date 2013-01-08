@@ -2,7 +2,7 @@ require 'contest'
 require 'tilt'
 
 class TiltFallbackTest < Test::Unit::TestCase
-  class FailTemplate  < Tilt::Template
+  class Tilt::FailTemplate  < Tilt::Template
     def self.engine_initialized?; false end
     def prepare;                        end
 
@@ -11,13 +11,13 @@ class TiltFallbackTest < Test::Unit::TestCase
     end
   end
 
-  class WinTemplate < Tilt::Template
+  class Tilt::WinTemplate < Tilt::Template
     def self.engine_initialized?; true end
     def prepare;                       end
   end
 
-  FailTemplate2 = Class.new(FailTemplate)
-  WinTemplate2  = Class.new(WinTemplate)
+  class Tilt::FailTemplate2 < Tilt::FailTemplate; end
+  class Tilt::WinTemplate2  < Tilt::WinTemplate;  end
 
   def set_ivar(obj, name, value)
     obj.instance_variable_set("@#{name}", value)
@@ -47,50 +47,50 @@ class TiltFallbackTest < Test::Unit::TestCase
   end
 
   test "returns the last registered template" do
-    Tilt.register("md", WinTemplate)
-    Tilt.register("md", WinTemplate2)
+    Tilt.register("md", Tilt::WinTemplate)
+    Tilt.register("md", Tilt::WinTemplate2)
 
     template = Tilt["md"]
-    assert_equal WinTemplate2, template
+    assert_equal Tilt::WinTemplate2, template
   end
 
   test "returns the last registered working template" do
-    Tilt.register("md", WinTemplate)
-    Tilt.register("md", FailTemplate)
+    Tilt.register("md", Tilt::WinTemplate)
+    Tilt.register("md", Tilt::FailTemplate)
 
     template = Tilt["md"]
-    assert_equal WinTemplate, template
+    assert_equal Tilt::WinTemplate, template
   end
 
   test "if every template fails, raise the exception from the first template" do
-    Tilt.register("md", FailTemplate)
-    Tilt.register("md", FailTemplate2)
+    Tilt.register("md", Tilt::FailTemplate)
+    Tilt.register("md", Tilt::FailTemplate2)
 
     exc = assert_raise(LoadError) { Tilt["md"] }
     assert_match /FailTemplate2/, exc.message
   end
 
   test ".prefer should also register the template" do
-    Tilt.prefer(WinTemplate, "md")
+    Tilt.prefer(Tilt::WinTemplate, "md")
     assert Tilt.registered?("md")
   end
 
   test ".prefer always win" do
-    Tilt.register("md", FailTemplate)
-    Tilt.register("md", WinTemplate)
-    Tilt.prefer(FailTemplate, "md")
+    Tilt.register("md", Tilt::FailTemplate)
+    Tilt.register("md", Tilt::WinTemplate)
+    Tilt.prefer(Tilt::FailTemplate, "md")
 
     template = Tilt["md"]
-    assert_equal FailTemplate, template
+    assert_equal Tilt::FailTemplate, template
   end
 
   test ".prefer accepts multiple extensions" do
     extensions = %w[md mkd markdown]
-    Tilt.prefer(FailTemplate, *extensions)
+    Tilt.prefer(Tilt::FailTemplate, *extensions)
 
     extensions.each do |ext|
       template = Tilt[ext]
-      assert_equal FailTemplate, template
+      assert_equal Tilt::FailTemplate, template
     end
   end
 
@@ -98,25 +98,25 @@ class TiltFallbackTest < Test::Unit::TestCase
     extensions = %w[md mkd markdown]
 
     extensions.each do |ext|
-      Tilt.register(ext, FailTemplate)
-      Tilt.register(ext, WinTemplate)
+      Tilt.register(ext, Tilt::FailTemplate)
+      Tilt.register(ext, Tilt::WinTemplate)
     end
 
-    Tilt.prefer(FailTemplate)
+    Tilt.prefer(Tilt::FailTemplate)
 
     extensions.each do |ext|
       template = Tilt[ext]
-      assert_equal FailTemplate, template
+      assert_equal Tilt::FailTemplate, template
     end
   end
 
   test ".prefer should only override extensions the preferred library is registered for"  do
-    Tilt.register("md", WinTemplate)
-    Tilt.register("mkd", FailTemplate)
-    Tilt.register("mkd", WinTemplate)
-    Tilt.prefer(FailTemplate)
-    assert_equal FailTemplate, Tilt["mkd"]
-    assert_equal WinTemplate, Tilt["md"]
+    Tilt.register("md", Tilt::WinTemplate)
+    Tilt.register("mkd", Tilt::FailTemplate)
+    Tilt.register("mkd", Tilt::WinTemplate)
+    Tilt.prefer(Tilt::FailTemplate)
+    assert_equal Tilt::FailTemplate, Tilt["mkd"]
+    assert_equal Tilt::WinTemplate, Tilt["md"]
   end
 end
 

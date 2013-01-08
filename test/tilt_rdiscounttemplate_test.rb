@@ -6,22 +6,22 @@ begin
 
   class RDiscountTemplateTest < Test::Unit::TestCase
     test "registered for '.md' files" do
-      assert Tilt.mappings['md'].include?(Tilt::RDiscountTemplate)
+      assert Tilt.mappings['md'].include?(:RDiscountTemplate)
     end
 
     test "registered for '.mkd' files" do
-      assert Tilt.mappings['mkd'].include?(Tilt::RDiscountTemplate)
+      assert Tilt.mappings['mkd'].include?(:RDiscountTemplate)
     end
 
     test "registered for '.markdown' files" do
-      assert Tilt.mappings['markdown'].include?(Tilt::RDiscountTemplate)
+      assert Tilt.mappings['markdown'].include?(:RDiscountTemplate)
     end
 
     test "registered above BlueCloth" do
       %w[md mkd markdown].each do |ext|
         mappings = Tilt.mappings[ext]
-        blue_idx = mappings.index(Tilt::BlueClothTemplate)
-        rdis_idx = mappings.index(Tilt::RDiscountTemplate)
+        blue_idx = mappings.index(:BlueClothTemplate)
+        rdis_idx = mappings.index(:RDiscountTemplate)
         assert rdis_idx < blue_idx,
           "#{rdis_idx} should be lower than #{blue_idx}"
       end

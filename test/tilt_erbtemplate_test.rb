@@ -6,11 +6,11 @@ require 'tempfile'
 
 class ERBTemplateTest < Test::Unit::TestCase
   test "registered for '.erb' files" do
-    assert Tilt.mappings['erb'].include?(Tilt::ERBTemplate)
+    assert Tilt.mappings['erb'].include?(:ERBTemplate)
   end
 
   test "registered for '.rhtml' files" do
-    assert Tilt.mappings['rhtml'].include?(Tilt::ERBTemplate)
+    assert Tilt.mappings['rhtml'].include?(:ERBTemplate)
   end
 
   test "loading and evaluating templates on #render" do

@@ -15,11 +15,12 @@ module Tilt
 
   # Register a template implementation by file extension.
   def self.register(template_class, *extensions)
-    if template_class.respond_to?(:to_str)
+    if template_class.kind_of? String
       # Support register(ext, template_class) too
       extensions, template_class = [template_class], extensions[0]
     end
 
+    template_class = template_class.to_s.split('::').last.to_sym  if template_class.class == Class
     extensions.each do |ext|
       ext = normalize(ext)
       mappings[ext].unshift(template_class).uniq!
@@ -36,6 +37,8 @@ module Tilt
   #   # Prefer RDiscount only for the .md extensions:
   #   Tilt.prefer(Tilt::RDiscountTemplate, '.md')
   def self.prefer(template_class, *extensions)
+    template_class = template_class.to_s.split('::').last.to_sym  if template_class.class == Class
+
     if extensions.empty?
       mappings.each do |ext, klasses|
         @preferred_mappings[ext] = template_class if klasses.include? template_class
@@ -75,19 +78,18 @@ module Tilt
 
     # Try to find a preferred engine.
     preferred_klass = @preferred_mappings[pattern]
-    return preferred_klass if preferred_klass
+    return Tilt.const_get(preferred_klass)  if preferred_klass
 
     # Fall back to the general list of mappings.
     klasses = @template_mappings[pattern]
 
     # Try to find an engine which is already loaded.
     template = klasses.detect do |klass|
-      if klass.respond_to?(:engine_initialized?)
-        klass.engine_initialized?
-      end
+      klass = Tilt.const_get(klass)
+      klass.respond_to?(:engine_initialized?) && klass.engine_initialized?
     end
 
-    return template if template
+    return Tilt.const_get(template)  if template
 
     # Try each of the classes until one succeeds. If all of them fails,
     # we'll raise the error of the first class.
@@ -95,12 +97,13 @@ module Tilt
 
     klasses.each do |klass|
       begin
-        klass.new { '' }
+        engine = Tilt.const_get(klass)
+        engine.new { '' }
       rescue Exception => ex
         first_failure ||= ex
         next
       else
-        return klass
+        return engine
       end
     end
 
@@ -135,58 +138,70 @@ module Tilt
 
   # Template Implementations ================================================
 
-  require 'tilt/string'
-  register StringTemplate, 'str'
+  require 'tilt/template'
 
-  require 'tilt/erb'
-  register ERBTemplate,    'erb', 'rhtml'
-  register ErubisTemplate, 'erb', 'rhtml', 'erubis'
+  autoload :StringTemplate, 'tilt/string'
+  register :StringTemplate, 'str'
 
-  require 'tilt/haml'
-  register HamlTemplate,   'haml'
+  autoload :ERBTemplate,    'tilt/erb'
+  register :ERBTemplate,    'erb', 'rhtml'
+  autoload :ErubisTemplate, 'tilt/erb'
+  register :ErubisTemplate, 'erb', 'rhtml', 'erubis'
 
-  require 'tilt/css'
-  register SassTemplate, 'sass'
-  register ScssTemplate, 'scss'
-  register LessTemplate, 'less'
+  autoload :HamlTemplate, 'tilt/haml'
+  register :HamlTemplate, 'haml'
 
-  require 'tilt/coffee'
-  register CoffeeScriptTemplate, 'coffee'
+  autoload :SassTemplate, 'tilt/css'
+  register :SassTemplate, 'sass'
+  autoload :ScssTemplate, 'tilt/css'
+  register :ScssTemplate, 'scss'
+  autoload :LessTemplate, 'tilt/css'
+  register :LessTemplate, 'less'
 
-  require 'tilt/nokogiri'
-  register NokogiriTemplate, 'nokogiri'
+  autoload :CoffeeScriptTemplate, 'tilt/coffee'
+  register :CoffeeScriptTemplate, 'coffee'
 
-  require 'tilt/builder'
-  register BuilderTemplate,  'builder'
+  autoload :NokogiriTemplate, 'tilt/nokogiri'
+  register :NokogiriTemplate, 'nokogiri'
 
-  require 'tilt/markaby'
-  register MarkabyTemplate,  'mab'
+  autoload :BuilderTemplate,  'tilt/builder'
+  register :BuilderTemplate,  'builder'
 
-  require 'tilt/liquid'
-  register LiquidTemplate, 'liquid'
+  autoload :MarkabyTemplate,  'tilt/markaby'
+  register :MarkabyTemplate,  'mab'
 
-  require 'tilt/radius'
-  register RadiusTemplate, 'radius'
+  autoload :LiquidTemplate,   'tilt/liquid'
+  register :LiquidTemplate,   'liquid'
 
-  require 'tilt/markdown'
-  register MarukuTemplate,    'markdown', 'mkd', 'md'
-  register KramdownTemplate,  'markdown', 'mkd', 'md'
-  register BlueClothTemplate, 'markdown', 'mkd', 'md'
-  register RDiscountTemplate, 'markdown', 'mkd', 'md'
-  register RedcarpetTemplate::Redcarpet1, 'markdown', 'mkd', 'md'
-  register RedcarpetTemplate::Redcarpet2, 'markdown', 'mkd', 'md'
-  register RedcarpetTemplate, 'markdown', 'mkd', 'md'
+  autoload :RadiusTemplate,   'tilt/radius'
+  register :RadiusTemplate,   'radius'
 
-  require 'tilt/textile'
-  register RedClothTemplate, 'textile'
+  autoload :MarukuTemplate,                  'tilt/markdown'
+  autoload :KramdownTemplate,                'tilt/markdown'
+  autoload :BlueClothTemplate,               'tilt/markdown'
+  autoload :RDiscountTemplate,               'tilt/markdown'
+  autoload :Redcarpet1,                      'tilt/markdown'
+  autoload :Redcarpet2,                      'tilt/markdown'
+  autoload :RedcarpetTemplate,               'tilt/markdown'
+  register :MarukuTemplate,    'markdown', 'mkd', 'md'
+  register :KramdownTemplate,  'markdown', 'mkd', 'md'
+  register :BlueClothTemplate, 'markdown', 'mkd', 'md'
+  register :RDiscountTemplate, 'markdown', 'mkd', 'md'
+  register :'RedcarpetTemplate::Redcarpet1', 'markdown', 'mkd', 'md'
+  register :'RedcarpetTemplate::Redcarpet2', 'markdown', 'mkd', 'md'
+  register :RedcarpetTemplate, 'markdown', 'mkd', 'md'
 
-  require 'tilt/rdoc'
-  register RDocTemplate, 'rdoc'
+  autoload :RedClothTemplate, 'tilt/textile'
+  register :RedClothTemplate, 'textile'
 
-  require 'tilt/wiki'
-  register CreoleTemplate,    'wiki', 'creole'
-  register WikiClothTemplate, 'wiki', 'mediawiki', 'mw'
+  autoload :RDocTemplate, 'tilt/rdoc'
+  register :RDocTemplate, 'rdoc'
 
-  require 'tilt/yajl'
-  register YajlTemplate, 'yajl'
+  autoload :CreoleTemplate,    'tilt/wiki'
+  register :CreoleTemplate,    'wiki', 'creole'
+  autoload :WikiClothTemplate, 'tilt/wiki'
+  register :WikiClothTemplate, 'wiki', 'mediawiki', 'mw'
+
+  autoload :YajlTemplate, 'tilt/yajl'
+  register :YajlTemplate, 'yajl'
 end

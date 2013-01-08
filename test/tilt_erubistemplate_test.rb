@@ -12,8 +12,8 @@ begin
     test "registered above ERB" do
       %w[erb rhtml].each do |ext|
         mappings = Tilt.mappings[ext]
-        erubis_idx = mappings.index(Tilt::ErubisTemplate)
-        erb_idx = mappings.index(Tilt::ERBTemplate)
+        erubis_idx = mappings.index(:ErubisTemplate)
+        erb_idx = mappings.index(:ERBTemplate)
         assert erubis_idx < erb_idx,
           "#{erubis_idx} should be lower than #{erb_idx}"
       end

@@ -6,22 +6,22 @@ begin
 
   class RedcarpetTemplateTest < Test::Unit::TestCase
     test "registered for '.md' files" do
-      assert Tilt.mappings['md'].include?(Tilt::RedcarpetTemplate)
+      assert Tilt.mappings['md'].include?(:RedcarpetTemplate)
     end
 
     test "registered for '.mkd' files" do
-      assert Tilt.mappings['mkd'].include?(Tilt::RedcarpetTemplate)
+      assert Tilt.mappings['mkd'].include?(:RedcarpetTemplate)
     end
 
     test "registered for '.markdown' files" do
-      assert Tilt.mappings['markdown'].include?(Tilt::RedcarpetTemplate)
+      assert Tilt.mappings['markdown'].include?(:RedcarpetTemplate)
     end
 
     test "registered above BlueCloth" do
       %w[md mkd markdown].each do |ext|
         mappings = Tilt.mappings[ext]
-        blue_idx = mappings.index(Tilt::BlueClothTemplate)
-        redc_idx = mappings.index(Tilt::RedcarpetTemplate)
+        blue_idx = mappings.index(:BlueClothTemplate)
+        redc_idx = mappings.index(:RedcarpetTemplate)
         assert redc_idx < blue_idx,
           "#{redc_idx} should be lower than #{blue_idx}"
       end
@@ -30,8 +30,8 @@ begin
     test "registered above RDiscount" do
       %w[md mkd markdown].each do |ext|
         mappings = Tilt.mappings[ext]
-        rdis_idx = mappings.index(Tilt::RDiscountTemplate)
-        redc_idx = mappings.index(Tilt::RedcarpetTemplate)
+        rdis_idx = mappings.index(:RDiscountTemplate)
+        redc_idx = mappings.index(:RedcarpetTemplate)
         assert redc_idx < rdis_idx,
           "#{redc_idx} should be lower than #{rdis_idx}"
       end

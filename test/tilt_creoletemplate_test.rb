@@ -10,7 +10,7 @@ begin
     end
 
     test "registered for '.wiki' files" do
-      assert Tilt.mappings['wiki'].include?(Tilt::CreoleTemplate)
+      assert Tilt.mappings['wiki'].include?(:CreoleTemplate)
     end
 
     test "compiles and evaluates the template on #render" do
