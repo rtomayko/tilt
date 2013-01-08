@@ -6,22 +6,22 @@ begin
 
   class MarukuTemplateTest < Test::Unit::TestCase
     test "registered for '.md' files" do
-      assert Tilt.mappings['md'].include?(Tilt::KramdownTemplate)
+      assert Tilt.mappings['md'].include?(:KramdownTemplate)
     end
 
     test "registered for '.mkd' files" do
-      assert Tilt.mappings['mkd'].include?(Tilt::KramdownTemplate)
+      assert Tilt.mappings['mkd'].include?(:KramdownTemplate)
     end
 
     test "registered for '.markdown' files" do
-      assert Tilt.mappings['markdown'].include?(Tilt::KramdownTemplate)
+      assert Tilt.mappings['markdown'].include?(:KramdownTemplate)
     end
 
     test "registered above MarukuTemplate" do
       %w[md mkd markdown].each do |ext|
         mappings = Tilt.mappings[ext]
-        kram_idx = mappings.index(Tilt::KramdownTemplate)
-        maru_idx = mappings.index(Tilt::MarukuTemplate)
+        kram_idx = mappings.index(:KramdownTemplate)
+        maru_idx = mappings.index(:MarukuTemplate)
         assert kram_idx < maru_idx,
           "#{kram_idx} should be lower than #{maru_idx}"
       end

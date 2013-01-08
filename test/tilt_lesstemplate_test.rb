@@ -29,7 +29,7 @@ begin
         .bg {background-color: @text-color;}
         EOLESS
       }
-      assert_equal ".bg {\n  background-color: pink;\n}\n", template.render
+      assert_equal ".bg {\n  background-color: #ffc0cb;\n}\n", template.render
     end
   end
 

@@ -6,15 +6,15 @@ begin
 
   class BlueClothTemplateTest < Test::Unit::TestCase
     test "registered for '.md' files" do
-      assert Tilt.mappings['md'].include?(Tilt::BlueClothTemplate)
+      assert Tilt.mappings['md'].include?(:BlueClothTemplate)
     end
 
     test "registered for '.mkd' files" do
-      assert Tilt.mappings['mkd'].include?(Tilt::BlueClothTemplate)
+      assert Tilt.mappings['mkd'].include?(:BlueClothTemplate)
     end
 
     test "registered for '.markdown' files" do
-      assert Tilt.mappings['markdown'].include?(Tilt::BlueClothTemplate)
+      assert Tilt.mappings['markdown'].include?(:BlueClothTemplate)
     end
 
     test "preparing and evaluating templates on #render" do
