@@ -55,4 +55,7 @@ module Tilt
       false
     end
   end
+
+  register CreoleTemplate,    'wiki', 'creole'
+  register WikiClothTemplate, 'wiki', 'mediawiki', 'mw'
 end

@@ -39,5 +39,6 @@ module Tilt
       data.to_str
     end
   end
-end
 
+  register NokogiriTemplate, 'nokogiri'
+end

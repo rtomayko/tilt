@@ -48,5 +48,6 @@ module Tilt
       builder.to_s
     end
   end
-end
 
+  register MarkabyTemplate,  'mab'
+end

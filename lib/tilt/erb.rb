@@ -106,5 +106,7 @@ module Tilt
       end
     end
   end
-end
 
+  register ERBTemplate,    'erb', 'rhtml'
+  register ErubisTemplate, 'erb', 'rhtml', 'erubis'
+end

@@ -18,4 +18,6 @@ module Tilt
       [source, offset + 1]
     end
   end
+
+  register StringTemplate, 'str'
 end

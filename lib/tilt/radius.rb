@@ -52,4 +52,6 @@ module Tilt
       false
     end
   end
+
+  register RadiusTemplate, 'radius'
 end

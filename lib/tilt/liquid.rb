@@ -42,4 +42,6 @@ module Tilt
       false
     end
   end
+
+  register LiquidTemplate, 'liquid'
 end

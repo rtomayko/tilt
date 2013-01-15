@@ -44,7 +44,7 @@ module Tilt
     end
   end
 
-   # Lessscss template implementation. See:
+  # Lessscss template implementation. See:
   # http://lesscss.org/
   #
   # Less templates do not support object scopes, locals, or yield.
@@ -76,5 +76,8 @@ module Tilt
       false
     end
   end
-end
 
+  register SassTemplate, 'sass'
+  register ScssTemplate, 'scss'
+  register LessTemplate, 'less'
+end

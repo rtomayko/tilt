@@ -60,5 +60,6 @@ module Tilt
       end
     end
   end
-end
 
+  register HamlTemplate,   'haml'
+end

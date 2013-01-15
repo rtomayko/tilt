@@ -91,4 +91,5 @@ module Tilt
     end
   end
 
+  register YajlTemplate, 'yajl'
 end

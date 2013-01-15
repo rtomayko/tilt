@@ -34,4 +34,6 @@ module Tilt
       false
     end
   end
+
+  register RDocTemplate, 'rdoc'
 end

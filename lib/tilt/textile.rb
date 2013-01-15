@@ -26,5 +26,6 @@ module Tilt
       false
     end
   end
-end
 
+  register RedClothTemplate, 'textile'
+end

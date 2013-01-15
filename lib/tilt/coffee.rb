@@ -50,5 +50,6 @@ module Tilt
       false
     end
   end
-end
 
+  register CoffeeScriptTemplate, 'coffee'
+end
