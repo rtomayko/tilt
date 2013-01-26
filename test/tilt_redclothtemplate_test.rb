@@ -19,6 +19,11 @@ begin
       3.times { assert_equal "<h1>Hello World!</h1>", template.render }
     end
 
+    test "ignores unknown options" do
+      template = Tilt::RedClothTemplate.new(:foo => "bar") { |t| "h1. Hello World!" }
+      3.times { assert_equal "<h1>Hello World!</h1>", template.render }
+    end
+
     test "passes in RedCloth options" do
       template = Tilt::RedClothTemplate.new { |t| "Hard breaks are\ninserted by default." }
       assert_equal "<p>Hard breaks are<br />\ninserted by default.</p>", template.render
