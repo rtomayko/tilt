@@ -142,6 +142,9 @@ module Tilt
   register ERBTemplate,    'erb', 'rhtml'
   register ErubisTemplate, 'erb', 'rhtml', 'erubis'
 
+  require 'tilt/etanni'
+  register EtanniTemplate, 'etn', 'etanni'
+
   require 'tilt/haml'
   register HamlTemplate,   'haml'
 
