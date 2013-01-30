@@ -9,7 +9,7 @@ module Tilt
   # And... plain HTML is an extremely common thing, especially for people migrating from Wordpress or other content management systems.
   # Despite it not offering any template functionality (it's not the only one, actually), I think it makes 
   # sense to have a null-op template available, and have a standardized file extension for it.
-  class PlainHtmlTemplate < Template
+  class PlainTemplate < Template
     self.default_mime_type = 'text/html'
 
     def self.engine_initialized?
@@ -17,11 +17,10 @@ module Tilt
     end
 
     def prepare
-      @rawhtml = data
     end
 
     def evaluate(scope, locals, &block)
-      @output ||= @rawhtml
+      @output ||= data
     end
   end
 end
