@@ -69,7 +69,7 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      @output ||= @engine.to_css
+      @output ||= @engine.to_css (options)
     end
 
     def allows_script?
