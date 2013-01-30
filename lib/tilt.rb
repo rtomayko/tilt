@@ -192,4 +192,7 @@ module Tilt
 
   require 'tilt/yajl'
   register YajlTemplate, 'yajl'
+
+  require 'tilt/plain'
+  register PlainHtmlTemplate, 'htmf'
 end
