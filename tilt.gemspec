@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
     TEMPLATES.md
     bin/tilt
     lib/tilt.rb
+    lib/tilt/asciidoc.rb
     lib/tilt/builder.rb
     lib/tilt/coffee.rb
     lib/tilt/css.rb
@@ -44,6 +45,7 @@ Gem::Specification.new do |s|
     test/markaby/render_twice.mab
     test/markaby/scope.mab
     test/markaby/yielding.mab
+    test/tilt_asciidoctor_test.rb
     test/tilt_blueclothtemplate_test.rb
     test/tilt_buildertemplate_test.rb
     test/tilt_cache_test.rb
@@ -78,6 +80,7 @@ Gem::Specification.new do |s|
 
   s.executables = ['tilt']
   s.test_files = s.files.select {|path| path =~ /^test\/.*_test.rb/}
+  s.add_development_dependency 'asciidoctor', '>= 0.1.0'
   s.add_development_dependency 'RedCloth'
   s.add_development_dependency 'bluecloth'
   s.add_development_dependency 'builder'
