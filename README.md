@@ -23,7 +23,7 @@ Support for these template engines is included with the package:
 
     ENGINE                     FILE EXTENSIONS         REQUIRED LIBRARIES
     -------------------------- ----------------------- ----------------------------
-    Asciidoctor                .adoc, .asciidoc        asciidoctor (>= 0.1.0)
+    Asciidoctor                .ad, .adoc, .asciidoc   asciidoctor (>= 0.1.0)
     ERB                        .erb, .rhtml            none (included ruby stdlib)
     Interpolated String        .str                    none (included ruby core)
     Erubis                     .erb, .rhtml, .erubis   erubis
