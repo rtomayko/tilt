@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
+  s.license     = "MIT"
 
   s.authors = ["Ryan Tomayko"]
   s.email = "r@tomayko.com"
