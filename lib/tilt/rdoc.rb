@@ -22,9 +22,11 @@ module Tilt
 
     def markup
       begin
+        # RDoc 4.0
         require 'rdoc/options'
         RDoc::Markup::ToHtml.new(RDoc::Options.new, nil)
       rescue ArgumentError
+        # RDoc < 4.0
         RDoc::Markup::ToHtml.new
       end
     end
