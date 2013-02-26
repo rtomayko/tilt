@@ -11,7 +11,7 @@ module Tilt
     self.default_mime_type = 'text/html'
 
     def self.engine_initialized?
-      defined? ::RDoc::Markup
+      defined? ::RDoc::Markup::ToHtml
     end
 
     def initialize_engine
@@ -20,8 +20,18 @@ module Tilt
       require_template_library 'rdoc/markup/to_html'
     end
 
+    def markup
+      begin
+        # RDoc 4.0
+        require 'rdoc/options'
+        RDoc::Markup::ToHtml.new(RDoc::Options.new, nil)
+      rescue ArgumentError
+        # RDoc < 4.0
+        RDoc::Markup::ToHtml.new
+      end
+    end
+
     def prepare
-      markup = RDoc::Markup::ToHtml.new
       @engine = markup.convert(data)
       @output = nil
     end
