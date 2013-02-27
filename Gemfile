@@ -15,7 +15,6 @@ gem 'markaby'
 gem 'maruku'
 gem 'nokogiri'
 gem 'radius'
-gem 'rdoc'
 gem 'sass'
 gem 'wikicloth'
 gem 'rdoc', (ENV['RDOC_VERSION'] || '> 0')
