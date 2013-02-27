@@ -36,6 +36,7 @@ Gem::Specification.new do |s|
     lib/tilt/rdoc.rb
     lib/tilt/string.rb
     lib/tilt/template.rb
+    lib/tilt/tenjin.rb
     lib/tilt/textile.rb
     lib/tilt/wiki.rb
     lib/tilt/yajl.rb
@@ -72,6 +73,7 @@ Gem::Specification.new do |s|
     test/tilt_sasstemplate_test.rb
     test/tilt_stringtemplate_test.rb
     test/tilt_template_test.rb
+    test/tilt_tenjin_test.rb
     test/tilt_test.rb
     test/tilt_wikiclothtemplate_test.rb
     test/tilt_yajltemplate_test.rb
@@ -101,6 +103,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rdoc'
   s.add_development_dependency 'redcarpet'
   s.add_development_dependency 'sass'
+  s.add_development_dependency 'tenjin'
   s.add_development_dependency 'wikicloth'
   s.add_development_dependency 'yajl-ruby'
   s.add_development_dependency 'rdoc'

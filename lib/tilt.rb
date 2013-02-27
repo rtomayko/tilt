@@ -180,6 +180,9 @@ module Tilt
   register RedcarpetTemplate::Redcarpet2, 'markdown', 'mkd', 'md'
   register RedcarpetTemplate, 'markdown', 'mkd', 'md'
 
+  require 'tilt/tenjin'
+  register TenjinTemplate, 'rbhtml', 'tenjin'
+
   require 'tilt/textile'
   register RedClothTemplate, 'textile'
 
