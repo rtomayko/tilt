@@ -153,6 +153,9 @@ module Tilt
   register ScssTemplate, 'scss'
   register LessTemplate, 'less'
 
+  require 'tilt/csv'
+  register CSVTemplate, 'csv'
+
   require 'tilt/coffee'
   register CoffeeScriptTemplate, 'coffee'
 
