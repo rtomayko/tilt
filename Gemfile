@@ -25,5 +25,8 @@ platform :ruby do
   gem 'rdiscount' if RUBY_VERSION != '1.9.2'
   gem 'bluecloth'
   gem 'RedCloth'
+end
+
+platform :mri do
   gem 'therubyracer'
 end
