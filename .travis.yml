@@ -6,3 +6,8 @@ rvm:
   - 2.0.0
   - jruby
   - rbx
+
+matrix:
+  include:
+    - rvm: 1.9.3
+      env: RDOC_VERSION="~>3.0"

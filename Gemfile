@@ -18,6 +18,7 @@ gem 'radius'
 gem 'rdoc'
 gem 'sass'
 gem 'wikicloth'
+gem 'rdoc', ENV['RDOC_VERSION'] if ENV['RDOC_VERSION']
 
 platform :ruby do
   gem 'yajl-ruby'
