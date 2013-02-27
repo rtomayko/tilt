@@ -22,7 +22,7 @@ gem 'wikicloth'
 platform :ruby do
   gem 'yajl-ruby'
   gem 'redcarpet'
-  gem 'rdiscount'
+  gem 'rdiscount' if RUBY_VERSION != '1.9.2'
   gem 'bluecloth'
   gem 'RedCloth'
   gem 'therubyracer'
