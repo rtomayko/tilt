@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'tilt'
-  s.version = '1.3.3'
-  s.date = '2011-08-25'
+  s.version = '1.3.4'
+  s.date = '2013-02-28'
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.files = %w[
     COPYING
     Gemfile
+    HACKING
     README.md
     Rakefile
     TEMPLATES.md
@@ -26,12 +27,15 @@ Gem::Specification.new do |s|
     lib/tilt/builder.rb
     lib/tilt/coffee.rb
     lib/tilt/css.rb
+    lib/tilt/csv.rb
     lib/tilt/erb.rb
+    lib/tilt/etanni.rb
     lib/tilt/haml.rb
     lib/tilt/liquid.rb
     lib/tilt/markaby.rb
     lib/tilt/markdown.rb
     lib/tilt/nokogiri.rb
+    lib/tilt/plain.rb
     lib/tilt/radius.rb
     lib/tilt/rdoc.rb
     lib/tilt/string.rb
@@ -53,11 +57,14 @@ Gem::Specification.new do |s|
     test/tilt_coffeescripttemplate_test.rb
     test/tilt_compilesite_test.rb
     test/tilt_creoletemplate_test.rb
+    test/tilt_csv_test.rb
     test/tilt_erbtemplate_test.rb
     test/tilt_erubistemplate_test.rb
+    test/tilt_etannitemplate_test.rb
     test/tilt_fallback_test.rb
     test/tilt_hamltemplate_test.rb
     test/tilt_kramdown_test.rb
+    test/tilt_lesstemplate_test.less
     test/tilt_lesstemplate_test.rb
     test/tilt_liquidtemplate_test.rb
     test/tilt_markaby_test.rb
