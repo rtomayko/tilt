@@ -187,7 +187,7 @@ module Tilt
     # reporting in Kernel::caller and backtraces.
     def precompiled_preamble(locals)
       locals.map do |k,v|
-        if k.to_s =~ /\A[a-z]\w*\z/
+        if k.to_s =~ /\A(@|_)?[a-z]\w*\z/
           "#{k} = locals[#{k.inspect}]"
         else
           raise "invalid locals key: #{k.inspect} (keys must be variable names)"
