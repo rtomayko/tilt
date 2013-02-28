@@ -120,6 +120,32 @@ begin
     end
   end
 
+  class LiterateCoffeeScriptTemplateTest < Test::Unit::TestCase
+    setup do
+      @code_without_variables = <<EOLIT
+This is some comment.
+
+    puts 'Hello, World!'
+
+This is a comment too.
+EOLIT
+      @code_with_variables = <<EOLIT
+This is some comment.
+
+    name = "Josh"; puts "Hello, \#{name}"
+
+This is a comment too.
+EOLIT
+      @renderer = Tilt::CoffeeScriptTemplate::Literate
+    end
+
+  include CoffeeScriptTests
+
+    test "is registered for '.litcoffee' files" do
+      assert_equal @renderer, Tilt['test.litcoffee']
+    end
+  end
+
 rescue LoadError => boom
   warn "Tilt::CoffeeScriptTemplate (disabled)"
 end

@@ -157,7 +157,8 @@ module Tilt
   register CSVTemplate, 'rcsv'
 
   require 'tilt/coffee'
-  register CoffeeScriptTemplate, 'coffee'
+  register CoffeeScriptTemplate,            'coffee'
+  register CoffeeScriptTemplate::Literate,  'litcoffee'
 
   require 'tilt/nokogiri'
   register NokogiriTemplate, 'nokogiri'
