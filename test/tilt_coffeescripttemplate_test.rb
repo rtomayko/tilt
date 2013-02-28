@@ -7,16 +7,6 @@ begin
   module CoffeeScriptTests
     def self.included(mod)
       mod.class_eval do
-        unless method_defined?(:assert_not_match)
-          # assert_not_match is missing on 1.8.7, which uses assert_no_match
-          def assert_not_match(a, b)
-            unless a.kind_of?(Regexp)
-              a = Regexp.new(Regexp.escape(a))
-            end
-            assert_no_match(a,b)
-          end
-        end
-
         test "bare is disabled by default" do
           assert_equal false, @renderer.default_bare
         end
@@ -37,11 +27,11 @@ begin
           assert_match "puts(\"Hello, \" + name);\n", template.render
 
           template = @renderer.new(:bare => true) { @code_with_variables }
-          assert_not_match "(function() {", template.render
+          refute_match "(function() {", template.render
           assert_equal "var name;\n\nname = \"Josh\";\n\nputs(\"Hello, \" + name);\n", template.render
 
           template2 = @renderer.new(:no_wrap => true) { @code_with_variables}
-          assert_not_match "(function() {", template.render
+          refute_match "(function() {", template.render
           assert_equal "var name;\n\nname = \"Josh\";\n\nputs(\"Hello, \" + name);\n", template.render
         end
 
@@ -64,13 +54,13 @@ begin
           test "overridden by :bare" do
             template = @renderer.new(:bare => true) { |t| @code_with_variables }
             assert_match "puts(\"Hello, \" + name);", template.render
-            assert_not_match "(function() {", template.render
+            refute_match "(function() {", template.render
           end
 
           test "overridden by :no_wrap" do
             template = @renderer.new(:no_wrap => true) { |t| @code_with_variables }
             assert_match "puts(\"Hello, \" + name);", template.render
-            assert_not_match "(function() {", template.render
+            refute_match "(function() {", template.render
           end
         end
 
@@ -87,7 +77,7 @@ begin
           test "no options" do
             template = @renderer.new { |t| @code_with_variables }
             assert_match "puts(\"Hello, \" + name);", template.render
-            assert_not_match "(function() {", template.render
+            refute_match "(function() {", template.render
           end
 
           test "overridden by :bare" do
@@ -106,7 +96,7 @@ begin
     end
   end
 
-  class CoffeeScriptTemplateTest < Test::Unit::TestCase
+  class CoffeeScriptTemplateTest < Minitest::Test
     setup do
       @code_without_variables = "puts 'Hello, World!'\n"
       @code_with_variables = 'name = "Josh"; puts "Hello, #{name}"'
@@ -117,6 +107,32 @@ begin
 
     test "is registered for '.coffee' files" do
       assert_equal @renderer, Tilt['test.coffee']
+    end
+  end
+
+  class LiterateCoffeeScriptTemplateTest < Minitest::Test
+    setup do
+      @code_without_variables = <<EOLIT
+This is some comment.
+
+    puts 'Hello, World!'
+
+This is a comment too.
+EOLIT
+      @code_with_variables = <<EOLIT
+This is some comment.
+
+    name = "Josh"; puts "Hello, \#{name}"
+
+This is a comment too.
+EOLIT
+      @renderer = Tilt::CoffeeScriptTemplate::Literate
+    end
+
+    include CoffeeScriptTests
+
+    test "is registered for '.litcoffee' files" do
+      assert_equal @renderer, Tilt['test.litcoffee']
     end
   end
 
