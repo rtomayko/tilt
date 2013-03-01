@@ -200,5 +200,5 @@ module Tilt
   register AsciidoctorTemplate, 'ad', 'adoc', 'asciidoc'
 
   require 'tilt/plain'
-  register PlainTemplate, 'htmf'
+  register PlainTemplate, 'html'
 end
