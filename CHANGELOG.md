@@ -18,5 +18,6 @@
 * Allow File/Tempfile as filenames (#134, jamesotron)
 * Add EtanniTemplate (#131, manveru)
 * Support RDoc 3.10 (#112, timfel)
+* Always compile templates; remove old source evaluator (rtomayko)
 * Less: Options are now being passed to the parser (#106, cowboyd)
 
