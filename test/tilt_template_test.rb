@@ -176,6 +176,12 @@ class TiltTemplateTest < Test::Unit::TestCase
     end
   end
 
+  class UTF8Template < MockTemplate
+    def default_encoding
+      Encoding::UTF_8
+    end
+  end
+
   if ''.respond_to?(:encoding)
     original_encoding = Encoding.default_external
 
@@ -220,10 +226,34 @@ class TiltTemplateTest < Test::Unit::TestCase
     test "uses the template from the generated source code" do
       tmpl = "ふが"
       code = tmpl.inspect.encode('Shift_JIS')
-      inst = DynamicMockTemplate.new(@template, :code => code)
+      inst = DynamicMockTemplate.new(:code => code) { '' }
       res = inst.render
       assert_equal 'Shift_JIS', res.encoding.to_s
       assert_equal tmpl, res.encode(tmpl.encoding)
+    end
+
+    test "uses the magic comment from the generated source code" do
+      tmpl = "ふが"
+      code = ("# coding: Shift_JIS\n" + tmpl.inspect).encode('Shift_JIS')
+      # Set it to an incorrect encoding
+      code.force_encoding('UTF-8')
+
+      inst = DynamicMockTemplate.new(:code => code) { '' }
+      res = inst.render
+      assert_equal 'Shift_JIS', res.encoding.to_s
+      assert_equal tmpl, res.encode(tmpl.encoding)
+    end
+
+    test "uses #default_encoding instead of default_external" do
+      Encoding.default_external = 'Big5'
+      inst = UTF8Template.new(@template)
+      assert_equal 'UTF-8', inst.data.encoding.to_s
+    end
+
+    test "uses #default_encoding instead of current encoding" do
+      tmpl = "".force_encoding('Big5')
+      inst = UTF8Template.new(@template) { tmpl }
+      assert_equal 'UTF-8', inst.data.encoding.to_s
     end
   end
 end

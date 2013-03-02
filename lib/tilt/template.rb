@@ -67,6 +67,11 @@ module Tilt
       # load template data and prepare (uses binread to avoid encoding issues)
       @reader = block || lambda { |t| read_template_file }
       @data = @reader.call(self)
+
+      if @data.respond_to?(:force_encoding) && default_encoding
+        @data.force_encoding(default_encoding)
+      end
+
       prepare
     end
 
@@ -77,8 +82,8 @@ module Tilt
     def read_template_file
       data = File.open(file, 'rb') { |io| io.read }
       if data.respond_to?(:force_encoding)
-        encoding = default_encoding || Encoding.default_external
-        data.force_encoding(encoding)
+        # Set it to the default external (without verifying)
+        data.force_encoding(Encoding.default_external) if Encoding.default_external
       end
       data
     end
