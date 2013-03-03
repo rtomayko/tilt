@@ -102,12 +102,11 @@ begin
     end
 
     def test_fenced_code_blocks_with_lang
-      code = <<-COD
+      code = <<-COD.gsub(/^\s+/,"")
       ```ruby
       puts "hello world"
       ```
       COD
-      .gsub(/^\s+/,"")
 
       html = nrender code, :fenced_code_blocks => true
       assert_equal %Q{<pre><code class="ruby">puts "hello world"\n</code></pre>}, html

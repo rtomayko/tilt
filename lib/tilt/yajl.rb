@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
 
   # Yajl Template implementation

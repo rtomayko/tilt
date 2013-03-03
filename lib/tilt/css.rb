@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
   # Sass template implementation. See:
   # http://haml.hamptoncatlin.com/
@@ -69,7 +67,7 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      @output ||= @engine.to_css
+      @output ||= @engine.to_css(options)
     end
 
     def allows_script?

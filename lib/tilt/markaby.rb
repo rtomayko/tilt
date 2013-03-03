@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
   # Markaby
   # http://github.com/markaby/markaby

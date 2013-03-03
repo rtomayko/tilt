@@ -135,9 +135,10 @@ class TiltTemplateTest < Test::Unit::TestCase
   end
 
   test "template_source with locals having non-variable keys raises error" do
-    inst = SourceGeneratingMockTemplate.new { |t| '1 + 2 = #{ANSWER}' }
-    err = assert_raise(RuntimeError) { inst.render(Object.new, 'ANSWER' => '3') }
+    inst = SourceGeneratingMockTemplate.new { |t| '1 + 2 = #{_answer}' }
+    err = assert_raise(RuntimeError) { inst.render(Object.new, 'ANSWER' => 3) }
     assert_equal "invalid locals key: \"ANSWER\" (keys must be variable names)", err.message
+    assert_equal "1 + 2 = 3", inst.render(Object.new, '_answer' => 3)
   end
 
   class Person

@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
   # Nokogiri template implementation. See:
   # http://nokogiri.org/

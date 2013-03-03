@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
   # RedCloth implementation. See:
   # http://redcloth.org/
@@ -14,7 +12,7 @@ module Tilt
 
     def prepare
       @engine = RedCloth.new(data)
-      options.each {|k, v| @engine.send("#{k}=", v)}
+      options.each {|k, v| @engine.send("#{k}=", v) if @engine.respond_to? "#{k}="}
       @output = nil
     end
 

@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
   # Haml template implementation. See:
   # http://haml.hamptoncatlin.com/

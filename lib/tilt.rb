@@ -1,4 +1,5 @@
 require 'tilt/lean'
+require 'tilt/template'
 
 # templates
 require 'tilt/string'
@@ -16,3 +17,7 @@ require 'tilt/textile'
 require 'tilt/rdoc'
 require 'tilt/wiki'
 require 'tilt/yajl'
+require 'tilt/plain'
+require 'tilt/etanni'
+require 'tilt/csv'
+require 'tilt/asciidoc'

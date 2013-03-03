@@ -23,6 +23,7 @@ Support for these template engines is included with the package:
 
     ENGINE                     FILE EXTENSIONS         REQUIRED LIBRARIES
     -------------------------- ----------------------- ----------------------------
+    Asciidoctor                .ad, .adoc, .asciidoc   asciidoctor (>= 0.1.0)
     ERB                        .erb, .rhtml            none (included ruby stdlib)
     Interpolated String        .str                    none (included ruby core)
     Erubis                     .erb, .rhtml, .erubis   erubis
@@ -46,6 +47,7 @@ Support for these template engines is included with the package:
     Creole (Wiki markup)       .wiki, .creole          creole
     WikiCloth (Wiki markup)    .wiki, .mediawiki, .mw  wikicloth
     Yajl                       .yajl                   yajl-ruby
+    CSV                        .csv                    none (Ruby >= 1.9), fastercsv (Ruby < 1.9)
 
 These template engines ship with their own Tilt integration:
 
@@ -55,6 +57,7 @@ These template engines ship with their own Tilt integration:
     Embedded JavaScript                          sprockets
     Embedded CoffeeScript                        sprockets
     JST                                          sprockets
+    Org-mode                   .org              org-ruby (>= 0.6.2)
 
 See [TEMPLATES.md][t] for detailed information on template engine
 options and supported features.
