@@ -2,6 +2,7 @@
 
 * Fixed extension for PlainTemplate (judofyr)
 * Improved local variables regexp (#174, razorinc)
+* Added CHANGELOG.md
 
 ## 1.3.4 (2013-02-28)
 
