@@ -184,9 +184,6 @@ module Tilt
 
         source.force_encoding(template_encoding)
         template.force_encoding(template_encoding)
-
-        preamble.encode!(template_encoding)
-        postamble.encode!(template_encoding)
       end
 
       source << preamble << "\n" << template << "\n" << postamble
