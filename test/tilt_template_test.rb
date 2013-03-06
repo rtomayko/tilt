@@ -255,5 +255,11 @@ class TiltTemplateTest < Test::Unit::TestCase
       inst = UTF8Template.new(@template) { tmpl }
       assert_equal 'UTF-8', inst.data.encoding.to_s
     end
+
+    test "raises error if the encoding is not valid" do
+      assert_raises(Encoding::InvalidByteSequenceError) do
+        UTF8Template.new(@template) { "\xe4" }
+      end
+    end
   end
 end

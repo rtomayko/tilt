@@ -68,8 +68,12 @@ module Tilt
       @reader = block || lambda { |t| read_template_file }
       @data = @reader.call(self)
 
-      if @data.respond_to?(:force_encoding) && default_encoding
-        @data.force_encoding(default_encoding)
+      if @data.respond_to?(:force_encoding)
+        @data.force_encoding(default_encoding) if default_encoding
+
+        if !@data.valid_encoding?
+          raise Encoding::InvalidByteSequenceError, "#{eval_file} is not valid #{@data.encoding}"
+        end
       end
 
       prepare
