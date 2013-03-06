@@ -79,6 +79,10 @@ module Tilt
       prepare
     end
 
+    # The encoding of the source data. Defaults to the
+    # default_encoding-option if present. You may override this method
+    # in your template class if you have a better hint of the data's
+    # encoding.
     def default_encoding
       @default_encoding
     end
@@ -196,11 +200,11 @@ module Tilt
     end
 
     # A string containing the (Ruby) source code for the template. The
-    # default Template#evaluate implementation requires either this method
-    # or the #precompiled method be overridden. When defined, the base
-    # Template guarantees correct file/line handling, locals support, custom
-    # scopes, and support for template compilation when the scope object
-    # allows it.
+    # default Template#evaluate implementation requires either this
+    # method or the #precompiled method be overridden. When defined,
+    # the base Template guarantees correct file/line handling, locals
+    # support, custom scopes, proper encoding, and support for template
+    # compilation.
     def precompiled_template(locals)
       raise NotImplementedError
     end
