@@ -1,5 +1,7 @@
 ## master
 
+## 1.3.5 (2013-03-06)
+
 * Fixed extension for PlainTemplate (judofyr)
 * Improved local variables regexp (#174, razorinc)
 * Added CHANGELOG.md
