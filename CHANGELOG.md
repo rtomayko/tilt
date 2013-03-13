@@ -1,5 +1,7 @@
 ## master
 
+* Changed extension for CsvTemplate from '.csv' to '.rcsv' (#177, alexgb)
+
 ## 1.3.5 (2013-03-06)
 
 * Fixed extension for PlainTemplate (judofyr)
