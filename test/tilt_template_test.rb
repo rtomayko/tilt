@@ -30,6 +30,17 @@ class TiltTemplateTest < Test::Unit::TestCase
     assert_equal File.basename(tempfile.path), inst.basename
   end
 
+  class SillyHash < Hash
+    def path(arg)
+    end
+  end
+
+  test "initialize with hash that implements #path" do
+    options = SillyHash[:key => :value]
+    inst = MockTemplate.new(options) {}
+    assert_equal :value, inst.options[:key]
+  end
+
   test "uses correct eval_file" do
     inst = MockTemplate.new('foo.erb', 55) {}
     assert_equal 'foo.erb', inst.eval_file
