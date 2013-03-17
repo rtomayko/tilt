@@ -1,7 +1,13 @@
 ## master
 
+* Accept Hash that implements #path as options (#180, lawso017)
+* Changed extension for CsvTemplate from '.csv' to '.rcsv' (#177, alexgb)
+
+## 1.3.5 (2013-03-06)
+
 * Fixed extension for PlainTemplate (judofyr)
 * Improved local variables regexp (#174, razorinc)
+* Added CHANGELOG.md
 
 ## 1.3.4 (2013-02-28)
 

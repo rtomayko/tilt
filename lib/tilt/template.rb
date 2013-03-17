@@ -41,9 +41,9 @@ module Tilt
       [options, line, file].compact.each do |arg|
         case
         when arg.respond_to?(:to_str)  ; @file = arg.to_str
-        when arg.respond_to?(:path)    ; @file = arg.path
         when arg.respond_to?(:to_int)  ; @line = arg.to_int
         when arg.respond_to?(:to_hash) ; @options = arg.to_hash.dup
+        when arg.respond_to?(:path)    ; @file = arg.path
         else raise TypeError
         end
       end

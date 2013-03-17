@@ -67,5 +67,5 @@ module Tilt
 
   end
 
-  register CSVTemplate, 'csv'
+  register CSVTemplate, 'rcsv'
 end

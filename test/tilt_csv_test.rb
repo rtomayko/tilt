@@ -10,12 +10,8 @@ begin
 
   class CSVTemplateTest < Test::Unit::TestCase
 
-    test "is registered for '.csv' files" do
-      assert_equal Tilt::CSVTemplate, Tilt['test.csv']
-    end
-
-    test "registered for '.csv' files" do
-      assert Tilt.mappings['csv'].include?(Tilt::CSVTemplate)
+    test "registered for '.rcsv' files" do
+      assert Tilt.mappings['rcsv'].include?(Tilt::CSVTemplate)
     end
 
     test "compiles and evaluates the template on #render" do
