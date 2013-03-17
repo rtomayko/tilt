@@ -1,5 +1,7 @@
 ## master
 
+## 1.3.6 (2013-03-17)
+
 * Accept Hash that implements #path as options (#180, lawso017)
 * Changed extension for CsvTemplate from '.csv' to '.rcsv' (#177, alexgb)
 
