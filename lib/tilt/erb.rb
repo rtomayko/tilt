@@ -74,7 +74,7 @@ module Tilt
   #                   within <%= %> blocks will be automatically html escaped.
   class ErubisTemplate < ERBTemplate
     def self.engine_initialized?
-      defined? ::Erubis
+      defined? ::Erubis::Eruby
     end
 
     def initialize_engine
