@@ -1,5 +1,5 @@
 module Tilt
-  VERSION = '1.3.4'
+  VERSION = '1.3.6'
 
   @preferred_mappings = Hash.new
   @template_mappings = Hash.new { |h, k| h[k] = [] }

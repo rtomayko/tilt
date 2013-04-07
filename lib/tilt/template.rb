@@ -1,5 +1,5 @@
 module Tilt
-  TOPOBJECT = defined?(BasicObject) ? BasicObject : Object
+  TOPOBJECT = Object.superclass || Object
 
   # Base class for template implementations. Subclasses must implement
   # the #prepare method and one of the #evaluate or #precompiled_template
