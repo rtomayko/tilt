@@ -1,5 +1,7 @@
 ## master
 
+## 1.3.7 (2013-04-09)
+
 * Erubis: Check for the correct constant (#183, mattwildig)
 * Don't fail when BasicObject is defined in 1.8 (#182, technobrat, judofyr)
 
