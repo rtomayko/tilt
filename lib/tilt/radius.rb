@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
   # Radius Template
   # http://github.com/jlong/radius/
@@ -52,4 +50,6 @@ module Tilt
       false
     end
   end
+
+  register RadiusTemplate, 'radius'
 end

@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 # AsciiDoc see: http://asciidoc.org/
 module Tilt
   # Asciidoctor implementation for AsciiDoc see:
@@ -31,4 +29,6 @@ module Tilt
       false
     end
   end
+
+  register AsciidoctorTemplate, 'ad', 'adoc', 'asciidoc'
 end

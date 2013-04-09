@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
   # Nokogiri template implementation. See:
   # http://nokogiri.org/
@@ -39,5 +37,6 @@ module Tilt
       data.to_str
     end
   end
-end
 
+  register NokogiriTemplate, 'nokogiri'
+end

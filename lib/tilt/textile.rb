@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
   # RedCloth implementation. See:
   # http://redcloth.org/
@@ -26,5 +24,6 @@ module Tilt
       false
     end
   end
-end
 
+  register RedClothTemplate, 'textile'
+end

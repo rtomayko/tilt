@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
   # RDoc template. See:
   # http://rdoc.rubyforge.org/
@@ -44,4 +42,6 @@ module Tilt
       false
     end
   end
+
+  register RDocTemplate, 'rdoc'
 end

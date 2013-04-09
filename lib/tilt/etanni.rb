@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
   class EtanniTemplate < Template
     def prepare
@@ -24,4 +22,6 @@ module Tilt
       [source, offset + 1]
     end
   end
+
+  register EtanniTemplate, 'etn', 'etanni'
 end

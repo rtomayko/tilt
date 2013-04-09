@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
   # The template source is evaluated as a Ruby string. The #{} interpolation
   # syntax can be used to generated dynamic output.
@@ -18,4 +16,6 @@ module Tilt
       [source, offset + 1]
     end
   end
+
+  register StringTemplate, 'str'
 end

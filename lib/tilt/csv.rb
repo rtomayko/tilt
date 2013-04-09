@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
 
   # CSV Template implementation. See:
@@ -68,4 +66,6 @@ module Tilt
     end
 
   end
+
+  register CSVTemplate, 'rcsv'
 end

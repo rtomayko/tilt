@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
   # Creole implementation. See:
   # http://www.wikicreole.org/
@@ -55,4 +53,7 @@ module Tilt
       false
     end
   end
+
+  register CreoleTemplate,    'wiki', 'creole'
+  register WikiClothTemplate, 'wiki', 'mediawiki', 'mw'
 end

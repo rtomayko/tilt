@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
 
   # Yajl Template implementation
@@ -91,4 +89,5 @@ module Tilt
     end
   end
 
+  register YajlTemplate, 'yajl'
 end

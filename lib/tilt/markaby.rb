@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
   # Markaby
   # http://github.com/markaby/markaby
@@ -48,5 +46,6 @@ module Tilt
       builder.to_s
     end
   end
-end
 
+  register MarkabyTemplate,  'mab'
+end

@@ -1,5 +1,3 @@
-require 'tilt/template'
-
 module Tilt
   # Discount Markdown implementation. See:
   # http://github.com/rtomayko/rdiscount
@@ -210,5 +208,12 @@ module Tilt
       false
     end
   end
-end
 
+  register MarukuTemplate,    'markdown', 'mkd', 'md'
+  register KramdownTemplate,  'markdown', 'mkd', 'md'
+  register BlueClothTemplate, 'markdown', 'mkd', 'md'
+  register RDiscountTemplate, 'markdown', 'mkd', 'md'
+  register RedcarpetTemplate::Redcarpet1, 'markdown', 'mkd', 'md'
+  register RedcarpetTemplate::Redcarpet2, 'markdown', 'mkd', 'md'
+  register RedcarpetTemplate, 'markdown', 'mkd', 'md'
+end

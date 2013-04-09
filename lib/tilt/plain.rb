@@ -1,6 +1,3 @@
-require 'tilt/template'
-
-
 module Tilt
   # Raw text (no template functionality).
   class PlainTemplate < Template
@@ -17,4 +14,6 @@ module Tilt
       @output ||= data
     end
   end
+
+  register PlainTemplate, 'html'
 end
