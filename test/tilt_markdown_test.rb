@@ -18,7 +18,7 @@ module MarkdownTests
   end
 
   def normalize(html)
-    Nokogiri::HTML.fragment(html).to_s
+    Nokogiri::HTML.fragment(html).to_s.strip
   end
 
   def nrender(text, options = {})
