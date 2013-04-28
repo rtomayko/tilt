@@ -1,5 +1,7 @@
 ## master
 
+* Add better encoding support
+
 ## 1.3.7 (2013-04-09)
 
 * Erubis: Check for the correct constant (#183, mattwildig)
