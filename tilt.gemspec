@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'tilt'
-  s.version = '1.3.4'
-  s.date = '2013-02-28'
+  s.version = '1.3.7'
+  s.date = '2013-04-09'
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
 
   # = MANIFEST =
   s.files = %w[
+    CHANGELOG.md
     COPYING
     Gemfile
     HACKING

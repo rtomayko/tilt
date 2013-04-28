@@ -1,5 +1,5 @@
 module Tilt
-  VERSION = '1.3.4'
+  VERSION = '1.3.7'
 
   @preferred_mappings = Hash.new
   @template_mappings = Hash.new { |h, k| h[k] = [] }
@@ -154,7 +154,7 @@ module Tilt
   register LessTemplate, 'less'
 
   require 'tilt/csv'
-  register CSVTemplate, 'csv'
+  register CSVTemplate, 'rcsv'
 
   require 'tilt/coffee'
   register CoffeeScriptTemplate, 'coffee'

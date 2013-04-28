@@ -1,7 +1,20 @@
 ## master
 
+## 1.3.7 (2013-04-09)
+
+* Erubis: Check for the correct constant (#183, mattwildig)
+* Don't fail when BasicObject is defined in 1.8 (#182, technobrat, judofyr)
+
+## 1.3.6 (2013-03-17)
+
+* Accept Hash that implements #path as options (#180, lawso017)
+* Changed extension for CsvTemplate from '.csv' to '.rcsv' (#177, alexgb)
+
+## 1.3.5 (2013-03-06)
+
 * Fixed extension for PlainTemplate (judofyr)
 * Improved local variables regexp (#174, razorinc)
+* Added CHANGELOG.md
 
 ## 1.3.4 (2013-02-28)
 
