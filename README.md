@@ -194,6 +194,27 @@ template, but if you depend on a specific implementation, you should use #prefer
 When a file extension has a preferred template class, Tilt will *always* use
 that class, even if it raises an exception.
 
+Encodings
+---------
+
+Tilt needs to know the encoding of the template in order to work properly:
+
+Tilt will use `Encoding.default_external` as the encoding when reading external
+files. If you're mostly working with one encoding (e.g. UTF-8) we *highly*
+recommend setting this option. When providing a custom reader block (`Tilt.new
+{ custom_string }`) you'll have ensure the string is properly encoded yourself.
+
+Most of the template engines in Tilt also allows you to override the encoding
+using the `:default_encoding`-option:
+
+```ruby
+tmpl = Tilt.new('hello.erb', :default_encoding => 'Big5')
+```
+
+Ultimately it's up to the template engine how to handle the encoding: It might
+respect `:default_encoding`, it might always assume it's UTF-8 (like
+CoffeScript), or it can do its own encoding detection.
+
 Template Compilation
 --------------------
 
