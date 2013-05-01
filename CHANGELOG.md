@@ -1,6 +1,8 @@
 ## master
 
-* Add better encoding support
+## 1.4.0 (2013-05-01)
+
+* Better encoding support
 
 ## 1.3.7 (2013-04-09)
 

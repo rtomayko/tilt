@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
 
   s.name = 'tilt'
   s.version = '1.4.0'
-  s.date = '2013-04-28'
+  s.date = '2013-05-01'
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
