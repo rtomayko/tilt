@@ -1,5 +1,6 @@
 require 'contest'
 require 'tilt'
+require 'tilt/etanni'
 
 class EtanniTemplateTest < Test::Unit::TestCase
   test "registered for '.etn' files" do

@@ -2,7 +2,7 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'asciidoctor'
+  require 'tilt/asciidoc'
 
   class AsciidoctorTemplateTest < Test::Unit::TestCase
     HTML5_OUTPUT = "<div class=\"sect1\"><h2 id=\"_hello_world\">Hello World!</h2><div class=\"sectionbody\"></div></div>"
@@ -13,15 +13,15 @@ begin
     end
 
     test "registered for '.ad' files" do
-      assert Tilt.mappings['ad'].include?(Tilt::AsciidoctorTemplate)
+      assert_equal Tilt::AsciidoctorTemplate, Tilt['ad']
     end
 
     test "registered for '.adoc' files" do
-      assert Tilt.mappings['adoc'].include?(Tilt::AsciidoctorTemplate)
+      assert_equal Tilt::AsciidoctorTemplate, Tilt['adoc']
     end
 
     test "registered for '.asciidoc' files" do
-      assert Tilt.mappings['asciidoc'].include?(Tilt::AsciidoctorTemplate)
+      assert_equal Tilt::AsciidoctorTemplate, Tilt['asciidoc']
     end
 
     test "preparing and evaluating html5 templates on #render" do

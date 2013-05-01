@@ -2,26 +2,14 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'maruku'
+  require 'tilt/maruku'
 
   class MarukuTemplateTest < Test::Unit::TestCase
-    test "registered for '.md' files" do
-      assert Tilt.mappings['md'].include?(Tilt::MarukuTemplate)
-    end
-
-    test "registered for '.mkd' files" do
-      assert Tilt.mappings['mkd'].include?(Tilt::MarukuTemplate)
-    end
-
-    test "registered for '.markdown' files" do
-      assert Tilt.mappings['markdown'].include?(Tilt::MarukuTemplate)
-    end
-
     test "registered below Kramdown" do
       %w[md mkd markdown].each do |ext|
-        mappings = Tilt.mappings[ext]
-        kram_idx = mappings.index(Tilt::KramdownTemplate)
-        maru_idx = mappings.index(Tilt::MarukuTemplate)
+        lazy = Tilt.lazy_map[ext]
+        kram_idx = lazy.index { |klass, file| klass == 'Tilt::KramdownTemplate' }
+        maru_idx = lazy.index { |klass, file| klass == 'Tilt::MarukuTemplate' }
         assert maru_idx > kram_idx,
           "#{maru_idx} should be higher than #{kram_idx}"
       end

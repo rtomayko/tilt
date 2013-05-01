@@ -1,4 +1,5 @@
 require 'tilt/template'
+require 'liquid'
 
 module Tilt
   # Liquid template implementation. See:
@@ -15,14 +16,6 @@ module Tilt
   # It's suggested that your program require 'liquid' at load
   # time when using this template engine.
   class LiquidTemplate < Template
-    def self.engine_initialized?
-      defined? ::Liquid::Template
-    end
-
-    def initialize_engine
-      require_template_library 'liquid'
-    end
-
     def prepare
       @engine = ::Liquid::Template.parse(data)
     end

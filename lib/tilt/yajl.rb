@@ -1,4 +1,5 @@
 require 'tilt/template'
+require 'yajl'
 
 module Tilt
 
@@ -41,14 +42,6 @@ module Tilt
   class YajlTemplate < Template
 
     self.default_mime_type = 'application/json'
-
-    def self.engine_initialized?
-      defined? ::Yajl
-    end
-
-    def initialize_engine
-      require_template_library 'yajl'
-    end
 
     def prepare
     end

@@ -2,7 +2,7 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'redcloth'
+  require 'tilt/redcloth'
 
   class RedClothTemplateTest < Test::Unit::TestCase
     test "is registered for '.textile' files" do

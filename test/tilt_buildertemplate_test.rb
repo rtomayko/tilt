@@ -2,7 +2,7 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'builder'
+  require 'tilt/builder'
   class BuilderTemplateTest < Test::Unit::TestCase
     test "registered for '.builder' files" do
       assert_equal Tilt::BuilderTemplate, Tilt['test.builder']

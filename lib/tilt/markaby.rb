@@ -1,4 +1,5 @@
 require 'tilt/template'
+require 'markaby'
 
 module Tilt
   # Markaby
@@ -12,14 +13,6 @@ module Tilt
           end
         end
       end
-    end
-
-    def self.engine_initialized?
-      defined? ::Markaby
-    end
-
-    def initialize_engine
-      require_template_library 'markaby'
     end
 
     def prepare

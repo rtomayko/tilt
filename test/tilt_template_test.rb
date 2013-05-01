@@ -1,6 +1,7 @@
 # coding: utf-8
 require 'contest'
 require 'tilt'
+require 'tilt/template'
 require 'tempfile'
 
 class TiltTemplateTest < Test::Unit::TestCase
@@ -79,18 +80,6 @@ class TiltTemplateTest < Test::Unit::TestCase
 
     def prepare
     end
-  end
-
-  test "one-time template engine initialization" do
-    assert_nil InitializingMockTemplate.engine_initialized
-    assert_equal 0, InitializingMockTemplate.initialized_count
-
-    InitializingMockTemplate.new { "Hello World!" }
-    assert InitializingMockTemplate.engine_initialized
-    assert_equal 1, InitializingMockTemplate.initialized_count
-
-    InitializingMockTemplate.new { "Hello World!" }
-    assert_equal 1, InitializingMockTemplate.initialized_count
   end
 
   class PreparingMockTemplate < Tilt::Template

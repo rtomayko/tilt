@@ -1,114 +1,46 @@
+require 'tilt/mapping'
+
 module Tilt
-  VERSION = '1.4.0'
+  VERSION = '2.0.0'
 
-  @preferred_mappings = Hash.new
-  @template_mappings = Hash.new { |h, k| h[k] = [] }
+  @default_mapping = Mapping.new
 
-  # Hash of template path pattern => template implementation class mappings.
-  def self.mappings
-    @template_mappings
+  def self.default_mapping
+    @default_mapping
   end
 
-  def self.normalize(ext)
-    ext.to_s.downcase.sub(/^\./, '')
+  def self.lazy_map
+    default_mapping.lazy_map
   end
 
   # Register a template implementation by file extension.
   def self.register(template_class, *extensions)
-    if template_class.respond_to?(:to_str)
-      # Support register(ext, template_class) too
-      extensions, template_class = [template_class], extensions[0]
-    end
-
-    extensions.each do |ext|
-      ext = normalize(ext)
-      mappings[ext].unshift(template_class).uniq!
-    end
+    default_mapping.register(template_class, *extensions)
   end
 
-  # Makes a template class preferred for the given file extensions. If you
-  # don't provide any extensions, it will be preferred for all its already
-  # registered extensions:
-  #
-  #   # Prefer RDiscount for its registered file extensions:
-  #   Tilt.prefer(Tilt::RDiscountTemplate)
-  #
-  #   # Prefer RDiscount only for the .md extensions:
-  #   Tilt.prefer(Tilt::RDiscountTemplate, '.md')
+  def self.register_lazy(class_name, file, *extensions)
+    default_mapping.register_lazy(class_name, file, *extensions)
+  end
+
   def self.prefer(template_class, *extensions)
-    if extensions.empty?
-      mappings.each do |ext, klasses|
-        @preferred_mappings[ext] = template_class if klasses.include? template_class
-      end
-    else
-      extensions.each do |ext|
-        ext = normalize(ext)
-        register(template_class, ext)
-        @preferred_mappings[ext] = template_class
-      end
-    end
+    warn "Tilt.prefer has no longer any effect; use Tilt.register"
   end
 
   # Returns true when a template exists on an exact match of the provided file extension
   def self.registered?(ext)
-    mappings.key?(ext.downcase) && !mappings[ext.downcase].empty?
+    default_mapping.registered?(ext)
   end
 
   # Create a new template for the given file using the file's extension
   # to determine the the template mapping.
   def self.new(file, line=nil, options={}, &block)
-    if template_class = self[file]
-      template_class.new(file, line, options, &block)
-    else
-      fail "No template engine registered for #{File.basename(file)}"
-    end
+    default_mapping.new(file, line, options, &block)
   end
 
   # Lookup a template class for the given filename or file
   # extension. Return nil when no implementation is found.
   def self.[](file)
-    pattern = file.to_s.downcase
-    until pattern.empty? || registered?(pattern)
-      pattern = File.basename(pattern)
-      pattern.sub!(/^[^.]*\.?/, '')
-    end
-
-    # Try to find a preferred engine.
-    preferred_klass = @preferred_mappings[pattern]
-    return preferred_klass if preferred_klass
-
-    # Fall back to the general list of mappings.
-    klasses = @template_mappings[pattern]
-
-    # Try to find an engine which is already loaded.
-    template = klasses.detect do |klass|
-      if klass.respond_to?(:engine_initialized?)
-        klass.engine_initialized?
-      end
-    end
-
-    return template if template
-
-    # Try each of the classes until one succeeds. If all of them fails,
-    # we'll raise the error of the first class.
-    first_failure = nil
-
-    klasses.each do |klass|
-      begin
-        klass.new { '' }
-      rescue Exception => ex
-        first_failure ||= ex
-        next
-      else
-        return klass
-      end
-    end
-
-    raise first_failure if first_failure
-  end
-
-  # Deprecated module.
-  module CompileSite
+    default_mapping[file]
   end
 
   # Extremely simple template cache implementation. Calling applications
@@ -135,70 +67,36 @@ module Tilt
 
   # Template Implementations ================================================
 
-  require 'tilt/string'
-  register StringTemplate, 'str'
+  # ERB
+  register_lazy :ERBTemplate,    'tilt/erb',    'erb', 'rhtml'
+  register_lazy :ErubisTemplate, 'tilt/erubis', 'erb', 'rhtml', 'erubis'
 
-  require 'tilt/erb'
-  register ERBTemplate,    'erb', 'rhtml'
-  register ErubisTemplate, 'erb', 'rhtml', 'erubis'
+  # Markdown
+  register_lazy :BlueClothTemplate,  'tilt/bluecloth', 'markdown', 'mkd', 'md'
+  register_lazy :MarukuTemplate,     'tilt/maruku',    'markdown', 'mkd', 'md'
+  register_lazy :KramdownTemplate,   'tilt/kramdown',  'markdown', 'mkd', 'md'
+  register_lazy :RDiscountTemplate,  'tilt/rdiscount', 'markdown', 'mkd', 'md'
+  register_lazy :RedcarpetTemplate,  'tilt/redcarpet', 'markdown', 'mkd', 'md'
 
-  require 'tilt/etanni'
-  register EtanniTemplate, 'etn', 'etanni'
-
-  require 'tilt/haml'
-  register HamlTemplate,   'haml'
-
-  require 'tilt/css'
-  register SassTemplate, 'sass'
-  register ScssTemplate, 'scss'
-  register LessTemplate, 'less'
-
-  require 'tilt/csv'
-  register CSVTemplate, 'rcsv'
-
-  require 'tilt/coffee'
-  register CoffeeScriptTemplate, 'coffee'
-
-  require 'tilt/nokogiri'
-  register NokogiriTemplate, 'nokogiri'
-
-  require 'tilt/builder'
-  register BuilderTemplate,  'builder'
-
-  require 'tilt/markaby'
-  register MarkabyTemplate,  'mab'
-
-  require 'tilt/liquid'
-  register LiquidTemplate, 'liquid'
-
-  require 'tilt/radius'
-  register RadiusTemplate, 'radius'
-
-  require 'tilt/markdown'
-  register MarukuTemplate,    'markdown', 'mkd', 'md'
-  register KramdownTemplate,  'markdown', 'mkd', 'md'
-  register BlueClothTemplate, 'markdown', 'mkd', 'md'
-  register RDiscountTemplate, 'markdown', 'mkd', 'md'
-  register RedcarpetTemplate::Redcarpet1, 'markdown', 'mkd', 'md'
-  register RedcarpetTemplate::Redcarpet2, 'markdown', 'mkd', 'md'
-  register RedcarpetTemplate, 'markdown', 'mkd', 'md'
-
-  require 'tilt/textile'
-  register RedClothTemplate, 'textile'
-
-  require 'tilt/rdoc'
-  register RDocTemplate, 'rdoc'
-
-  require 'tilt/wiki'
-  register CreoleTemplate,    'wiki', 'creole'
-  register WikiClothTemplate, 'wiki', 'mediawiki', 'mw'
-
-  require 'tilt/yajl'
-  register YajlTemplate, 'yajl'
-
-  require 'tilt/asciidoc'
-  register AsciidoctorTemplate, 'ad', 'adoc', 'asciidoc'
-
-  require 'tilt/plain'
-  register PlainTemplate, 'html'
+  # Rest (sorted by name)
+  register_lazy :AsciidoctorTemplate,  'tilt/asciidoc',  'ad', 'adoc', 'asciidoc'
+  register_lazy :BuilderTemplate,      'tilt/builder',   'builder'
+  register_lazy :CSVTemplate,          'tilt/csv',       'rcsv'
+  register_lazy :CoffeeScriptTemplate, 'tilt/coffee',    'coffee'
+  register_lazy :CreoleTemplate,       'tilt/creole',    'wiki', 'creole'
+  register_lazy :EtanniTemplate,       'tilt/etanni',    'etn', 'etanni'
+  register_lazy :HamlTemplate,         'tilt/haml',      'haml'
+  register_lazy :LessTemplate,         'tilt/less',      'less'
+  register_lazy :LiquidTemplate,       'tilt/liquid',    'liquid'
+  register_lazy :MarkabyTemplate,      'tilt/markaby',   'mab'
+  register_lazy :NokogiriTemplate,     'tilt/nokogiri',  'nokogiri'
+  register_lazy :PlainTemplate,        'tilt/plain',     'html'
+  register_lazy :RDocTemplate,         'tilt/rdoc',      'rdoc'
+  register_lazy :RadiusTemplate,       'tilt/radius',    'radius'
+  register_lazy :RedClothTemplate,     'tilt/redcloth',  'textile'
+  register_lazy :SassTemplate,         'tilt/sass',      'sass'
+  register_lazy :ScssTemplate,         'tilt/sass',      'scss'
+  register_lazy :StringTemplate,       'tilt/string',    'str'
+  register_lazy :WikiClothTemplate,    'tilt/wikicloth', 'wiki', 'mediawiki', 'mw'
+  register_lazy :YajlTemplate,         'tilt/yajl',      'yajl'
 end

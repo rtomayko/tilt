@@ -1,5 +1,11 @@
 require 'tilt/template'
 
+if RUBY_VERSION >= '1.9.0'
+  require 'csv'
+else
+  require 'fastercsv'
+end
+
 module Tilt
 
   # CSV Template implementation. See:
@@ -30,23 +36,11 @@ module Tilt
   class CSVTemplate < Template
     self.default_mime_type = 'text/csv'
 
-    def self.engine_initialized?
-      engine
-    end
-
     def self.engine
       if RUBY_VERSION >= '1.9.0' && defined? ::CSV
         ::CSV
       elsif defined? ::FasterCSV
         ::FasterCSV 
-      end
-    end
-
-    def initialize_engine
-      if RUBY_VERSION >= '1.9.0'
-        require_template_library 'csv'
-      else
-        require_template_library 'fastercsv'
       end
     end
 

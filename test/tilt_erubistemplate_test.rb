@@ -2,7 +2,7 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'erubis'
+  require 'tilt/erubis'
   class ErubisTemplateTest < Test::Unit::TestCase
     test "registered for '.erubis' files" do
       assert_equal Tilt::ErubisTemplate, Tilt['test.erubis']
@@ -11,9 +11,9 @@ begin
 
     test "registered above ERB" do
       %w[erb rhtml].each do |ext|
-        mappings = Tilt.mappings[ext]
-        erubis_idx = mappings.index(Tilt::ErubisTemplate)
-        erb_idx = mappings.index(Tilt::ERBTemplate)
+        lazy = Tilt.lazy_map[ext]
+        erubis_idx = lazy.index { |klass, file| klass == 'Tilt::ErubisTemplate' }
+        erb_idx = lazy.index { |klass, file| klass == 'Tilt::ERBTemplate' }
         assert erubis_idx < erb_idx,
           "#{erubis_idx} should be lower than #{erb_idx}"
       end

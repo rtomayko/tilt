@@ -2,7 +2,7 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'coffee_script'
+  require 'tilt/coffee'
 
   class CoffeeScriptTemplateTest < Test::Unit::TestCase
 

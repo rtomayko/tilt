@@ -2,7 +2,7 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'wikicloth'
+  require 'tilt/wikicloth'
 
   class WikiClothTemplateTest < Test::Unit::TestCase
     test "is registered for '.mediawiki' files" do

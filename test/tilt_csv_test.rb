@@ -2,16 +2,12 @@ require 'contest'
 require 'tilt'
 
 begin
-  if RUBY_VERSION >= '1.9.0'
-    require 'csv'
-  else
-    require 'fastercsv'
-  end
+  require 'tilt/csv'
 
   class CSVTemplateTest < Test::Unit::TestCase
 
     test "registered for '.rcsv' files" do
-      assert Tilt.mappings['rcsv'].include?(Tilt::CSVTemplate)
+      assert_equal Tilt::CSVTemplate, Tilt['rcsv']
     end
 
     test "compiles and evaluates the template on #render" do

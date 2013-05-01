@@ -1,18 +1,11 @@
 require 'tilt/template'
+require 'haml'
 
 module Tilt
   # Haml template implementation. See:
   # http://haml.hamptoncatlin.com/
   class HamlTemplate < Template
     self.default_mime_type = 'text/html'
-
-    def self.engine_initialized?
-      defined? ::Haml::Engine
-    end
-
-    def initialize_engine
-      require_template_library 'haml'
-    end
 
     def prepare
       options = @options.merge(:filename => eval_file, :line => line)

@@ -3,7 +3,7 @@ require 'tilt'
 
 begin
   require 'pathname'
-  require 'less'
+  require 'tilt/less'
 
   class LessTemplateTest < Test::Unit::TestCase
     def assert_similar(a, b)

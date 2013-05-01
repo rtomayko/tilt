@@ -1,18 +1,11 @@
 require 'tilt/template'
+require 'builder'
 
 module Tilt
    # Builder template implementation. See:
   # http://builder.rubyforge.org/
   class BuilderTemplate < Template
     self.default_mime_type = 'text/xml'
-
-    def self.engine_initialized?
-      defined? ::Builder
-    end
-
-    def initialize_engine
-      require_template_library 'builder'
-    end
 
     def prepare; end
 

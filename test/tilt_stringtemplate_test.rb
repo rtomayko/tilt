@@ -1,5 +1,6 @@
 require 'contest'
 require 'tilt'
+require 'tilt/string'
 
 class StringTemplateTest < Test::Unit::TestCase
   test "registered for '.str' files" do

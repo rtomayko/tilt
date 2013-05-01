@@ -2,26 +2,14 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'rdiscount'
+  require 'tilt/rdiscount'
 
   class RDiscountTemplateTest < Test::Unit::TestCase
-    test "registered for '.md' files" do
-      assert Tilt.mappings['md'].include?(Tilt::RDiscountTemplate)
-    end
-
-    test "registered for '.mkd' files" do
-      assert Tilt.mappings['mkd'].include?(Tilt::RDiscountTemplate)
-    end
-
-    test "registered for '.markdown' files" do
-      assert Tilt.mappings['markdown'].include?(Tilt::RDiscountTemplate)
-    end
-
     test "registered above BlueCloth" do
       %w[md mkd markdown].each do |ext|
-        mappings = Tilt.mappings[ext]
-        blue_idx = mappings.index(Tilt::BlueClothTemplate)
-        rdis_idx = mappings.index(Tilt::RDiscountTemplate)
+        lazy = Tilt.lazy_map[ext]
+        rdis_idx = lazy.index { |klass, file| klass == 'Tilt::RDiscountTemplate' }
+        blue_idx = lazy.index { |klass, file| klass == 'Tilt::BlueClothTemplate' }
         assert rdis_idx < blue_idx,
           "#{rdis_idx} should be lower than #{blue_idx}"
       end

@@ -2,7 +2,7 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'nokogiri'
+  require 'tilt/nokogiri'
   class NokogiriTemplateTest < Test::Unit::TestCase
     test "registered for '.nokogiri' files" do
       assert_equal Tilt::NokogiriTemplate, Tilt['test.nokogiri']

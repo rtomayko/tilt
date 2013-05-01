@@ -2,7 +2,7 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'markaby'
+  require 'tilt/markaby'
 
   class MarkabyTiltTest <  Test::Unit::TestCase
     def setup

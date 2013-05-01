@@ -1,16 +1,16 @@
 # coding: utf-8
 require 'contest'
 require 'tilt'
-require 'erb'
+require 'tilt/erb'
 require 'tempfile'
 
 class ERBTemplateTest < Test::Unit::TestCase
   test "registered for '.erb' files" do
-    assert Tilt.mappings['erb'].include?(Tilt::ERBTemplate)
+    assert_includes Tilt.lazy_map['erb'], ['Tilt::ERBTemplate', 'tilt/erb']
   end
 
   test "registered for '.rhtml' files" do
-    assert Tilt.mappings['rhtml'].include?(Tilt::ERBTemplate)
+    assert_includes Tilt.lazy_map['rhtml'], ['Tilt::ERBTemplate', 'tilt/erb']
   end
 
   test "loading and evaluating templates on #render" do

@@ -2,7 +2,7 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'yajl'
+  require 'tilt/yajl'
 
   class YajlTemplateTest < Test::Unit::TestCase
     test "is registered for '.yajl' files" do

@@ -1,5 +1,6 @@
 # coding: UTF-8
 require 'tilt'
+require 'contest'
 
 begin
 require 'nokogiri'
@@ -77,7 +78,7 @@ module MarkdownTests
 end
 
 begin
-  require 'rdiscount'
+  require 'tilt/rdiscount'
 
   class MarkdownRDiscountTest < Test::Unit::TestCase
     include MarkdownTests
@@ -88,7 +89,7 @@ rescue LoadError => boom
 end
 
 begin
-  require 'redcarpet'
+  require 'tilt/redcarpet'
 
   class MarkdownRedcarpetTest < Test::Unit::TestCase
     include MarkdownTests
@@ -117,7 +118,7 @@ rescue LoadError => boom
 end
 
 begin
-  require 'bluecloth'
+  require 'tilt/bluecloth'
 
   class MarkdownBlueClothTest < Test::Unit::TestCase
     include MarkdownTests
@@ -128,7 +129,7 @@ rescue LoadError => boom
 end
 
 begin
-  require 'kramdown'
+  require 'tilt/kramdown'
 
   class MarkdownKramdownTest < Test::Unit::TestCase
     include MarkdownTests
@@ -146,7 +147,7 @@ end
 
 
 begin
-  require 'maruku'
+  require 'tilt/maruku'
 
   class MarkdownMarukuTest < Test::Unit::TestCase
     include MarkdownTests

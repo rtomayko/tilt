@@ -2,7 +2,7 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'radius'
+  require 'tilt/radius'
 
   # Disable radius tests under Ruby versions >= 1.9.1 since it's still buggy.
   # Remove when fixed upstream.

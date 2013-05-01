@@ -5,7 +5,7 @@ begin
   class ::MockError < NameError
   end
 
-  require 'haml'
+  require 'tilt/haml'
 
   class HamlTemplateTest < Test::Unit::TestCase
     test "registered for '.haml' files" do

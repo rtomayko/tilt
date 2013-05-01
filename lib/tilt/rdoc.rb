@@ -1,4 +1,7 @@
 require 'tilt/template'
+require 'rdoc'
+require 'rdoc/markup'
+require 'rdoc/markup/to_html'
 
 module Tilt
   # RDoc template. See:
@@ -9,16 +12,6 @@ module Tilt
   # engine in a threaded environment.
   class RDocTemplate < Template
     self.default_mime_type = 'text/html'
-
-    def self.engine_initialized?
-      defined? ::RDoc::Markup::ToHtml
-    end
-
-    def initialize_engine
-      require_template_library 'rdoc'
-      require_template_library 'rdoc/markup'
-      require_template_library 'rdoc/markup/to_html'
-    end
 
     def markup
       begin

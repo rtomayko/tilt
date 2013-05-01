@@ -2,7 +2,7 @@ require 'contest'
 require 'tilt'
 
 begin
-  require 'liquid'
+  require 'tilt/liquid'
 
   class LiquidTemplateTest < Test::Unit::TestCase
     test "registered for '.liquid' files" do
