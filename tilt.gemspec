@@ -94,6 +94,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'bluecloth'
   s.add_development_dependency 'builder'
   s.add_development_dependency 'coffee-script'
+  s.add_development_dependency 'coffee-script-source', '>= 1.5.0'
   s.add_development_dependency 'contest'
   s.add_development_dependency 'creole'
   s.add_development_dependency 'erubis'

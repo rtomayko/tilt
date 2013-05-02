@@ -44,6 +44,7 @@ Support for these template engines is included with the package:
     Markaby                    .mab                    markaby
     Nokogiri                   .nokogiri               nokogiri
     CoffeeScript               .coffee                 coffee-script (+ javascript)
+    CoffeeScript (literate)    .litcoffee              coffee-script (>= 1.5.0) + javascript
     Creole (Wiki markup)       .wiki, .creole          creole
     WikiCloth (Wiki markup)    .wiki, .mediawiki, .mw  wikicloth
     Yajl                       .yajl                   yajl-ruby

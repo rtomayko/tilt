@@ -28,6 +28,10 @@ module Tilt
       @@default_bare = value
     end
 
+    def self.literate?
+      false
+    end
+
     def self.engine_initialized?
       defined? ::CoffeeScript
     end
@@ -40,6 +44,7 @@ module Tilt
       if !options.key?(:bare) and !options.key?(:no_wrap)
         options[:bare] = self.class.default_bare
       end
+      options[:literate] ||= self.class.literate?
     end
 
     def evaluate(scope, locals, &block)
@@ -48,6 +53,12 @@ module Tilt
 
     def allows_script?
       false
+    end
+
+    class Literate < CoffeeScriptTemplate
+      def self.literate?
+        true
+      end
     end
   end
 end
