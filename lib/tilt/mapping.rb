@@ -38,16 +38,41 @@ module Tilt
     end
 
     def [](file)
+      prefix, ext = split(file)
+      ext && lookup(ext)
+    end
+
+    alias template_for []
+
+    def templates_for(file)
+      templates = []
+
+      while true
+        prefix, ext = split(file)
+        break unless ext
+        templates << lookup(ext)
+        file = prefix
+      end
+
+      templates
+    end
+
+    def split(file)
       pattern = file.to_s.downcase
-      until pattern.empty? || registered?(pattern)
+      full_pattern = pattern.dup
+
+      until registered?(pattern)
+        return if pattern.empty?
         pattern = File.basename(pattern)
         pattern.sub!(/^[^.]*\.?/, '')
       end
 
-      klass = @template_map[pattern]
-      return klass if klass
+      prefix_size = full_pattern.size - pattern.size
+      [full_pattern[0,prefix_size-1], pattern]
+    end
 
-      lazy_load(pattern)
+    def lookup(ext)
+      @template_map[ext] || lazy_load(ext)
     end
 
     def lazy_load(pattern)

@@ -43,6 +43,14 @@ module Tilt
     default_mapping[file]
   end
 
+  def self.template_for(file)
+    default_mapping.template_for(file)
+  end
+
+  def self.templates_for(file)
+    default_mapping.templates_for(file)
+  end
+
   # Extremely simple template cache implementation. Calling applications
   # create a Tilt::Cache instance and use #fetch with any set of hashable
   # arguments (such as those to Tilt.new):

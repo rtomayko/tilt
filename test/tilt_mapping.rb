@@ -8,6 +8,9 @@ module Tilt
     class Stub
     end
 
+    class Stub2
+    end
+
     setup do
       @mapping = Mapping.new
     end
@@ -173,6 +176,17 @@ module Tilt
         assert_raises(NameError) do
           @mapping['hello.mt']
         end
+      end
+    end
+
+    context "#templates_for" do
+      setup do
+        @mapping.register Stub, 'a'
+        @mapping.register Stub2, 'b'
+      end
+
+      test "handles multiple engines" do
+        assert_equal [Stub2, Stub], @mapping.templates_for('hello/world.a.b')
       end
     end
   end
