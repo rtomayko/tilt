@@ -32,6 +32,10 @@ module Tilt
         @mapping.register_lazy('MyTemplate', 'my_template', 'mt')
       end
 
+      teardown do
+        Object.send :remove_const, :MyTemplate if defined? ::MyTemplate
+      end
+
       test "registered?" do
         assert @mapping.registered?('mt')
       end
@@ -47,8 +51,6 @@ module Tilt
           klass = @mapping['hello.mt']
           assert_equal ::MyTemplate, klass
         end
-
-        Object.send :remove_const, :MyTemplate
       end
 
       test "doesn't require when template class is present" do
@@ -62,8 +64,6 @@ module Tilt
           klass = @mapping['hello.mt']
           assert_equal ::MyTemplate, klass
         end
-
-        Object.send :remove_const, :MyTemplate
       end
 
       test "raises NameError when the class name is defined" do
@@ -85,6 +85,11 @@ module Tilt
         @mapping.register_lazy('MyTemplate2', 'my_template2', 'mt')
       end
 
+      teardown do
+        Object.send :remove_const, :MyTemplate1 if defined? ::MyTemplate1
+        Object.send :remove_const, :MyTemplate2 if defined? ::MyTemplate2
+      end
+
       test "registered?" do
         assert @mapping.registered?('mt')
       end
@@ -100,8 +105,6 @@ module Tilt
           klass = @mapping['hello.mt']
           assert_equal ::MyTemplate2, klass
         end
-
-        Object.send :remove_const, :MyTemplate2
       end
 
       test "falls back when LoadError is thrown" do
@@ -115,8 +118,6 @@ module Tilt
           klass = @mapping['hello.mt']
           assert_equal ::MyTemplate1, klass
         end
-
-        Object.send :remove_const, :MyTemplate1
       end
 
       test "raises the first LoadError when everything fails" do
