@@ -27,12 +27,12 @@ module Tilt
       end
 
       def default_mime_type
-        warn ".default_mime_type has been replaced with .metadata[:default_mime_type]"
-        metadata[:default_mime_type]
+        warn ".default_mime_type has been replaced with .metadata[:mime_type]"
+        metadata[:mime_type]
       end
 
       def default_mime_type=(value)
-        metadata[:default_mime_type] = value
+        metadata[:mime_type] = value
       end
     end
 
@@ -119,12 +119,26 @@ module Tilt
     end
 
     def metadata
-      self.class.metadata
+      if respond_to?(:real_allows_script?)
+        self.class.metadata.merge(:allows_script => real_allows_script?)
+      else
+        self.class.metadata
+      end
     end
 
-    def allows_script?
-      warn '#allows_script? has been replaced by .metadata[:allows_script]'
-      metadata[:allows_script]
+    # Depricate the usage of allows_script?. Still allow template classes to define it, but 
+    # allows_script? will now warn, and #metadata will include it.
+    def self.method_added(name)
+      if name == :allows_script?
+        return if @defining_allows_script
+        @defining_allows_script = true
+        alias_method :real_allows_script?, :allows_script?
+        define_method(:allows_script?) do
+          warn ".allows_script? has been replaced with .metadata[:allows_script]"
+          real_allows_script?
+        end
+        @defining_allows_script = false
+      end
     end
 
   protected
