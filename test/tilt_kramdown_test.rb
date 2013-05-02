@@ -7,12 +7,12 @@ begin
   class KramdownTemplateTest < MiniTest::Unit::TestCase
     test "preparing and evaluating templates on #render" do
       template = Tilt::KramdownTemplate.new { |t| "# Hello World!" }
-      assert_equal "<h1 id='hello_world'>Hello World!</h1>", template.render
+      assert_equal '<h1 id="hello-world">Hello World!</h1>', template.render.strip
     end
 
     test "can be rendered more than once" do
       template = Tilt::KramdownTemplate.new { |t| "# Hello World!" }
-      3.times { assert_equal "<h1 id='hello_world'>Hello World!</h1>", template.render }
+      3.times { assert_equal '<h1 id="hello-world">Hello World!</h1>', template.render.strip }
     end
   end
 rescue LoadError => boom
