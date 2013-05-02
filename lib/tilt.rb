@@ -148,6 +148,9 @@ module Tilt
   require 'tilt/haml'
   register HamlTemplate,   'haml'
 
+  require 'tilt/sweet'
+  register SweetTemplate, 's'
+
   require 'tilt/css'
   register SassTemplate, 'sass'
   register ScssTemplate, 'scss'
