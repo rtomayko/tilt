@@ -60,6 +60,12 @@ module Tilt
         if !template_class
           begin
             require file
+
+            if Thread.list.size > 1
+              warn "WARN: tilt autoloading '#{file}' in a non thread-safe way; " +
+                "explicit require '#{file}' suggested."
+            end
+
             # It's safe to eval() here because constant_defined? will
             # raise NameError on invalid constant names
             template_class = eval(class_name)
