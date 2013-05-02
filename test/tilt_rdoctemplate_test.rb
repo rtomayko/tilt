@@ -1,9 +1,9 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
   require 'tilt/rdoc'
-  class RDocTemplateTest < Test::Unit::TestCase
+  class RDocTemplateTest < MiniTest::Unit::TestCase
     test "is registered for '.rdoc' files" do
       assert_equal Tilt::RDocTemplate, Tilt['test.rdoc']
     end

@@ -1,10 +1,10 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
   require 'tilt/rdiscount'
 
-  class RDiscountTemplateTest < Test::Unit::TestCase
+  class RDiscountTemplateTest < MiniTest::Unit::TestCase
     test "registered above BlueCloth" do
       %w[md mkd markdown].each do |ext|
         lazy = Tilt.lazy_map[ext]

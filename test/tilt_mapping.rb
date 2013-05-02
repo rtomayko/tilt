@@ -1,10 +1,10 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 require 'tilt/mapping'
 
 module Tilt
 
-  class MappingTest < Test::Unit::TestCase
+  class MappingTest < MiniTest::Unit::TestCase
     class Stub
     end
 

@@ -1,10 +1,10 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
   require 'tilt/maruku'
 
-  class MarukuTemplateTest < Test::Unit::TestCase
+  class MarukuTemplateTest < MiniTest::Unit::TestCase
     test "registered below Kramdown" do
       %w[md mkd markdown].each do |ext|
         lazy = Tilt.lazy_map[ext]

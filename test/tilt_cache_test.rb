@@ -1,7 +1,7 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
-class TiltCacheTest < Test::Unit::TestCase
+class TiltCacheTest < MiniTest::Unit::TestCase
   setup { @cache = Tilt::Cache.new }
 
   test "caching with single simple argument to #fetch" do

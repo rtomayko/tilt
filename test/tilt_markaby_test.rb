@@ -1,10 +1,10 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
   require 'tilt/markaby'
 
-  class MarkabyTiltTest <  Test::Unit::TestCase
+  class MarkabyTiltTest <  MiniTest::Unit::TestCase
     def setup
       @block = lambda do |t|
         File.read(File.dirname(__FILE__) + "/#{t.file}")

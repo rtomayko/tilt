@@ -1,9 +1,9 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
   require 'tilt/nokogiri'
-  class NokogiriTemplateTest < Test::Unit::TestCase
+  class NokogiriTemplateTest < MiniTest::Unit::TestCase
     test "registered for '.nokogiri' files" do
       assert_equal Tilt::NokogiriTemplate, Tilt['test.nokogiri']
       assert_equal Tilt::NokogiriTemplate, Tilt['test.xml.nokogiri']

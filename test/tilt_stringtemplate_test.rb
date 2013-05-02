@@ -1,8 +1,8 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 require 'tilt/string'
 
-class StringTemplateTest < Test::Unit::TestCase
+class StringTemplateTest < MiniTest::Unit::TestCase
   test "registered for '.str' files" do
     assert_equal Tilt::StringTemplate, Tilt['test.str']
   end
@@ -74,7 +74,7 @@ class StringTemplateTest < Test::Unit::TestCase
 end
 
 
-class CompiledStringTemplateTest < Test::Unit::TestCase
+class CompiledStringTemplateTest < MiniTest::Unit::TestCase
   def teardown
     GC.start
   end

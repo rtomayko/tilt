@@ -1,11 +1,11 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
   require 'pathname'
   require 'tilt/less'
 
-  class LessTemplateTest < Test::Unit::TestCase
+  class LessTemplateTest < MiniTest::Unit::TestCase
     def assert_similar(a, b)
       assert_equal a.gsub(/\s+/m, ' '), b.gsub(/\s+/m, ' ')
     end

@@ -1,10 +1,10 @@
 # coding: utf-8
-require 'contest'
+require 'test_helper'
 require 'tilt'
 require 'tilt/erb'
 require 'tempfile'
 
-class ERBTemplateTest < Test::Unit::TestCase
+class ERBTemplateTest < MiniTest::Unit::TestCase
   test "registered for '.erb' files" do
     assert_includes Tilt.lazy_map['erb'], ['Tilt::ERBTemplate', 'tilt/erb']
   end
@@ -45,7 +45,7 @@ class ERBTemplateTest < Test::Unit::TestCase
       template = Tilt::ERBTemplate.new { '<% self.exposed_buffer = @_out_buf %>hey' }
       scope = MockOutputVariableScope.new
       template.render(scope)
-      assert_not_nil scope.exposed_buffer
+      refute_nil scope.exposed_buffer
       assert_equal scope.exposed_buffer, 'hey'
     ensure
       Tilt::ERBTemplate.default_output_variable = '_erbout'
@@ -118,7 +118,7 @@ class ERBTemplateTest < Test::Unit::TestCase
   end
 end
 
-class CompiledERBTemplateTest < Test::Unit::TestCase
+class CompiledERBTemplateTest < MiniTest::Unit::TestCase
   def teardown
     GC.start
   end

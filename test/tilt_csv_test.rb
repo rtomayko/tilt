@@ -1,10 +1,10 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
   require 'tilt/csv'
 
-  class CSVTemplateTest < Test::Unit::TestCase
+  class CSVTemplateTest < MiniTest::Unit::TestCase
 
     test "registered for '.rcsv' files" do
       assert_equal Tilt::CSVTemplate, Tilt['rcsv']

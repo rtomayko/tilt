@@ -1,8 +1,8 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 require 'thread'
 
-class CompileSiteTest < Test::Unit::TestCase
+class CompileSiteTest < MiniTest::Unit::TestCase
   def setup
     GC.start
   end

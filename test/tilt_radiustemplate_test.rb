@@ -1,4 +1,4 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
@@ -8,7 +8,7 @@ begin
   # Remove when fixed upstream.
   raise LoadError if RUBY_VERSION >= "1.9.1" and Radius.version < "0.7"
 
-  class RadiusTemplateTest < Test::Unit::TestCase
+  class RadiusTemplateTest < MiniTest::Unit::TestCase
     test "registered for '.radius' files" do
       assert_equal Tilt::RadiusTemplate, Tilt['test.radius']
     end
