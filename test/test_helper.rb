@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'minitest/mock'
 
 # Contest adds +teardown+, +test+ and +context+ as class methods, and the
 # instance methods +setup+ and +teardown+ now iterate on the corresponding

@@ -55,17 +55,32 @@ module Tilt
       first_failure = nil
 
       @lazy_map[pattern].each do |class_name, file|
-        begin
-          require file
-          template_class = eval(class_name)
-          @template_map[pattern] = template_class
-          return template_class
-        rescue LoadError => ex
-          first_failure ||= ex
+        template_class = constant_defined?(class_name)
+
+        if !template_class
+          begin
+            require file
+            # It's safe to eval() here because constant_defined? will
+            # raise NameError on invalid constant names
+            template_class = eval(class_name)
+          rescue LoadError => ex
+            first_failure ||= ex
+            next
+          end
         end
+
+        @template_map[pattern] = template_class
+        return template_class
       end
 
       raise first_failure if first_failure
+    end
+
+    def constant_defined?(name)
+      name.split('::').inject(Object) do |scope, n|
+        return false unless scope.const_defined?(n)
+        scope.const_get(n)
+      end
     end
   end
 end
