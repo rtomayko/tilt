@@ -102,7 +102,11 @@ module Tilt
     # block is given, it is typically available within the template via
     # +yield+.
     def render(scope=Object.new, locals={}, &block)
+      current_template = Thread.current[:tilt_current_template]
+      Thread.current[:tilt_current_template] = self
       evaluate(scope, locals, &block)
+    ensure
+      Thread.current[:tilt_current_template] = current_template
     end
 
     # The basename of the template file.

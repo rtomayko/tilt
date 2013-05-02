@@ -190,6 +190,23 @@ class TiltTemplateTest < MiniTest::Unit::TestCase
     assert_equal "Hey Bob!", inst.render(Person.new("Joe"))
   end
 
+  test "populates Tilt.current_template during rendering" do
+    inst = SourceGeneratingMockTemplate.new { '#{$inst = Tilt.current_template}' }
+    inst.render
+    assert_equal inst, $inst
+    assert_nil Tilt.current_template
+  end
+
+  test "populates Tilt.current_template in nested rendering" do
+    inst1 = SourceGeneratingMockTemplate.new { '#{$inst.render; $inst1 = Tilt.current_template}' }
+    inst2 = SourceGeneratingMockTemplate.new { '#{$inst2 = Tilt.current_template}' }
+    $inst = inst2
+    inst1.render
+    assert_equal inst1, $inst1
+    assert_equal inst2, $inst2
+    assert_nil Tilt.current_template
+  end
+
   ##
   # Encodings
 

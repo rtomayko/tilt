@@ -51,6 +51,11 @@ module Tilt
     default_mapping.templates_for(file)
   end
 
+  # NOTE: This is currently an experimental feature and might return nil in the future.
+  def self.current_template
+    Thread.current[:tilt_current_template]
+  end
+
   # Extremely simple template cache implementation. Calling applications
   # create a Tilt::Cache instance and use #fetch with any set of hashable
   # arguments (such as those to Tilt.new):
