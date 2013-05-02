@@ -12,7 +12,7 @@ module Tilt
     end
 
     def self.default_output_variable=(name)
-      warn "Tilt::ERBTemplate.default_output_variable= is DEPRICATED; use the :outvar-option"
+      warn "#{self}.default_output_variable= has been replaced with the :outvar-option"
       @@default_output_variable = name
     end
 
