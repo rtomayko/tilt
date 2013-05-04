@@ -1,4 +1,5 @@
 require 'tilt/template'
+require 'coffee_script'
 
 module Tilt
   # CoffeeScript template implementation. See:
@@ -26,14 +27,6 @@ module Tilt
     # DEPRECATED
     def self.default_no_wrap=(value)
       @@default_bare = value
-    end
-
-    def self.engine_initialized?
-      defined? ::CoffeeScript
-    end
-
-    def initialize_engine
-      require_template_library 'coffee_script'
     end
 
     def prepare

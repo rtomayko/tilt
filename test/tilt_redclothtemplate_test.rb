@@ -1,10 +1,10 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
-  require 'redcloth'
+  require 'tilt/redcloth'
 
-  class RedClothTemplateTest < Test::Unit::TestCase
+  class RedClothTemplateTest < MiniTest::Unit::TestCase
     test "is registered for '.textile' files" do
       assert_equal Tilt::RedClothTemplate, Tilt['test.textile']
     end

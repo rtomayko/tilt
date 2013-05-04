@@ -1,20 +1,10 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
-  require 'coffee_script'
+  require 'tilt/coffee'
 
-  class CoffeeScriptTemplateTest < Test::Unit::TestCase
-
-    unless method_defined?(:assert_not_match)
-      # assert_not_match is missing on 1.8.7, which uses assert_no_match
-      def assert_not_match(a, b)
-        unless a.kind_of?(Regexp)
-          a = Regexp.new(Regexp.escape(a))
-        end
-        assert_no_match(a,b)
-      end
-    end
+  class CoffeeScriptTemplateTest < MiniTest::Unit::TestCase
 
     test "is registered for '.coffee' files" do
       assert_equal Tilt::CoffeeScriptTemplate, Tilt['test.coffee']
@@ -42,11 +32,11 @@ begin
       assert_match "puts(\"Hello \" + name);\n", template.render
 
       template = Tilt::CoffeeScriptTemplate.new(:bare => true) { str }
-      assert_not_match "(function() {", template.render
+      refute_match "(function() {", template.render
       assert_equal "var name;\n\nname = \"Josh\";\n\nputs(\"Hello \" + name);\n", template.render
 
       template2 = Tilt::CoffeeScriptTemplate.new(:no_wrap => true) { str}
-      assert_not_match "(function() {", template.render
+      refute_match "(function() {", template.render
       assert_equal "var name;\n\nname = \"Josh\";\n\nputs(\"Hello \" + name);\n", template.render
     end
 
@@ -69,13 +59,13 @@ begin
       test "overridden by :bare" do
         template = Tilt::CoffeeScriptTemplate.new(:bare => true) { |t| 'name = "Josh"; puts "Hello, #{name}"' }
         assert_match "puts(\"Hello, \" + name);", template.render
-        assert_not_match "(function() {", template.render
+        refute_match "(function() {", template.render
       end
 
       test "overridden by :no_wrap" do
         template = Tilt::CoffeeScriptTemplate.new(:no_wrap => true) { |t| 'name = "Josh"; puts "Hello, #{name}"' }
         assert_match "puts(\"Hello, \" + name);", template.render
-        assert_not_match "(function() {", template.render
+        refute_match "(function() {", template.render
       end
     end
 
@@ -92,7 +82,7 @@ begin
       test "no options" do
         template = Tilt::CoffeeScriptTemplate.new { |t| 'name = "Josh"; puts "Hello, #{name}"' }
         assert_match "puts(\"Hello, \" + name);", template.render
-        assert_not_match "(function() {", template.render
+        refute_match "(function() {", template.render
       end
 
       test "overridden by :bare" do

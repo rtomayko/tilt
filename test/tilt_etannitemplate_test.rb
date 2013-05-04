@@ -1,7 +1,8 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
+require 'tilt/etanni'
 
-class EtanniTemplateTest < Test::Unit::TestCase
+class EtanniTemplateTest < MiniTest::Unit::TestCase
   test "registered for '.etn' files" do
     assert_equal Tilt::EtanniTemplate, Tilt['test.etn']
   end
@@ -77,7 +78,7 @@ class EtanniTemplateTest < Test::Unit::TestCase
 end
 
 
-class CompiledEtanniTemplateTest < Test::Unit::TestCase
+class CompiledEtanniTemplateTest < MiniTest::Unit::TestCase
   def teardown
     GC.start
   end

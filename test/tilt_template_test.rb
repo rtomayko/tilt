@@ -1,9 +1,10 @@
 # coding: utf-8
-require 'contest'
+require 'test_helper'
 require 'tilt'
+require 'tilt/template'
 require 'tempfile'
 
-class TiltTemplateTest < Test::Unit::TestCase
+class TiltTemplateTest < MiniTest::Unit::TestCase
 
   class MockTemplate < Tilt::Template
     def prepare
@@ -11,7 +12,7 @@ class TiltTemplateTest < Test::Unit::TestCase
   end
 
   test "needs a file or block" do
-    assert_raise(ArgumentError) { Tilt::Template.new }
+    assert_raises(ArgumentError) { Tilt::Template.new }
   end
 
   test "initializing with a file" do
@@ -49,7 +50,7 @@ class TiltTemplateTest < Test::Unit::TestCase
 
   test "uses a default filename for #eval_file when no file provided" do
     inst = MockTemplate.new { 'Hi' }
-    assert_not_nil inst.eval_file
+    refute_nil inst.eval_file
     assert !inst.eval_file.include?("\n")
   end
 
@@ -81,20 +82,8 @@ class TiltTemplateTest < Test::Unit::TestCase
     end
   end
 
-  test "one-time template engine initialization" do
-    assert_nil InitializingMockTemplate.engine_initialized
-    assert_equal 0, InitializingMockTemplate.initialized_count
-
-    InitializingMockTemplate.new { "Hello World!" }
-    assert InitializingMockTemplate.engine_initialized
-    assert_equal 1, InitializingMockTemplate.initialized_count
-
-    InitializingMockTemplate.new { "Hello World!" }
-    assert_equal 1, InitializingMockTemplate.initialized_count
-  end
-
   class PreparingMockTemplate < Tilt::Template
-    include Test::Unit::Assertions
+    include MiniTest::Assertions
     def prepare
       assert !data.nil?
       @prepared = true
@@ -103,17 +92,17 @@ class TiltTemplateTest < Test::Unit::TestCase
   end
 
   test "raises NotImplementedError when #prepare not defined" do
-    assert_raise(NotImplementedError) { Tilt::Template.new { |template| "Hello World!" } }
+    assert_raises(NotImplementedError) { Tilt::Template.new { |template| "Hello World!" } }
   end
 
   test "raises NotImplementedError when #evaluate or #template_source not defined" do
     inst = PreparingMockTemplate.new { |t| "Hello World!" }
-    assert_raise(NotImplementedError) { inst.render }
+    assert_raises(NotImplementedError) { inst.render }
     assert inst.prepared?
   end
 
   class SimpleMockTemplate < PreparingMockTemplate
-    include Test::Unit::Assertions
+    include MiniTest::Assertions
     def evaluate(scope, locals, &block)
       assert prepared?
       assert !scope.nil?
@@ -148,7 +137,7 @@ class TiltTemplateTest < Test::Unit::TestCase
 
   test "template_source with locals having non-variable keys raises error" do
     inst = SourceGeneratingMockTemplate.new { |t| '1 + 2 = #{_answer}' }
-    err = assert_raise(RuntimeError) { inst.render(Object.new, 'ANSWER' => 3) }
+    err = assert_raises(RuntimeError) { inst.render(Object.new, 'ANSWER' => 3) }
     assert_equal "invalid locals key: \"ANSWER\" (keys must be variable names)", err.message
     assert_equal "1 + 2 = 3", inst.render(Object.new, '_answer' => 3)
   end

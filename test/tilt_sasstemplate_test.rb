@@ -1,10 +1,10 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
-  require 'sass'
+  require 'tilt/sass'
 
-  class SassTemplateTest < Test::Unit::TestCase
+  class SassTemplateTest < MiniTest::Unit::TestCase
     test "is registered for '.sass' files" do
       assert_equal Tilt::SassTemplate, Tilt['test.sass']
     end
@@ -20,7 +20,7 @@ begin
     end
   end
 
-  class ScssTemplateTest < Test::Unit::TestCase
+  class ScssTemplateTest < MiniTest::Unit::TestCase
     test "is registered for '.scss' files" do
       assert_equal Tilt::ScssTemplate, Tilt['test.scss']
     end

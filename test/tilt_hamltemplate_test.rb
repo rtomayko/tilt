@@ -1,13 +1,13 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
   class ::MockError < NameError
   end
 
-  require 'haml'
+  require 'tilt/haml'
 
-  class HamlTemplateTest < Test::Unit::TestCase
+  class HamlTemplateTest < MiniTest::Unit::TestCase
     test "registered for '.haml' files" do
       assert_equal Tilt::HamlTemplate, Tilt['test.haml']
     end
@@ -71,7 +71,7 @@ begin
     end
   end
 
-  class CompiledHamlTemplateTest < Test::Unit::TestCase
+  class CompiledHamlTemplateTest < MiniTest::Unit::TestCase
     class Scope
     end
 

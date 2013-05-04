@@ -1,5 +1,6 @@
 # coding: UTF-8
 require 'tilt'
+require 'test_helper'
 
 begin
 require 'nokogiri'
@@ -77,9 +78,9 @@ module MarkdownTests
 end
 
 begin
-  require 'rdiscount'
+  require 'tilt/rdiscount'
 
-  class MarkdownRDiscountTest < Test::Unit::TestCase
+  class MarkdownRDiscountTest < MiniTest::Unit::TestCase
     include MarkdownTests
     template Tilt::RDiscountTemplate
   end
@@ -88,9 +89,9 @@ rescue LoadError => boom
 end
 
 begin
-  require 'redcarpet'
+  require 'tilt/redcarpet'
 
-  class MarkdownRedcarpetTest < Test::Unit::TestCase
+  class MarkdownRedcarpetTest < MiniTest::Unit::TestCase
     include MarkdownTests
     template Tilt::RedcarpetTemplate
     # Doesn't support escaping
@@ -117,9 +118,9 @@ rescue LoadError => boom
 end
 
 begin
-  require 'bluecloth'
+  require 'tilt/bluecloth'
 
-  class MarkdownBlueClothTest < Test::Unit::TestCase
+  class MarkdownBlueClothTest < MiniTest::Unit::TestCase
     include MarkdownTests
     template Tilt::BlueClothTemplate
   end
@@ -128,9 +129,9 @@ rescue LoadError => boom
 end
 
 begin
-  require 'kramdown'
+  require 'tilt/kramdown'
 
-  class MarkdownKramdownTest < Test::Unit::TestCase
+  class MarkdownKramdownTest < MiniTest::Unit::TestCase
     include MarkdownTests
     template Tilt::KramdownTemplate
     # Doesn't support escaping
@@ -146,9 +147,9 @@ end
 
 
 begin
-  require 'maruku'
+  require 'tilt/maruku'
 
-  class MarkdownMarukuTest < Test::Unit::TestCase
+  class MarkdownMarukuTest < MiniTest::Unit::TestCase
     include MarkdownTests
     template Tilt::MarukuTemplate
     # Doesn't support escaping

@@ -1,16 +1,12 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
-  require 'creole'
+  require 'tilt/creole'
 
-  class CreoleTemplateTest < Test::Unit::TestCase
+  class CreoleTemplateTest < MiniTest::Unit::TestCase
     test "is registered for '.creole' files" do
       assert_equal Tilt::CreoleTemplate, Tilt['test.creole']
-    end
-
-    test "registered for '.wiki' files" do
-      assert Tilt.mappings['wiki'].include?(Tilt::CreoleTemplate)
     end
 
     test "compiles and evaluates the template on #render" do

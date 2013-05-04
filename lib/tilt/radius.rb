@@ -1,13 +1,10 @@
 require 'tilt/template'
+require 'radius'
 
 module Tilt
   # Radius Template
   # http://github.com/jlong/radius/
   class RadiusTemplate < Template
-    def self.engine_initialized?
-      defined? ::Radius
-    end
-
     def self.context_class
       @context_class ||= Class.new(Radius::Context) do
         attr_accessor :tilt_scope
@@ -22,10 +19,6 @@ module Tilt
           i
         end
       end
-    end
-
-    def initialize_engine
-      require_template_library 'radius'
     end
 
     def prepare

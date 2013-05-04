@@ -1,14 +1,14 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
-  require 'radius'
+  require 'tilt/radius'
 
   # Disable radius tests under Ruby versions >= 1.9.1 since it's still buggy.
   # Remove when fixed upstream.
   raise LoadError if RUBY_VERSION >= "1.9.1" and Radius.version < "0.7"
 
-  class RadiusTemplateTest < Test::Unit::TestCase
+  class RadiusTemplateTest < MiniTest::Unit::TestCase
     test "registered for '.radius' files" do
       assert_equal Tilt::RadiusTemplate, Tilt['test.radius']
     end

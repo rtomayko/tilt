@@ -1,10 +1,10 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
-  require 'wikicloth'
+  require 'tilt/wikicloth'
 
-  class WikiClothTemplateTest < Test::Unit::TestCase
+  class WikiClothTemplateTest < MiniTest::Unit::TestCase
     test "is registered for '.mediawiki' files" do
       assert_equal Tilt::WikiClothTemplate, Tilt['test.mediawiki']
     end

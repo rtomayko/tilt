@@ -1,9 +1,9 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
-  require 'builder'
-  class BuilderTemplateTest < Test::Unit::TestCase
+  require 'tilt/builder'
+  class BuilderTemplateTest < MiniTest::Unit::TestCase
     test "registered for '.builder' files" do
       assert_equal Tilt::BuilderTemplate, Tilt['test.builder']
       assert_equal Tilt::BuilderTemplate, Tilt['test.xml.builder']

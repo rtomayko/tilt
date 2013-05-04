@@ -1,4 +1,5 @@
 require 'tilt/template'
+require 'asciidoctor'
 
 # AsciiDoc see: http://asciidoc.org/
 module Tilt
@@ -10,14 +11,6 @@ module Tilt
   # DocBook 4.5 and other formats.
   class AsciidoctorTemplate < Template
     self.default_mime_type = 'text/html'
-
-    def self.engine_initialized?
-      defined? ::Asciidoctor::Document
-    end
-
-    def initialize_engine
-      require_template_library 'asciidoctor'
-    end
 
     def prepare
       options[:header_footer] = false if options[:header_footer].nil?

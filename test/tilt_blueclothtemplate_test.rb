@@ -1,22 +1,10 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
-  require 'bluecloth'
+  require 'tilt/bluecloth'
 
-  class BlueClothTemplateTest < Test::Unit::TestCase
-    test "registered for '.md' files" do
-      assert Tilt.mappings['md'].include?(Tilt::BlueClothTemplate)
-    end
-
-    test "registered for '.mkd' files" do
-      assert Tilt.mappings['mkd'].include?(Tilt::BlueClothTemplate)
-    end
-
-    test "registered for '.markdown' files" do
-      assert Tilt.mappings['markdown'].include?(Tilt::BlueClothTemplate)
-    end
-
+  class BlueClothTemplateTest < MiniTest::Unit::TestCase
     test "preparing and evaluating templates on #render" do
       template = Tilt::BlueClothTemplate.new { |t| "# Hello World!" }
       assert_equal "<h1>Hello World!</h1>", template.render

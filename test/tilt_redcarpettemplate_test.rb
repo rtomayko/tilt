@@ -1,27 +1,15 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
-  require 'redcarpet'
+  require 'tilt/redcarpet'
 
-  class RedcarpetTemplateTest < Test::Unit::TestCase
-    test "registered for '.md' files" do
-      assert Tilt.mappings['md'].include?(Tilt::RedcarpetTemplate)
-    end
-
-    test "registered for '.mkd' files" do
-      assert Tilt.mappings['mkd'].include?(Tilt::RedcarpetTemplate)
-    end
-
-    test "registered for '.markdown' files" do
-      assert Tilt.mappings['markdown'].include?(Tilt::RedcarpetTemplate)
-    end
-
+  class RedcarpetTemplateTest < MiniTest::Unit::TestCase
     test "registered above BlueCloth" do
       %w[md mkd markdown].each do |ext|
-        mappings = Tilt.mappings[ext]
-        blue_idx = mappings.index(Tilt::BlueClothTemplate)
-        redc_idx = mappings.index(Tilt::RedcarpetTemplate)
+        lazy = Tilt.lazy_map[ext]
+        blue_idx = lazy.index { |klass, file| klass == 'Tilt::BlueClothTemplate' }
+        redc_idx = lazy.index { |klass, file| klass == 'Tilt::RedcarpetTemplate' }
         assert redc_idx < blue_idx,
           "#{redc_idx} should be lower than #{blue_idx}"
       end
@@ -29,9 +17,9 @@ begin
 
     test "registered above RDiscount" do
       %w[md mkd markdown].each do |ext|
-        mappings = Tilt.mappings[ext]
-        rdis_idx = mappings.index(Tilt::RDiscountTemplate)
-        redc_idx = mappings.index(Tilt::RedcarpetTemplate)
+        lazy = Tilt.lazy_map[ext]
+        rdis_idx = lazy.index { |klass, file| klass == 'Tilt::RDiscountTemplate' }
+        redc_idx = lazy.index { |klass, file| klass == 'Tilt::RedcarpetTemplate' }
         assert redc_idx < rdis_idx,
           "#{redc_idx} should be lower than #{rdis_idx}"
       end

@@ -1,10 +1,10 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
-  require 'liquid'
+  require 'tilt/liquid'
 
-  class LiquidTemplateTest < Test::Unit::TestCase
+  class LiquidTemplateTest < MiniTest::Unit::TestCase
     test "registered for '.liquid' files" do
       assert_equal Tilt::LiquidTemplate, Tilt['test.liquid']
     end

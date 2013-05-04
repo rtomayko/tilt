@@ -1,4 +1,5 @@
 require 'tilt/template'
+require 'nokogiri'
 
 module Tilt
   # Nokogiri template implementation. See:
@@ -6,14 +7,6 @@ module Tilt
   class NokogiriTemplate < Template
     DOCUMENT_HEADER = /^<\?xml version=\"1\.0\"\?>\n?/
     self.default_mime_type = 'text/xml'
-
-    def self.engine_initialized?
-      defined? ::Nokogiri
-    end
-
-    def initialize_engine
-      require_template_library 'nokogiri'
-    end
 
     def prepare; end
 

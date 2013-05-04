@@ -1,9 +1,9 @@
-require 'contest'
+require 'test_helper'
 require 'tilt'
 
 begin
-  require 'erubis'
-  class ErubisTemplateTest < Test::Unit::TestCase
+  require 'tilt/erubis'
+  class ErubisTemplateTest < MiniTest::Unit::TestCase
     test "registered for '.erubis' files" do
       assert_equal Tilt::ErubisTemplate, Tilt['test.erubis']
       assert_equal Tilt::ErubisTemplate, Tilt['test.html.erubis']
@@ -11,9 +11,9 @@ begin
 
     test "registered above ERB" do
       %w[erb rhtml].each do |ext|
-        mappings = Tilt.mappings[ext]
-        erubis_idx = mappings.index(Tilt::ErubisTemplate)
-        erb_idx = mappings.index(Tilt::ERBTemplate)
+        lazy = Tilt.lazy_map[ext]
+        erubis_idx = lazy.index { |klass, file| klass == 'Tilt::ErubisTemplate' }
+        erb_idx = lazy.index { |klass, file| klass == 'Tilt::ERBTemplate' }
         assert erubis_idx < erb_idx,
           "#{erubis_idx} should be lower than #{erb_idx}"
       end
@@ -51,7 +51,7 @@ begin
         template = Tilt::ErubisTemplate.new { '<% self.exposed_buffer = @_out_buf %>hey' }
         scope = MockOutputVariableScope.new
         template.render(scope)
-        assert_not_nil scope.exposed_buffer
+        refute_nil scope.exposed_buffer
         assert_equal scope.exposed_buffer, 'hey'
       ensure
         Tilt::ErubisTemplate.default_output_variable = '_erbout'
