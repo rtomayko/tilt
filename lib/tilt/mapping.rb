@@ -52,31 +52,39 @@ module Tilt
 
     def lazy_load(pattern)
       return unless @lazy_map.has_key?(pattern)
+
+      choices = @lazy_map[pattern]
+
+      # Check if a template class is already present
+      choices.each do |class_name, file|
+        template_class = constant_defined?(class_name)
+        if template_class
+          register(template_class, pattern)
+          return template_class
+        end
+      end
+
       first_failure = nil
 
-      @lazy_map[pattern].each do |class_name, file|
-        template_class = constant_defined?(class_name)
+      # Load in order
+      choices.each do |class_name, file|
+        begin
+          require file
 
-        if !template_class
-          begin
-            require file
-
-            if Thread.list.size > 1
-              warn "WARN: tilt autoloading '#{file}' in a non thread-safe way; " +
-                "explicit require '#{file}' suggested."
-            end
-
-            # It's safe to eval() here because constant_defined? will
-            # raise NameError on invalid constant names
-            template_class = eval(class_name)
-          rescue LoadError => ex
-            first_failure ||= ex
-            next
+          if Thread.list.size > 1
+            warn "WARN: tilt autoloading '#{file}' in a non thread-safe way; " +
+              "explicit require '#{file}' suggested."
           end
-        end
 
-        @template_map[pattern] = template_class
-        return template_class
+          # It's safe to eval() here because constant_defined? will
+          # raise NameError on invalid constant names
+          template_class = eval(class_name)
+        rescue LoadError => ex
+          first_failure ||= ex
+        else
+          register(template_class, pattern)
+          return template_class
+        end
       end
 
       raise first_failure if first_failure

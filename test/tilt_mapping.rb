@@ -121,6 +121,19 @@ module Tilt
         end
       end
 
+      test "uses the first template if it's present" do
+        class ::MyTemplate1; end
+
+        req = proc do |file|
+          flunk
+        end
+
+        @mapping.stub :require, req do
+          klass = @mapping['hello.mt']
+          assert_equal ::MyTemplate1, klass
+        end
+      end
+
       test "falls back when LoadError is thrown" do
         req = proc do |file|
           raise LoadError unless file == 'my_template1'
