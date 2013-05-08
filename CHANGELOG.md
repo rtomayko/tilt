@@ -1,5 +1,9 @@
 ## master
 
+## 1.4.1 (2013-05-08)
+
+* Support Arrays in pre/postambles (#193, jbwiv)
+
 ## 1.4.0 (2013-05-01)
 
 * Better encoding support
