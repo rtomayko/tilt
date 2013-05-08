@@ -153,6 +153,53 @@ class TiltTemplateTest < Test::Unit::TestCase
     assert_equal "1 + 2 = 3", inst.render(Object.new, '_answer' => 3)
   end
 
+  class CustomGeneratingMockTemplate < PreparingMockTemplate
+    def precompiled_template(locals)
+      data
+    end
+
+    def precompiled_preamble(locals)
+      options.fetch(:preamble)
+    end
+
+    def precompiled_postamble(locals)
+      options.fetch(:postamble)
+    end
+  end
+
+  test "supports pre/postamble" do
+    inst = CustomGeneratingMockTemplate.new(
+      :preamble => 'buf = []',
+      :postamble => 'buf.join'
+    ) { 'buf << 1' }
+
+    assert_equal "1", inst.render
+  end
+
+  # Special-case for Haml
+  # https://github.com/rtomayko/tilt/issues/193
+  test "supports Array pre/postambles" do
+    inst = CustomGeneratingMockTemplate.new(
+      :preamble => ['buf = ', '[]'],
+      :postamble => ['buf.', 'join']
+    ) { 'buf << 1' }
+
+    # TODO: Use assert_output when we swicth to MiniTest
+    warns = <<-EOF
+precompiled_preamble should return String (not Array)
+precompiled_postamble should return String (not Array)
+EOF
+
+    begin
+      require 'stringio'
+      $stderr = StringIO.new
+      assert_equal "1", inst.render
+      assert_equal warns, $stderr.string
+    ensure
+      $stderr = STDERR
+    end
+  end
+
   class Person
     CONSTANT = "Bob"
 
