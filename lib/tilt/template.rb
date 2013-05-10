@@ -1,5 +1,8 @@
+require 'thread'
+
 module Tilt
   TOPOBJECT = Object.superclass || Object
+  LOCK = Mutex.new
 
   # Base class for template implementations. Subclasses must implement
   # the #prepare method and one of the #evaluate or #precompiled_template
@@ -236,8 +239,10 @@ module Tilt
 
     # The compiled method for the locals keys provided.
     def compiled_method(locals_keys)
-      @compiled_method[locals_keys] ||=
-        compile_template_method(locals_keys)
+      LOCK.synchronize do
+        @compiled_method[locals_keys] ||=
+          compile_template_method(locals_keys)
+      end
     end
 
   private
