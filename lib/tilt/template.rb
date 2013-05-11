@@ -198,8 +198,8 @@ module Tilt
       end
 
       # https://github.com/rtomayko/tilt/issues/193
-      warn "precompiled_preamble should return String (not Array)" if preamble.is_a?(Array)
-      warn "precompiled_postamble should return String (not Array)" if postamble.is_a?(Array)
+      warn "#{self.class}#precompiled_preamble should return String (not Array)" if preamble.is_a?(Array)
+      warn "#{self.class}#precompiled_postamble should return String (not Array)" if postamble.is_a?(Array)
       source << [preamble, template, postamble].join("\n")
 
       [source, preamble.count("\n")+1]

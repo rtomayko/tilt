@@ -186,8 +186,8 @@ class TiltTemplateTest < Test::Unit::TestCase
 
     # TODO: Use assert_output when we swicth to MiniTest
     warns = <<-EOF
-precompiled_preamble should return String (not Array)
-precompiled_postamble should return String (not Array)
+TiltTemplateTest::CustomGeneratingMockTemplate#precompiled_preamble should return String (not Array)
+TiltTemplateTest::CustomGeneratingMockTemplate#precompiled_postamble should return String (not Array)
 EOF
 
     begin
