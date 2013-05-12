@@ -30,6 +30,20 @@ module Tilt
       assert_nil @mapping['foo.baz']
     end
 
+    test "can be dup'd" do
+      @mapping.register(Stub, 'foo')
+      other = @mapping.dup
+      assert other.registered?('foo')
+
+      # @mapping doesn't leak to other
+      @mapping.register(Stub, 'bar')
+      refute other.registered?('bar')
+
+      # other doesn't leak to @mapping
+      other.register(Stub, 'baz')
+      refute @mapping.registered?('baz')
+    end
+
     context "lazy with one template class" do
       setup do
         @mapping.register_lazy('MyTemplate', 'my_template', 'mt')

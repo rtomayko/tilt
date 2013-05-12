@@ -7,6 +7,11 @@ module Tilt
       @lazy_map = Hash.new { |h, k| h[k] = [] }
     end
 
+    def initialize_copy(other)
+      @template_map = other.template_map.dup
+      @lazy_map = other.lazy_map.dup
+    end
+
     def register_lazy(class_name, file, *extensions)
       class_name = "Tilt::#{class_name}" if class_name.is_a?(Symbol)
       extensions.each do |ext|
