@@ -1,5 +1,11 @@
 ## master
 
+* Add Tilt.templates_for (#121, judofyr)
+* Add Tilt.current_template (#151, judofyr)
+* Avoid loading all files in tilt.rb (#160, #187, judofyr)
+* Implement lazily required templates classes (#178, #187, judofyr)
+* Move #allows_script and default_mime_type to metadata (#187, judofyr)
+* Introduce Tilt::Mapping (#187, judofyr)
 * Make template compilation thread-safe (#191, judofyr)
 
 ## 1.4.1 (2013-05-08)
