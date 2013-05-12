@@ -6,11 +6,6 @@ task :default => [:test]
 
 # SPECS =====================================================================
 
-desc 'Generate test coverage report'
-task :rcov do
-  sh "rcov -Ilib:test test/*_test.rb"
-end
-
 desc 'Run tests (default)'
 Rake::TestTask.new(:test) do |t|
   t.test_files = FileList['test/*_test.rb']
