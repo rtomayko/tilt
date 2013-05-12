@@ -305,9 +305,9 @@ time when using this template engine within a threaded environment.
 
 ### See also
 
-  * [Liquid for Programmers](http://wiki.github.com/tobi/liquid/liquid-for-programmers)
+  * [Liquid for Programmers](https://wiki.github.com/Shopify/liquid/liquid-for-programmers)
   * [Liquid Docs](http://liquid.rubyforge.org/)
-  * GitHub: [tobi/liquid](http://github.com/tobi/liquid/)
+  * GitHub: [Shopify/liquid](https://github.com/Shopify/liquid/)
 
 
 <a name='radius'></a>

@@ -1,7 +1,9 @@
 require 'tilt'
+require 'thread'
 
 module Tilt
   TOPOBJECT = Object.superclass || Object
+  LOCK = Mutex.new
 
   # Base class for template implementations. Subclasses must implement
   # the #prepare method and one of the #evaluate or #precompiled_template
@@ -208,7 +210,10 @@ module Tilt
         template.force_encoding(template_encoding)
       end
 
-      source << preamble << "\n" << template << "\n" << postamble
+      # https://github.com/rtomayko/tilt/issues/193
+      warn "#{self.class}#precompiled_preamble should return String (not Array)" if preamble.is_a?(Array)
+      warn "#{self.class}#precompiled_postamble should return String (not Array)" if postamble.is_a?(Array)
+      source << [preamble, template, postamble].join("\n")
 
       [source, preamble.count("\n")+1]
     end
@@ -227,7 +232,9 @@ module Tilt
 
     # The compiled method for the locals keys provided.
     def compiled_method(locals_keys)
-      @compiled_method[locals_keys] ||= compile_template_method(locals_keys)
+      LOCK.synchronize do
+        @compiled_method[locals_keys] ||= compile_template_method(locals_keys)
+      end
     end
 
   private
