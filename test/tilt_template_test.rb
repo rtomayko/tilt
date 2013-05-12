@@ -165,30 +165,6 @@ class TiltTemplateTest < MiniTest::Unit::TestCase
     assert_equal "1", inst.render
   end
 
-  # Special-case for Haml
-  # https://github.com/rtomayko/tilt/issues/193
-  test "supports Array pre/postambles" do
-    inst = CustomGeneratingMockTemplate.new(
-      :preamble => ['buf = ', '[]'],
-      :postamble => ['buf.', 'join']
-    ) { 'buf << 1' }
-
-    # TODO: Use assert_output when we swicth to MiniTest
-    warns = <<-EOF
-TiltTemplateTest::CustomGeneratingMockTemplate#precompiled_preamble should return String (not Array)
-TiltTemplateTest::CustomGeneratingMockTemplate#precompiled_postamble should return String (not Array)
-EOF
-
-    begin
-      require 'stringio'
-      $stderr = StringIO.new
-      assert_equal "1", inst.render
-      assert_equal warns, $stderr.string
-    ensure
-      $stderr = STDERR
-    end
-  end
-
   class Person
     CONSTANT = "Bob"
 
