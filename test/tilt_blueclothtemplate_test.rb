@@ -4,7 +4,7 @@ require 'tilt'
 begin
   require 'tilt/bluecloth'
 
-  class BlueClothTemplateTest < MiniTest::Unit::TestCase
+  class BlueClothTemplateTest < Minitest::Test
     test "preparing and evaluating templates on #render" do
       template = Tilt::BlueClothTemplate.new { |t| "# Hello World!" }
       assert_equal "<h1>Hello World!</h1>", template.render

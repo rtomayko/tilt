@@ -4,7 +4,7 @@ require 'tilt'
 require 'tilt/template'
 require 'tempfile'
 
-class TiltTemplateTest < MiniTest::Unit::TestCase
+class TiltTemplateTest < Minitest::Test
 
   class MockTemplate < Tilt::Template
     def prepare
@@ -83,9 +83,8 @@ class TiltTemplateTest < MiniTest::Unit::TestCase
   end
 
   class PreparingMockTemplate < Tilt::Template
-    include MiniTest::Assertions
     def prepare
-      assert !data.nil?
+      raise "data must be set" if data.nil?
       @prepared = true
     end
     def prepared? ; @prepared ; end
@@ -102,11 +101,10 @@ class TiltTemplateTest < MiniTest::Unit::TestCase
   end
 
   class SimpleMockTemplate < PreparingMockTemplate
-    include MiniTest::Assertions
     def evaluate(scope, locals, &block)
-      assert prepared?
-      assert !scope.nil?
-      assert !locals.nil?
+      raise "should be prepared" unless prepared?
+      raise "scope should be present" if scope.nil?
+      raise "locals should be present" if locals.nil?
       "<em>#{@data}</em>"
     end
   end

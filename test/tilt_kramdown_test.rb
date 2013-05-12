@@ -4,7 +4,7 @@ require 'tilt'
 begin
   require 'tilt/kramdown'
 
-  class KramdownTemplateTest < MiniTest::Unit::TestCase
+  class KramdownTemplateTest < Minitest::Test
     test "preparing and evaluating templates on #render" do
       template = Tilt::KramdownTemplate.new { |t| "# Hello World!" }
       assert_equal '<h1 id="hello-world">Hello World!</h1>', template.render.strip

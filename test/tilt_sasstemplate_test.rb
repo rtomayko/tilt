@@ -4,7 +4,7 @@ require 'tilt'
 begin
   require 'tilt/sass'
 
-  class SassTemplateTest < MiniTest::Unit::TestCase
+  class SassTemplateTest < Minitest::Test
     test "is registered for '.sass' files" do
       assert_equal Tilt::SassTemplate, Tilt['test.sass']
     end
@@ -20,7 +20,7 @@ begin
     end
   end
 
-  class ScssTemplateTest < MiniTest::Unit::TestCase
+  class ScssTemplateTest < Minitest::Test
     test "is registered for '.scss' files" do
       assert_equal Tilt::ScssTemplate, Tilt['test.scss']
     end

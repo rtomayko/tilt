@@ -7,7 +7,7 @@ begin
 
   require 'tilt/haml'
 
-  class HamlTemplateTest < MiniTest::Unit::TestCase
+  class HamlTemplateTest < Minitest::Test
     test "registered for '.haml' files" do
       assert_equal Tilt::HamlTemplate, Tilt['test.haml']
     end
@@ -71,7 +71,7 @@ begin
     end
   end
 
-  class CompiledHamlTemplateTest < MiniTest::Unit::TestCase
+  class CompiledHamlTemplateTest < Minitest::Test
     class Scope
     end
 

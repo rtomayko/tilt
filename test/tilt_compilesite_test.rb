@@ -2,7 +2,7 @@ require 'test_helper'
 require 'tilt'
 require 'thread'
 
-class CompileSiteTest < MiniTest::Unit::TestCase
+class CompileSiteTest < Minitest::Test
   def setup
     GC.start
   end

@@ -4,7 +4,7 @@ require 'tilt'
 begin
   require 'tilt/liquid'
 
-  class LiquidTemplateTest < MiniTest::Unit::TestCase
+  class LiquidTemplateTest < Minitest::Test
     test "registered for '.liquid' files" do
       assert_equal Tilt::LiquidTemplate, Tilt['test.liquid']
     end

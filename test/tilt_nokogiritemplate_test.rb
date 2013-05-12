@@ -3,7 +3,7 @@ require 'tilt'
 
 begin
   require 'tilt/nokogiri'
-  class NokogiriTemplateTest < MiniTest::Unit::TestCase
+  class NokogiriTemplateTest < Minitest::Test
     test "registered for '.nokogiri' files" do
       assert_equal Tilt::NokogiriTemplate, Tilt['test.nokogiri']
       assert_equal Tilt::NokogiriTemplate, Tilt['test.xml.nokogiri']

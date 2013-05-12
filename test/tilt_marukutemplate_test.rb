@@ -4,7 +4,7 @@ require 'tilt'
 begin
   require 'tilt/maruku'
 
-  class MarukuTemplateTest < MiniTest::Unit::TestCase
+  class MarukuTemplateTest < Minitest::Test
     test "registered below Kramdown" do
       %w[md mkd markdown].each do |ext|
         lazy = Tilt.lazy_map[ext]

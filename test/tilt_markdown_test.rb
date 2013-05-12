@@ -80,7 +80,7 @@ end
 begin
   require 'tilt/rdiscount'
 
-  class MarkdownRDiscountTest < MiniTest::Unit::TestCase
+  class MarkdownRDiscountTest < Minitest::Test
     include MarkdownTests
     template Tilt::RDiscountTemplate
   end
@@ -91,7 +91,7 @@ end
 begin
   require 'tilt/redcarpet'
 
-  class MarkdownRedcarpetTest < MiniTest::Unit::TestCase
+  class MarkdownRedcarpetTest < Minitest::Test
     include MarkdownTests
     template Tilt::RedcarpetTemplate
     # Doesn't support escaping
@@ -120,7 +120,7 @@ end
 begin
   require 'tilt/bluecloth'
 
-  class MarkdownBlueClothTest < MiniTest::Unit::TestCase
+  class MarkdownBlueClothTest < Minitest::Test
     include MarkdownTests
     template Tilt::BlueClothTemplate
   end
@@ -131,7 +131,7 @@ end
 begin
   require 'tilt/kramdown'
 
-  class MarkdownKramdownTest < MiniTest::Unit::TestCase
+  class MarkdownKramdownTest < Minitest::Test
     include MarkdownTests
     template Tilt::KramdownTemplate
     # Doesn't support escaping
@@ -149,7 +149,7 @@ end
 begin
   require 'tilt/maruku'
 
-  class MarkdownMarukuTest < MiniTest::Unit::TestCase
+  class MarkdownMarukuTest < Minitest::Test
     include MarkdownTests
     template Tilt::MarukuTemplate
     # Doesn't support escaping

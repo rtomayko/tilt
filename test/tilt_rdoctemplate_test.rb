@@ -3,7 +3,7 @@ require 'tilt'
 
 begin
   require 'tilt/rdoc'
-  class RDocTemplateTest < MiniTest::Unit::TestCase
+  class RDocTemplateTest < Minitest::Test
     test "is registered for '.rdoc' files" do
       assert_equal Tilt::RDocTemplate, Tilt['test.rdoc']
     end

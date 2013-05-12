@@ -4,7 +4,7 @@ require 'tilt/mapping'
 
 module Tilt
 
-  class MappingTest < MiniTest::Unit::TestCase
+  class MappingTest < Minitest::Test
     class Stub
     end
 

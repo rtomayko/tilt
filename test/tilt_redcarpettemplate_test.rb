@@ -4,7 +4,7 @@ require 'tilt'
 begin
   require 'tilt/redcarpet'
 
-  class RedcarpetTemplateTest < MiniTest::Unit::TestCase
+  class RedcarpetTemplateTest < Minitest::Test
     test "registered above BlueCloth" do
       %w[md mkd markdown].each do |ext|
         lazy = Tilt.lazy_map[ext]

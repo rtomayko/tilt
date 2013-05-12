@@ -5,7 +5,7 @@ begin
   require 'pathname'
   require 'tilt/less'
 
-  class LessTemplateTest < MiniTest::Unit::TestCase
+  class LessTemplateTest < Minitest::Test
     def assert_similar(a, b)
       assert_equal a.gsub(/\s+/m, ' '), b.gsub(/\s+/m, ' ')
     end

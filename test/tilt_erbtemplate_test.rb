@@ -4,7 +4,7 @@ require 'tilt'
 require 'tilt/erb'
 require 'tempfile'
 
-class ERBTemplateTest < MiniTest::Unit::TestCase
+class ERBTemplateTest < Minitest::Test
   test "registered for '.erb' files" do
     assert_includes Tilt.lazy_map['erb'], ['Tilt::ERBTemplate', 'tilt/erb']
   end
@@ -118,7 +118,7 @@ class ERBTemplateTest < MiniTest::Unit::TestCase
   end
 end
 
-class CompiledERBTemplateTest < MiniTest::Unit::TestCase
+class CompiledERBTemplateTest < Minitest::Test
   def teardown
     GC.start
   end

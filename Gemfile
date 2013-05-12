@@ -19,7 +19,7 @@ gem 'sass'
 gem 'wikicloth'
 gem 'rdoc', (ENV['RDOC_VERSION'] || '> 0')
 
-gem 'minitest', '~> 4.0'
+gem 'minitest', '~> 5.0'
 
 platform :ruby do
   gem 'yajl-ruby'

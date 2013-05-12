@@ -4,7 +4,7 @@ require 'tilt'
 begin
   require 'tilt/creole'
 
-  class CreoleTemplateTest < MiniTest::Unit::TestCase
+  class CreoleTemplateTest < Minitest::Test
     test "is registered for '.creole' files" do
       assert_equal Tilt::CreoleTemplate, Tilt['test.creole']
     end

@@ -6,7 +6,7 @@ require 'minitest/mock'
 # blocks. Note that all setup and teardown blocks must be defined with the
 # block syntax. Adding setup or teardown instance methods defeats the purpose
 # of this library.
-class MiniTest::Unit::TestCase
+class Minitest::Test
   def self.setup(&block)
     define_method :setup do
       super(&block)

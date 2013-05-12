@@ -4,7 +4,7 @@ require 'tilt'
 begin
   require 'tilt/csv'
 
-  class CSVTemplateTest < MiniTest::Unit::TestCase
+  class CSVTemplateTest < Minitest::Test
 
     test "registered for '.rcsv' files" do
       assert_equal Tilt::CSVTemplate, Tilt['rcsv']

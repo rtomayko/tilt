@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'tilt'
 
-class TiltTest < MiniTest::Unit::TestCase
+class TiltTest < Minitest::Test
   class MockTemplate
     attr_reader :args, :block
     def initialize(*args, &block)

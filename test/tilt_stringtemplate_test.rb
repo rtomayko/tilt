@@ -2,7 +2,7 @@ require 'test_helper'
 require 'tilt'
 require 'tilt/string'
 
-class StringTemplateTest < MiniTest::Unit::TestCase
+class StringTemplateTest < Minitest::Test
   test "registered for '.str' files" do
     assert_equal Tilt::StringTemplate, Tilt['test.str']
   end
@@ -74,7 +74,7 @@ class StringTemplateTest < MiniTest::Unit::TestCase
 end
 
 
-class CompiledStringTemplateTest < MiniTest::Unit::TestCase
+class CompiledStringTemplateTest < Minitest::Test
   def teardown
     GC.start
   end

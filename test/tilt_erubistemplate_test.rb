@@ -3,7 +3,7 @@ require 'tilt'
 
 begin
   require 'tilt/erubis'
-  class ErubisTemplateTest < MiniTest::Unit::TestCase
+  class ErubisTemplateTest < Minitest::Test
     test "registered for '.erubis' files" do
       assert_equal Tilt::ErubisTemplate, Tilt['test.erubis']
       assert_equal Tilt::ErubisTemplate, Tilt['test.html.erubis']

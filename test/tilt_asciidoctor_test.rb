@@ -4,7 +4,7 @@ require 'tilt'
 begin
   require 'tilt/asciidoc'
 
-  class AsciidoctorTemplateTest < MiniTest::Unit::TestCase
+  class AsciidoctorTemplateTest < Minitest::Test
     HTML5_OUTPUT = "<div class=\"sect1\"><h2 id=\"_hello_world\">Hello World!</h2><div class=\"sectionbody\"></div></div>"
     DOCBOOK_OUTPUT = "<section id=\"_hello_world\"><title>Hello World!</title></section>"
 

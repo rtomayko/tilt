@@ -4,7 +4,7 @@ require 'tilt'
 begin
   require 'tilt/markaby'
 
-  class MarkabyTiltTest <  MiniTest::Unit::TestCase
+  class MarkabyTiltTest <  Minitest::Test
     def setup
       @block = lambda do |t|
         File.read(File.dirname(__FILE__) + "/#{t.file}")

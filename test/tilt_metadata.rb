@@ -2,7 +2,7 @@ require 'test_helper'
 require 'tilt/template'
 
 module Tilt
-  class TemplateMetadataTest < MiniTest::Unit::TestCase
+  class TemplateMetadataTest < Minitest::Test
     class MyTemplate < Template
       metadata[:global] = 1
       self.default_mime_type = 'text/html'

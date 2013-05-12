@@ -4,7 +4,7 @@ require 'tilt'
 begin
   require 'tilt/yajl'
 
-  class YajlTemplateTest < MiniTest::Unit::TestCase
+  class YajlTemplateTest < Minitest::Test
     test "is registered for '.yajl' files" do
       assert_equal Tilt::YajlTemplate, Tilt['test.yajl']
     end

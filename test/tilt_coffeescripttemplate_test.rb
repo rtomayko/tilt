@@ -4,7 +4,7 @@ require 'tilt'
 begin
   require 'tilt/coffee'
 
-  class CoffeeScriptTemplateTest < MiniTest::Unit::TestCase
+  class CoffeeScriptTemplateTest < Minitest::Test
 
     test "is registered for '.coffee' files" do
       assert_equal Tilt::CoffeeScriptTemplate, Tilt['test.coffee']
