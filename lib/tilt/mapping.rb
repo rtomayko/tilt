@@ -13,7 +13,12 @@ module Tilt
     end
 
     def register_lazy(class_name, file, *extensions)
-      class_name = "Tilt::#{class_name}" if class_name.is_a?(Symbol)
+      # Internal API
+      if class_name.is_a?(Symbol)
+        Tilt.autoload class_name, file
+        class_name = "Tilt::#{class_name}"
+      end
+
       extensions.each do |ext|
         @lazy_map[ext].unshift([class_name, file])
       end
