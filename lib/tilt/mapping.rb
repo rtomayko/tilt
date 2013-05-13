@@ -2,7 +2,7 @@ module Tilt
   class Mapping
     attr_reader :lazy_map, :template_map
 
-    def initialize(options = {})
+    def initialize
       @template_map = Hash.new
       @lazy_map = Hash.new { |h, k| h[k] = [] }
     end
