@@ -177,6 +177,13 @@ module Tilt
           assert_equal 'my_template2', err.message
         end
       end
+
+      test "handles autoloaded constants" do
+        Object.autoload :MyTemplate2, 'my_template2'
+        class ::MyTemplate1; end
+
+        assert_equal MyTemplate1, @mapping['hello.mt']
+      end
     end
 
     test "raises NameError on invalid class name" do
