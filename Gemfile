@@ -1,5 +1,6 @@
 source "http://rubygems.org"
 
+gem 'yard', '~> 0.8.6'
 gem 'minitest', '~> 5.0'
 
 gem 'rake'

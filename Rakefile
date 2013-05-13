@@ -13,6 +13,22 @@ Rake::TestTask.new(:test) do |t|
   t.ruby_opts << '-rubygems' if defined? Gem
 end
 
+# DOCUMENTATION =============================================================
+
+require 'yard'
+YARD::Rake::YardocTask.new do |t|
+  t.files = [
+    'lib/tilt.rb', 'lib/tilt/mapping.rb', 'lib/tilt/template.rb',
+    '-',
+    '*.md', 'docs/*.md',
+  ]
+
+  t.options <<
+    '--no-private' <<
+    '-m' << 'markdown' <<
+    '--asset' << 'docs/common.css:css/common.css'
+end
+
 # PACKAGING =================================================================
 
 begin
