@@ -1,6 +1,9 @@
 Tilt [![Build Status](https://secure.travis-ci.org/rtomayko/tilt.png)](http://travis-ci.org/rtomayko/tilt) [![Dependency Status](https://gemnasium.com/rtomayko/tilt.png)](https://gemnasium.com/rtomayko/tilt)
 ====
 
+**NOTE** The follow file documents the upcoming release of Tilt (2.0). See
+https://github.com/rtomayko/tilt/tree/tilt-1 for the current version.
+
 Tilt is a thin interface over a bunch of different Ruby template engines in
 an attempt to make their usage as generic possible. This is useful for web
 frameworks, static site generators, and other systems that support multiple
@@ -62,7 +65,7 @@ These template engines ship with their own Tilt integration:
 See [TEMPLATES.md][t] for detailed information on template engine
 options and supported features.
 
-[t]: http://github.com/rtomayko/tilt/blob/master/TEMPLATES.md
+[t]: http://github.com/rtomayko/tilt/blob/master/docs/TEMPLATES.md
    "Tilt Template Engine Documentation"
 
 Basic Usage
@@ -82,12 +85,13 @@ libraries (like 'erb' above) at load time. Tilt attempts to lazy require the
 template engine library the first time a template is created but this is
 prone to error in threaded environments.
 
-The `Tilt` module contains generic implementation classes for all supported
+The {Tilt} module contains generic implementation classes for all supported
 template engines. Each template class adheres to the same interface for
 creation and rendering. In the instant gratification example, we let Tilt
 determine the template implementation class based on the filename, but
-`Tilt::Template` implementations can also be used directly:
+{Tilt::Template} implementations can also be used directly:
 
+    require 'tilt/haml'
     template = Tilt::HamlTemplate.new('templates/foo.haml')
     output = template.render
 
@@ -95,6 +99,7 @@ The `render` method takes an optional evaluation scope and locals hash
 arguments. Here, the template is evaluated within the context of the
 `Person` object with locals `x` and `y`:
 
+    require 'tilt/erb'
     template = Tilt::ERBTemplate.new('templates/foo.erb')
     joe = Person.find('joe')
     output = template.render(joe, :x => 35, :y => 42)
@@ -124,11 +129,14 @@ The block passed to `render` is called on `yield`:
 Template Mappings
 -----------------
 
-The `Tilt` module includes methods for associating template implementation
-classes with filename patterns and for locating/instantiating template
-classes based on those associations.
+The {Tilt::Mapping} class includes methods for associating template
+implementation classes with filename patterns and for locating/instantiating
+template classes based on those associations.
 
-The `Tilt::register` method associates a filename pattern with a specific
+The {Tilt} module has a global instance of `Mapping` that is populated with the
+table of template engines above.
+
+The {Tilt.register} method associates a filename pattern with a specific
 template implementation. To use ERB for files ending in a `.bar` extension:
 
      >> Tilt.register Tilt::ERBTemplate, 'bar'
@@ -142,15 +150,12 @@ Retrieving the template class for a file or file extension:
      >> Tilt['haml']
      => Tilt::HamlTemplate
 
-It's also possible to register template file mappings that are more specific
-than a file extension. To use Erubis for `bar.erb` but ERB for all other `.erb`
-files:
+Retrieving a list of template classes for a file:
 
-     >> Tilt.register Tilt::ErubisTemplate, 'bar.erb'
-     >> Tilt.new('views/foo.erb')
-     => Tilt::ERBTemplate
-     >> Tilt.new('views/bar.erb')
-     => Tilt::ErubisTemplate
+    >> Tilt.templates_for('foo.bar')
+    => [Tilt::ERBTemplate]
+    >> Tilt.templates_for('foo.haml.bar')
+    => [Tilt::ERBTemplate, Tilt::HamlTemplate]
 
 The template class is determined by searching for a series of decreasingly
 specific name patterns. When creating a new template with
@@ -161,38 +166,6 @@ mappings:
   2. `foo.html.erb`
   3. `html.erb`
   4. `erb`
-
-### Fallback mode
-
-If there are more than one template class registered for a file extension, Tilt
-will automatically try to load the version that works on your machine:
-
-  1. If any of the template engines has been loaded already: Use that one.
-  2. If not, it will try to initialize each of the classes with an empty template.
-  3. Tilt will use the first that doesn't raise an exception.
-  4. If however *all* of them failed, Tilt will raise the exception of the first
-     template engine, since that was the most preferred one.
-
-Template classes that were registered *last* would be tried first. Because the
-Markdown extensions are registered like this:
-
-    Tilt.register Tilt::BlueClothTemplate, 'md'
-    Tilt.register Tilt::RDiscountTemplate, 'md'
-
-Tilt will first try RDiscount and then BlueCloth. You could say that RDiscount
-has a *higher priority* than BlueCloth.
-
-The fallback mode works nicely when you just need to render an ERB or Markdown
-template, but if you depend on a specific implementation, you should use #prefer:
-
-    # Prefer BlueCloth for all its registered extensions (markdown, mkd, md)
-    Tilt.prefer Tilt::BlueClothTemplate
-
-    # Prefer Erubis for .erb only:
-    Tilt.prefer Tilt::ErubisTemplate, 'erb'
-
-When a file extension has a preferred template class, Tilt will *always* use
-that class, even if it raises an exception.
 
 Encodings
 ---------
