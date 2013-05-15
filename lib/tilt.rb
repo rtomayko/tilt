@@ -1,57 +1,71 @@
 require 'tilt/mapping'
 
+# Namespace for Tilt. This module is not intended to be included anywhere.
 module Tilt
+  # Current version.
   VERSION = '2.0.0'
 
   @default_mapping = Mapping.new
 
+  # @return [Tilt::Mapping] the main mapping object
   def self.default_mapping
     @default_mapping
   end
 
+  # @private
   def self.lazy_map
     default_mapping.lazy_map
   end
 
-  # Register a template implementation by file extension.
+  # @see Tilt::Mapping#register
   def self.register(template_class, *extensions)
     default_mapping.register(template_class, *extensions)
   end
 
+  # @see Tilt::Mapping#register_lazy
   def self.register_lazy(class_name, file, *extensions)
     default_mapping.register_lazy(class_name, file, *extensions)
   end
 
+  # @deprecated Use {register} instead.
   def self.prefer(template_class, *extensions)
     warn "Tilt.prefer has no longer any effect; use Tilt.register"
+    register(template_class, *extensions)
   end
 
-  # Returns true when a template exists on an exact match of the provided file extension
+  # @see Tilt::Mapping#registered?
   def self.registered?(ext)
     default_mapping.registered?(ext)
   end
 
-  # Create a new template for the given file using the file's extension
-  # to determine the the template mapping.
+  # @see Tilt::Mapping#new
   def self.new(file, line=nil, options={}, &block)
     default_mapping.new(file, line, options, &block)
   end
 
-  # Lookup a template class for the given filename or file
-  # extension. Return nil when no implementation is found.
+  # @see Tilt::Mapping#[]
   def self.[](file)
     default_mapping[file]
   end
 
+  # @see Tilt::Mapping#template_for
   def self.template_for(file)
     default_mapping.template_for(file)
   end
 
+  # @see Tilt::Mapping#templates_for
   def self.templates_for(file)
     default_mapping.templates_for(file)
   end
 
-  # NOTE: This is currently an experimental feature and might return nil in the future.
+  # @return the template object that is currently rendering.
+  #
+  # @example
+  #   tmpl = Tilt['index.erb'].new { '<%= Tilt.current_template %>' }
+  #   tmpl.render == tmpl.to_s
+  #
+  # @note This is currently an experimental feature and might return nil
+  #   in the future.
   def self.current_template
     Thread.current[:tilt_current_template]
   end
@@ -59,8 +73,9 @@ module Tilt
   # Extremely simple template cache implementation. Calling applications
   # create a Tilt::Cache instance and use #fetch with any set of hashable
   # arguments (such as those to Tilt.new):
-  #   cache = Tilt::Cache.new
-  #   cache.fetch(path, line, options) { Tilt.new(path, line, options) }
+  #
+  #     cache = Tilt::Cache.new
+  #     cache.fetch(path, line, options) { Tilt.new(path, line, options) }
   #
   # Subsequent invocations return the already loaded template object.
   class Cache
@@ -68,10 +83,12 @@ module Tilt
       @cache = {}
     end
 
+    # @see Cache
     def fetch(*key)
       @cache[key] ||= yield
     end
 
+    # Clears the cache.
     def clear
       @cache = {}
     end
