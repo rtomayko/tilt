@@ -25,6 +25,7 @@ YARD::Rake::YardocTask.new do |t|
 
   t.options <<
     '--no-private' <<
+    '--protected' <<
     '-m' << 'markdown' <<
     '--asset' << 'docs/common.css:css/common.css'
 end
