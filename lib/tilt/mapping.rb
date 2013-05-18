@@ -1,5 +1,52 @@
 module Tilt
+  # Tilt::Mapping associates file extensions with template implementations.
+  #
+  #     mapping = Tilt::Mapping.new
+  #     mapping.register(Tilt::RDocTemplate, 'rdoc')
+  #     mapping['index.rdoc'] # => Tilt::RDocTemplate
+  #     mapping.new('index.rdoc').render
+  #
+  # You can use {#register} to register a template class by file
+  # extension, {#registered?} to see if a file extension is mapped,
+  # {#[]} to lookup template classes, and {#new} to instantiate template
+  # objects.
+  #
+  # Mapping also supports *lazy* template implementations. Note that regularly
+  # registered template implementations *always* have preference over lazily
+  # registered template implementations. You should use {#register} if you
+  # depend on a specific template implementation and {#register_lazy} if there
+  # are multiple alternatives.
+  #
+  #     mapping = Tilt::Mapping.new
+  #     mapping.register_lazy('RDiscount::Template', 'rdiscount/template', 'md')
+  #     mapping['index.md']
+  #     # => RDiscount::Template
+  #
+  # {#register_lazy} takes a class name, a filename, and a list of file
+  # extensions. When you try to lookup a template name that matches the
+  # file extension, Tilt will automatically try to require the filename and
+  # constantize the class name.
+  #
+  # Unlike {#register}, there can be multiple template implementations
+  # registered lazily to the same file extension. Tilt will attempt to load the
+  # template implementations in order (registered *last* would be tried first),
+  # returning the first which doesn't raise LoadError.
+  #
+  # If all of the registered template implementations fails, Tilt will raise
+  # the exception of the first, since that was the most preferred one.
+  #
+  #     mapping = Tilt::Mapping.new
+  #     mapping.register_lazy('Bluecloth::Template', 'bluecloth/template', 'md')
+  #     mapping.register_lazy('RDiscount::Template', 'rdiscount/template', 'md')
+  #     mapping['index.md']
+  #     # => RDiscount::Template
+  #
+  # In the previous example we say that RDiscount has a *higher priority* than
+  # BlueCloth. Tilt will first try to `require "rdiscount/template"`, falling
+  # back to `require "bluecloth/template"`. If none of these are successful,
+  # the first error will be raised.
   class Mapping
+    # @private
     attr_reader :lazy_map, :template_map
 
     def initialize
@@ -7,11 +54,28 @@ module Tilt
       @lazy_map = Hash.new { |h, k| h[k] = [] }
     end
 
+    # @private
     def initialize_copy(other)
       @template_map = other.template_map.dup
       @lazy_map = other.lazy_map.dup
     end
 
+    # Registrers a lazy template implementation by file extension. You
+    # can have multiple lazy template implementations defined on the
+    # same file extension, in which case the template implementation
+    # defined *last* will be attemted loaded *first*.
+    #
+    # @param class_name [String] Class name of a template class.
+    # @param file [String] Filename where the template class is defined.
+    # @param extensions [Array<String>] List of extensions.
+    # @return [void]
+    #
+    # @example
+    #   mapping.register_lazy 'MyEngine::Template', 'my_engine/template',  'mt'
+    #
+    #   defined?(MyEngine::Template) # => false
+    #   mapping['index.mt'] # => MyEngine::Template
+    #   defined?(MyEngine::Template) # => true
     def register_lazy(class_name, file, *extensions)
       # Internal API
       if class_name.is_a?(Symbol)
@@ -24,21 +88,44 @@ module Tilt
       end
     end
 
+    # Registers a template implementation by file extension. There can only be
+    # one template implementation per file extension, and this method will
+    # override any existing mapping.
+    #
+    # @param template_class
+    # @param extensions [Array<String>] List of extensions.
+    # @return [void]
+    # 
+    # @example
+    #   mapping.register MyEngine::Template, 'mt'
+    #   mapping['index.mt'] # => MyEngine::Template
     def register(template_class, *extensions)
       extensions.each do |ext|
         @template_map[ext] = template_class
       end
     end
 
+    # Checks if a file extension is registered (either eagerly or
+    # lazily) in this mapping.
+    #
+    # @param ext [String] File extension.
+    #
+    # @example
+    #   mapping.registered?('erb')  # => true
+    #   mapping.registered?('nope') # => false
     def registered?(ext)
       @template_map.has_key?(ext.downcase) or lazy?(ext)
     end
 
-    def lazy?(ext)
-      ext = ext.downcase
-      @lazy_map.has_key?(ext) && !@lazy_map[ext].empty?
-    end
-
+    # Instantiates a new template class based on the file.
+    #
+    # @raise [RuntimeError] if there is no template class registered for the
+    #   file name.
+    #
+    # @example
+    #   mapping.new('index.mt') # => instance of MyEngine::Template
+    #
+    # @see Tilt::Template.new
     def new(file, line=nil, options={}, &block)
       if template_class = self[file]
         template_class.new(file, line, options, &block)
@@ -47,6 +134,14 @@ module Tilt
       end
     end
 
+    # Looks up a template class based on file name and/or extension.
+    #
+    # @example
+    #   mapping['views/hello.erb'] # => Tilt::ERBTemplate
+    #   mapping['hello.erb']       # => Tilt::ERBTemplate
+    #   mapping['erb']             # => Tilt::ERBTemplate
+    #
+    # @return [template class]
     def [](file)
       prefix, ext = split(file)
       ext && lookup(ext)
@@ -54,6 +149,15 @@ module Tilt
 
     alias template_for []
 
+    # Looks up a list of template classes based on file name. If the file name
+    # has multiple extensions, it will return all template classes matching the
+    # extensions from the end.
+    #
+    # @example
+    #   mapping.templates_for('views/index.haml.erb')
+    #   # => [Tilt::ERBTemplate, Tilt::HamlTemplate]
+    #
+    # @return [Array<template class>]
     def templates_for(file)
       templates = []
 
@@ -65,6 +169,13 @@ module Tilt
       end
 
       templates
+    end
+
+    private
+
+    def lazy?(ext)
+      ext = ext.downcase
+      @lazy_map.has_key?(ext) && !@lazy_map[ext].empty?
     end
 
     def split(file)

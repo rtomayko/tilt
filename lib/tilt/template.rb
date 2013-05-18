@@ -2,7 +2,9 @@ require 'tilt'
 require 'thread'
 
 module Tilt
+  # @private
   TOPOBJECT = Object.superclass || Object
+  # @private
   LOCK = Mutex.new
 
   # Base class for template implementations. Subclasses must implement
@@ -24,15 +26,19 @@ module Tilt
     attr_reader :options
 
     class << self
+      # An empty Hash that the template engine can populate with various
+      # metadata.
       def metadata
         @metadata ||= {}
       end
 
+      # @deprecated Use `.metadata[:mime_type]` instead.
       def default_mime_type
         warn ".default_mime_type has been replaced with .metadata[:mime_type]"
         metadata[:mime_type]
       end
 
+      # @deprecated Use `.metadata[:mime_type] = val` instead.
       def default_mime_type=(value)
         metadata[:mime_type] = value
       end
@@ -81,23 +87,6 @@ module Tilt
       prepare
     end
 
-    # The encoding of the source data. Defaults to the
-    # default_encoding-option if present. You may override this method
-    # in your template class if you have a better hint of the data's
-    # encoding.
-    def default_encoding
-      @default_encoding
-    end
-
-    def read_template_file
-      data = File.open(file, 'rb') { |io| io.read }
-      if data.respond_to?(:force_encoding)
-        # Set it to the default external (without verifying)
-        data.force_encoding(Encoding.default_external) if Encoding.default_external
-      end
-      data
-    end
-
     # Render the template in the given scope with the locals specified. If a
     # block is given, it is typically available within the template via
     # +yield+.
@@ -124,6 +113,8 @@ module Tilt
       file || '(__TEMPLATE__)'
     end
 
+    # An empty Hash that the template engine can populate with various
+    # metadata.
     def metadata
       if respond_to?(:real_allows_script?)
         self.class.metadata.merge(:allows_script => real_allows_script?)
@@ -134,6 +125,8 @@ module Tilt
 
     # Depricate the usage of allows_script?. Still allow template classes to define it, but 
     # allows_script? will now warn, and #metadata will include it.
+    #
+    # @private
     def self.method_added(name)
       if name == :allows_script?
         return if @defining_allows_script
@@ -147,7 +140,18 @@ module Tilt
       end
     end
 
-  protected
+    protected
+
+    # @!group For template implementations
+
+    # The encoding of the source data. Defaults to the
+    # default_encoding-option if present. You may override this method
+    # in your template class if you have a better hint of the data's
+    # encoding.
+    def default_encoding
+      @default_encoding
+    end
+
     # Do whatever preparation is necessary to setup the underlying template
     # engine. Called immediately after template data is loaded. Instance
     # variables set in this method are available when #evaluate is called.
@@ -199,6 +203,8 @@ module Tilt
     # control over source generation or want to adjust the default line
     # offset. In most cases, overriding the #precompiled_template method is
     # easier and more appropriate.
+    #
+    # @deprecated Use {#precompile} instead.
     def precompiled(locals)
       preamble = precompiled_preamble(locals)
       template = precompiled_template(locals)
@@ -219,16 +225,32 @@ module Tilt
       [source, preamble.count("\n")+1]
     end
 
+    # @deprecated Use {#precompile_template} instead.
     def precompiled_template(locals)
       precompile_template
     end
 
+    # @deprecated Use {#precompile_preamble} instead.
     def precompiled_preamble(locals)
       precompile_preamble
     end
 
+    # @deprecated Use {#precompile_postamble} instead.
     def precompiled_postamble(locals)
       precompile_postamble
+    end
+
+    # !@endgroup
+
+    private
+
+    def read_template_file
+      data = File.open(file, 'rb') { |io| io.read }
+      if data.respond_to?(:force_encoding)
+        # Set it to the default external (without verifying)
+        data.force_encoding(Encoding.default_external) if Encoding.default_external
+      end
+      data
     end
 
     # The compiled method for the locals keys provided.
@@ -238,7 +260,6 @@ module Tilt
       end
     end
 
-  private
     def local_extraction(local_keys)
       local_keys.map do |k|
         if k.to_s =~ /\A[a-z_][a-zA-Z_0-9]*\z/
