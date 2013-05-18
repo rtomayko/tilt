@@ -29,7 +29,6 @@ module Tilt
 
   # @deprecated Use {register} instead.
   def self.prefer(template_class, *extensions)
-    warn "Tilt.prefer has no longer any effect; use Tilt.register"
     register(template_class, *extensions)
   end
 
