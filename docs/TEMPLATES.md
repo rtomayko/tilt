@@ -457,17 +457,23 @@ To wrap a Markdown formatted document with a layout:
 ### Options
 
 Every implementation of Markdown *should* support these options, but there are
-some known problems with the Kramdown and Maruku engines.
+some known problems with the Kramdown and Maruku engines. 
 
 #### `:smartypants => true|false`
 
-Set `true` to enable [Smarty Pants][smartypants]
-style punctuation replacement.
+Set `true` to enable [Smarty Pants][smartypants] style punctuation replacement.
+
+In Kramdown this option only applies to smart quotes. It will apply a
+subset of Smarty Pants (e.g. `...` to `…`) regardless of any option.
+
+Maruku ignores this option and always applies smart quotes (and nothing else).
 
 #### `:escape_html => true|false`
 
 Set `true` disallow raw HTML in Markdown contents. HTML is converted to
 literal text by escaping `<` characters.
+
+Kramdown and Maruku doesn't support this option.
 
 ### See also
 
