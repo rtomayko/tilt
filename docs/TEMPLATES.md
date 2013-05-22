@@ -1,7 +1,7 @@
 Tilt Templates
 ==============
 
-(See <https://github.com/rtomayko/tilt/blob/master/TEMPLATES.md> for a rendered,
+(See <https://github.com/rtomayko/tilt/blob/master/docs/TEMPLATES.md> for a rendered,
 HTML-version of this file).
 
 While all Tilt templates use the same basic interface for template loading and
