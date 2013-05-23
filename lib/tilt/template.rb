@@ -92,7 +92,7 @@ module Tilt
     def render(scope=Object.new, locals={}, &block)
       current_template = Thread.current[:tilt_current_template]
       Thread.current[:tilt_current_template] = self
-      evaluate(scope, locals, &block)
+      evaluate(scope, locals || {}, &block)
     ensure
       Thread.current[:tilt_current_template] = current_template
     end

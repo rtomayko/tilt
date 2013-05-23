@@ -140,6 +140,12 @@ class TiltTemplateTest < Minitest::Test
     assert_equal "1 + 2 = 3", inst.render(Object.new, '_answer' => 3)
   end
 
+  test "template_source with nil locals" do
+    inst = SourceGeneratingMockTemplate.new { |t| 'Hey' }
+    assert_equal 'Hey', inst.render(Object.new, nil)
+    assert inst.prepared?
+  end
+
   class CustomGeneratingMockTemplate < PreparingMockTemplate
     def precompiled_template(locals)
       data
