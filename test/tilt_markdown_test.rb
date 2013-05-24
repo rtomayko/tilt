@@ -98,6 +98,10 @@ begin
     undef test_escape_html_true
 
     def test_smarty_pants_true
+      super
+    rescue Minitest::Assertion
+      # Old versions of Redcarpet didn't handle '' correctly, but pretty much
+      # everything else.
       html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
       assert_equal "<p>Hello “World'' – This is — a test …</p>", html
     end
