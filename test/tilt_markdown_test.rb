@@ -98,12 +98,9 @@ begin
     undef test_escape_html_true
 
     def test_smarty_pants_true
-      super
-    rescue Minitest::Assertion
-      # Old versions of Redcarpet didn't handle '' correctly, but pretty much
-      # everything else.
+      # Various versions of Redcarpet support various versions of Smart pants.
       html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
-      assert_equal "<p>Hello “World'' – This is — a test …</p>", html
+      assert_match /<p>Hello “World(''|”) – This is — a test …<\/p>/, html
     end
 
     def test_fenced_code_blocks_with_lang
