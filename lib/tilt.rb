@@ -129,4 +129,7 @@ module Tilt
   register_lazy :StringTemplate,       'tilt/string',    'str'
   register_lazy :WikiClothTemplate,    'tilt/wikicloth', 'wiki', 'mediawiki', 'mw'
   register_lazy :YajlTemplate,         'tilt/yajl',      'yajl'
+
+  # External template engines
+  register_lazy 'Slim::Template',      'slim',           'slim'
 end
