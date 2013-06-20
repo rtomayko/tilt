@@ -186,7 +186,7 @@ tmpl = Tilt.new('hello.erb', :default_encoding => 'Big5')
 
 Ultimately it's up to the template engine how to handle the encoding: It might
 respect `:default_encoding`, it might always assume it's UTF-8 (like
-CoffeScript), or it can do its own encoding detection.
+CoffeeScript), or it can do its own encoding detection.
 
 Template Compilation
 --------------------
