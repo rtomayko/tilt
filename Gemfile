@@ -9,6 +9,7 @@ group :engines do
   gem 'asciidoctor', '>= 0.1.0'
   gem 'builder'
   gem 'coffee-script'
+  gem 'livescript'
   gem 'contest'
   gem 'creole'
   gem 'erubis'
