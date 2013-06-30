@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
     lib/tilt/erb.rb
     lib/tilt/etanni.rb
     lib/tilt/haml.rb
+    lib/tilt/handlebars.rb
     lib/tilt/liquid.rb
     lib/tilt/markaby.rb
     lib/tilt/markdown.rb
@@ -64,6 +65,7 @@ Gem::Specification.new do |s|
     test/tilt_etannitemplate_test.rb
     test/tilt_fallback_test.rb
     test/tilt_hamltemplate_test.rb
+    test/tilt_handlebars_test.rb
     test/tilt_kramdown_test.rb
     test/tilt_lesstemplate_test.less
     test/tilt_lesstemplate_test.rb
