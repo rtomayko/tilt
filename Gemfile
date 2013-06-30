@@ -13,6 +13,7 @@ group :engines do
   gem 'creole'
   gem 'erubis'
   gem 'haml', '>= 2.2.11', '< 4'
+  gem 'handlebars'
   gem 'kramdown'
   gem 'less'
   gem 'liquid'

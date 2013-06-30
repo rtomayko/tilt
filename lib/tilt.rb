@@ -116,6 +116,7 @@ module Tilt
   register_lazy :CreoleTemplate,       'tilt/creole',    'wiki', 'creole'
   register_lazy :EtanniTemplate,       'tilt/etanni',    'etn', 'etanni'
   register_lazy :HamlTemplate,         'tilt/haml',      'haml'
+  register_lazy :HandlebarsTemplate,   'tilt/handlebars','handlebars', 'hbs'
   register_lazy :LessTemplate,         'tilt/less',      'less'
   register_lazy :LiquidTemplate,       'tilt/liquid',    'liquid'
   register_lazy :MarkabyTemplate,      'tilt/markaby',   'mab'
