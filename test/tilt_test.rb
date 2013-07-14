@@ -48,7 +48,10 @@ class TiltTest < Test::Unit::TestCase
   end
 
   test "looking up non-existant template class" do
-    assert_nil Tilt['none']
+    length = Tilt.mappings.length
+    assert_nil Tilt['hello.world']
+    assert !Tilt.mappings.has_key?("")
+    assert_equal length, Tilt.mappings.length
   end
 
   test "accessing template class mappings at Tilt::mappings" do

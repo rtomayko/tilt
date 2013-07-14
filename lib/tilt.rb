@@ -73,6 +73,8 @@ module Tilt
       pattern.sub!(/^[^.]*\.?/, '')
     end
 
+    return nil if pattern.empty?
+
     # Try to find a preferred engine.
     preferred_klass = @preferred_mappings[pattern]
     return preferred_klass if preferred_klass
