@@ -154,28 +154,6 @@ module Tilt
       method.bind(scope).call(locals, &block)
     end
 
-    def precompile
-      precompiled([])
-    end
-
-    # A string containing the (Ruby) source code for the template. The
-    # default Template#evaluate implementation requires either this
-    # method or the #precompiled method be overridden. When defined,
-    # the base Template guarantees correct file/line handling, locals
-    # support, custom scopes, proper encoding, and support for template
-    # compilation.
-    def precompile_template
-      raise NotImplementedError
-    end
-
-    def precompile_preamble
-      ''
-    end
-
-    def precompile_postamble
-      ''
-    end
-
     # Generates all template source by combining the preamble, template, and
     # postamble and returns a two-tuple of the form: [source, offset], where
     # source is the string containing (Ruby) source code for the template and
@@ -185,12 +163,10 @@ module Tilt
     # control over source generation or want to adjust the default line
     # offset. In most cases, overriding the #precompiled_template method is
     # easier and more appropriate.
-    #
-    # @deprecated Use {#precompile} instead.
-    def precompiled(locals)
-      preamble = precompiled_preamble(locals)
-      template = precompiled_template(locals)
-      postamble = precompiled_postamble(locals)
+    def precompiled(local_keys)
+      preamble = precompiled_preamble(local_keys)
+      template = precompiled_template(local_keys)
+      postamble = precompiled_postamble(local_keys)
       source = ''
 
       # Ensure that our generated source code has the same encoding as the
@@ -207,19 +183,22 @@ module Tilt
       [source, preamble.count("\n")+1]
     end
 
-    # @deprecated Use {#precompile_template} instead.
-    def precompiled_template(locals)
-      precompile_template
+    # A string containing the (Ruby) source code for the template. The
+    # default Template#evaluate implementation requires either this
+    # method or the #precompiled method be overridden. When defined,
+    # the base Template guarantees correct file/line handling, locals
+    # support, custom scopes, proper encoding, and support for template
+    # compilation.
+    def precompiled_template(local_keys)
+      raise NotImplementedError
     end
 
-    # @deprecated Use {#precompile_preamble} instead.
-    def precompiled_preamble(locals)
-      precompile_preamble
+    def precompiled_preamble(local_keys)
+      ''
     end
 
-    # @deprecated Use {#precompile_postamble} instead.
-    def precompiled_postamble(locals)
-      precompile_postamble
+    def precompiled_postamble(local_keys)
+      ''
     end
 
     # !@endgroup
@@ -253,7 +232,7 @@ module Tilt
     end
 
     def compile_template_method(local_keys)
-      source, offset = self.precompile
+      source, offset = precompiled(local_keys)
       local_code = local_extraction(local_keys)
 
       method_name = "__tilt_#{Thread.current.object_id.abs}"
