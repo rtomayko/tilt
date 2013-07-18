@@ -28,7 +28,7 @@ begin
     test "smartypants when :smart is set" do
       template = Tilt::RDiscountTemplate.new(:smart => true) { |t|
         "OKAY -- 'Smarty Pants'" }
-      assert_equal "<p>OKAY &mdash; &lsquo;Smarty Pants&rsquo;</p>\n",
+      assert_equal "<p>OKAY &ndash; &lsquo;Smarty Pants&rsquo;</p>\n",
         template.render
     end
 
