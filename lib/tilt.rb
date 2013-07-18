@@ -133,4 +133,5 @@ module Tilt
   # External template engines
   register_lazy 'Slim::Template',      'slim',            'slim'
   register_lazy 'Tilt::HandlebarsTemplate',  'tilt/handlebars', 'handlebars', 'hbs'
+  register_lazy 'Tilt::OrgTemplate',   'org-ruby',        'org'
 end
