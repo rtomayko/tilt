@@ -26,7 +26,7 @@ group :engines do
 
   platform :ruby do
     gem 'yajl-ruby'
-    gem 'redcarpet'
+    gem 'redcarpet' if RUBY_VERSION > '1.8.7'
     gem 'rdiscount', '>= 2.1.6' if RUBY_VERSION != '1.9.2'
     gem 'RedCloth'
   end
