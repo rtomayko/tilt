@@ -131,7 +131,7 @@ module Tilt
   register_lazy :YajlTemplate,         'tilt/yajl',      'yajl'
 
   # External template engines
-  register_lazy 'Slim::Template',      'slim',            'slim'
+  register_lazy 'Slim::Template',            'slim',            'slim'
   register_lazy 'Tilt::HandlebarsTemplate',  'tilt/handlebars', 'handlebars', 'hbs'
-  register_lazy 'Tilt::OrgTemplate',   'org-ruby',        'org'
+  register_lazy 'Tilt::OrgTemplate',         'org-ruby',        'org'
 end
