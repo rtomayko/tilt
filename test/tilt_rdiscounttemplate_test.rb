@@ -4,6 +4,8 @@ require 'tilt'
 begin
   require 'tilt/rdiscount'
 
+  puts "RDiscount version: #{::RDiscount::VERSION}"
+
   class RDiscountTemplateTest < Minitest::Test
     test "registered above BlueCloth" do
       %w[md mkd markdown].each do |ext|
