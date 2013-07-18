@@ -519,4 +519,5 @@ using this template engine within a threaded environment.
 [discount]: http://www.pell.portland.or.us/~orc/Code/discount/ "Discount"
 [rdiscount]: http://github.com/rtomayko/rdiscount/ "RDiscount"
 [smartypants]: http://daringfireball.net/projects/smartypants/ "Smarty Pants"
+[markdown]: http://en.wikipedia.org/wiki/Markdown "Markdown"
 
