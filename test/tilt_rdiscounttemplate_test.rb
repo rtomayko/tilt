@@ -5,6 +5,7 @@ begin
   require 'tilt/rdiscount'
 
   puts "RDiscount version: #{::RDiscount::VERSION}"
+  p $LOADED_FEATURES.grep(/rdiscount/)
 
   class RDiscountTemplateTest < Minitest::Test
     test "registered above BlueCloth" do
