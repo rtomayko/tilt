@@ -63,7 +63,7 @@ module Tilt
     # Registrers a lazy template implementation by file extension. You
     # can have multiple lazy template implementations defined on the
     # same file extension, in which case the template implementation
-    # defined *last* will be attemted loaded *first*.
+    # defined *last* will be attempted loaded *first*.
     #
     # @param class_name [String] Class name of a template class.
     # @param file [String] Filename where the template class is defined.
