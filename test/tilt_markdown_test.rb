@@ -67,11 +67,6 @@ module MarkdownTests
     html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => false
     assert_equal "<p>Hello ``World'' -- This is --- a test ...</p>", html
   end
-
-  def test_smarty_pants_true
-    html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
-    assert_equal "<p>Hello “World” — This is —– a test …</p>", html
-  end
 end
 
 begin
@@ -80,6 +75,11 @@ begin
   class MarkdownRDiscountTest < Minitest::Test
     include MarkdownTests
     template Tilt::RDiscountTemplate
+
+    def test_smarty_pants_true
+      html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
+      assert_equal "<p>Hello “World” – This is — a test …</p>", html
+    end
   end
 rescue LoadError => boom
   # It should already be warned in the main tests
@@ -121,6 +121,11 @@ begin
   class MarkdownBlueClothTest < Minitest::Test
     include MarkdownTests
     template Tilt::BlueClothTemplate
+
+    def test_smarty_pants_true
+      html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
+      assert_equal "<p>Hello “World” — This is —– a test …</p>", html
+    end
   end
 rescue LoadError => boom
   # It should already be warned in the main tests
@@ -137,7 +142,6 @@ begin
     # Smarty Pants is *always* on, but doesn't support it fully
     undef test_smarty_pants
     undef test_smarty_pants_false
-    undef test_smarty_pants_true
   end
 rescue LoadError => boom
   # It should already be warned in the main tests
@@ -155,7 +159,6 @@ begin
     # Doesn't support Smarty Pants, and even fails on ``Foobar''
     undef test_smarty_pants
     undef test_smarty_pants_false
-    undef test_smarty_pants_true
     # Smart Quotes is always on
     undef test_smart_quotes
     undef test_smart_quotes_false
