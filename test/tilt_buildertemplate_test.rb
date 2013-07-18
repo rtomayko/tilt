@@ -44,6 +44,11 @@ begin
       assert_equal "<em>Hey Joe!</em>\n", template.render
     end
 
+    test "options can be overridden" do
+      template = Tilt::BuilderTemplate.new(:indent => 0) { "xml.div { xml.em('Hey') }" }
+      assert_equal "<div><em>Hey</em></div>", template.render
+    end
+
     test "allows nesting raw XML" do
       subtemplate = Tilt::BuilderTemplate.new { "xml.em 'Hello World!'" }
       template = Tilt::BuilderTemplate.new { "xml.strong { xml << yield }" }
