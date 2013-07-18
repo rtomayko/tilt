@@ -18,7 +18,7 @@ group :engines do
   gem 'liquid'
   gem 'markaby'
   gem 'maruku'
-  gem 'nokogiri'
+  gem 'nokogiri' if RUBY_VERSION > '1.9.2'
   gem 'radius'
   gem 'sass'
   gem 'wikicloth'
