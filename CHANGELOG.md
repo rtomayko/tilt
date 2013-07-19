@@ -1,5 +1,14 @@
 ## master
 
+* Add Handlebars as external template engine (#204, judofyr, jimothyGator)
+* Add org-ruby as external template engine (#207, judofyr, minad)
+* Documentation typo (#208, elgalu)
+
+## 2.0.0.beta1 (2013-07-16)
+
+* Documentation typo (#202, chip)
+* Use YARD for documentation (#189, judofyr)
+* Add Slim as an external template engine (judofyr)
 * Add Tilt.templates_for (#121, judofyr)
 * Add Tilt.current_template (#151, judofyr)
 * Avoid loading all files in tilt.rb (#160, #187, judofyr)
