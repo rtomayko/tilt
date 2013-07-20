@@ -4,9 +4,6 @@ require 'tilt'
 begin
   require 'tilt/rdiscount'
 
-  puts "RDiscount version: #{::RDiscount::VERSION}"
-  p $LOADED_FEATURES.grep(/rdiscount/)
-
   class RDiscountTemplateTest < Minitest::Test
     test "registered above BlueCloth" do
       %w[md mkd markdown].each do |ext|
@@ -29,6 +26,8 @@ begin
     end
 
     test "smartypants when :smart is set" do
+      puts "RDiscount version: #{::RDiscount::VERSION}"
+      p $LOADED_FEATURES.grep(/rdiscount/)
       template = Tilt::RDiscountTemplate.new(:smart => true) { |t|
         "OKAY -- 'Smarty Pants'" }
       assert_equal "<p>OKAY &ndash; &lsquo;Smarty Pants&rsquo;</p>\n",
