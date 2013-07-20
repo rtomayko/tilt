@@ -61,6 +61,7 @@ These template engines ship with their own Tilt integration:
     Embedded CoffeeScript                        sprockets
     JST                                          sprockets
     Org-mode                   .org              org-ruby (>= 0.6.2)
+    Handlebars                 .hbs, .handlebars tilt-handlebars
 
 See [TEMPLATES.md][t] for detailed information on template engine
 options and supported features.
