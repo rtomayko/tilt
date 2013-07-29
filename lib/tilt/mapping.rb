@@ -106,7 +106,7 @@ module Tilt
       end
 
       extensions.each do |ext|
-        @template_map[ext] = template_class
+        @template_map[ext.to_s] = template_class
       end
     end
 
