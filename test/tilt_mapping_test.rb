@@ -44,6 +44,11 @@ module Tilt
       refute @mapping.registered?('baz')
     end
 
+    test "#extensions_for" do
+      @mapping.register(Stub, 'foo', 'bar')
+      assert_equal ['foo', 'bar'].sort, @mapping.extensions_for(Stub).sort
+    end
+
     test "supports old-style #register" do
       @mapping.register('foo', Stub)
       assert_equal Stub, @mapping['foo']
@@ -60,6 +65,10 @@ module Tilt
 
       test "registered?" do
         assert @mapping.registered?('mt')
+      end
+
+      test "#extensions_for" do
+        assert_equal ['mt'], @mapping.extensions_for('MyTemplate')
       end
 
       test "basic lookup" do

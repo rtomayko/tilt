@@ -176,6 +176,19 @@ module Tilt
       templates
     end
 
+    # Finds the extensions the template class has been registered under.
+    # @param [template class] template_class
+    def extensions_for(template_class)
+      res = []
+      template_map.each do |ext, klass|
+        res << ext if template_class == klass
+      end
+      lazy_map.each do |ext, choices|
+        res << ext if choices.any? { |klass, file| template_class.to_s == klass }
+      end
+      res
+    end
+
     private
 
     def lazy?(ext)
