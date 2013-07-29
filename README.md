@@ -1,4 +1,4 @@
-Tilt [![Build Status](https://secure.travis-ci.org/rtomayko/tilt.png)](http://travis-ci.org/rtomayko/tilt) [![Dependency Status](https://gemnasium.com/rtomayko/tilt.png)](https://gemnasium.com/rtomayko/tilt)
+Tilt [![Gem Version](https://badge.fury.io/rb/tilt.png)](http://badge.fury.io/rb/tilt) [![Build Status](https://secure.travis-ci.org/rtomayko/tilt.png)](http://travis-ci.org/rtomayko/tilt) [![Dependency Status](https://gemnasium.com/rtomayko/tilt.png)](https://gemnasium.com/rtomayko/tilt)
 ====
 
 **NOTE** The follow file documents the upcoming release of Tilt (2.0). See
