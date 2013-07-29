@@ -100,6 +100,11 @@ module Tilt
     #   mapping.register MyEngine::Template, 'mt'
     #   mapping['index.mt'] # => MyEngine::Template
     def register(template_class, *extensions)
+      if template_class.respond_to?(:to_str)
+        # Support register(ext, template_class) too
+        extensions, template_class = [template_class], extensions[0]
+      end
+
       extensions.each do |ext|
         @template_map[ext] = template_class
       end

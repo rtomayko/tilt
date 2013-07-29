@@ -44,6 +44,11 @@ module Tilt
       refute @mapping.registered?('baz')
     end
 
+    test "supports old-style #register" do
+      @mapping.register('foo', Stub)
+      assert_equal Stub, @mapping['foo']
+    end
+
     context "lazy with one template class" do
       setup do
         @mapping.register_lazy('MyTemplate', 'my_template', 'mt')
