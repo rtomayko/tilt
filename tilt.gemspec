@@ -76,7 +76,7 @@ Gem::Specification.new do |s|
     test/tilt_lesstemplate_test.less
     test/tilt_lesstemplate_test.rb
     test/tilt_liquidtemplate_test.rb
-    test/tilt_mapping.rb
+    test/tilt_mapping_test.rb
     test/tilt_markaby_test.rb
     test/tilt_markdown_test.rb
     test/tilt_marukutemplate_test.rb
