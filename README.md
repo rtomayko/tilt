@@ -5,7 +5,7 @@ Tilt [![Build Status](https://secure.travis-ci.org/rtomayko/tilt.png)](http://tr
 https://github.com/rtomayko/tilt/tree/tilt-1 for the current version.
 
 Tilt is a thin interface over a bunch of different Ruby template engines in
-an attempt to make their usage as generic possible. This is useful for web
+an attempt to make their usage as generic as possible. This is useful for web
 frameworks, static site generators, and other systems that support multiple
 template engines but don't want to code for each of them individually.
 
