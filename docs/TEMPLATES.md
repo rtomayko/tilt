@@ -23,6 +23,7 @@ cross-implementation features.
  * Builder - `Tilt::BuilderTemplate`
  * Markaby - `Tilt::MarkabyTemplate`
  * [Radius](#radius) - `Tilt::RadiusTemplate`
+ * [React JSX](#reactjsx) - `Tile::ReactJSXTemplate`
 
 Tilt also includes support for CSS processors like [LessCSS][lesscss] and
 [Sass][sass], [CoffeeScript][coffee-script] and some simple text formats.
@@ -505,6 +506,21 @@ using this template engine within a threaded environment.
   * [RDiscount][rdiscount]
   * GitHub: [rtomayko/rdiscount][rdiscount]
 
+<a name='reactjsx'></a>
+ReactJSX (`jsx`)
+-----------------------------------
+
+[React][react] is a JavaScript library for building user interfaces.
+[React-JSX][reactjsx] is a bridge to the official React JSX compiler
+
+### Usage
+
+The `Tilt::ReactJSXTemplate` class is registered for all files ending in `.jsx`. 
+
+### See also
+
+  * [React][react]
+  * [React-jSX][reactjsx]
 
 [lesscss]: http://lesscss.org/ "Less CSS"
 [sass]: http://sass-lang.com/ "Sass"
@@ -520,4 +536,6 @@ using this template engine within a threaded environment.
 [rdiscount]: http://github.com/rtomayko/rdiscount/ "RDiscount"
 [smartypants]: http://daringfireball.net/projects/smartypants/ "Smarty Pants"
 [markdown]: http://en.wikipedia.org/wiki/Markdown "Markdown"
+[react]: http://facebook.github.io/react/
+[reactjsx]: https://github.com/ademin/react-jsx "React JSX"
 

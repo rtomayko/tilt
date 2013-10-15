@@ -22,6 +22,7 @@ group :engines do
   gem 'radius'
   gem 'sass'
   gem 'rdoc', (ENV['RDOC_VERSION'] || '> 0')
+  gem 'react-jsx'
 
   platform :ruby do
     gem 'wikicloth'
