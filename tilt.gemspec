@@ -53,6 +53,7 @@ Gem::Specification.new do |s|
     lib/tilt/template.rb
     lib/tilt/wikicloth.rb
     lib/tilt/yajl.rb
+    lib/tilt/reactjsx.rb
     test/markaby/locals.mab
     test/markaby/markaby.mab
     test/markaby/markaby_other_static.mab
@@ -93,6 +94,7 @@ Gem::Specification.new do |s|
     test/tilt_test.rb
     test/tilt_wikiclothtemplate_test.rb
     test/tilt_yajltemplate_test.rb
+    test/tilt_reactjsx_test.rb
     tilt.gemspec
   ]
   # = MANIFEST =

@@ -23,6 +23,7 @@ group :engines do
   gem 'sass'
   gem 'wikicloth'
   gem 'rdoc', (ENV['RDOC_VERSION'] || '> 0')
+  gem 'react-jsx'
 
   platform :ruby do
     gem 'yajl-ruby'
