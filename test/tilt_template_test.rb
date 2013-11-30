@@ -31,6 +31,13 @@ class TiltTemplateTest < Test::Unit::TestCase
     assert_equal File.basename(tempfile.path), inst.basename
   end
 
+  test "initializing with a pathname" do
+    tempfile = Tempfile.new('tilt_template_test')
+    pathname = Pathname.new(tempfile.path)
+    inst = MockTemplate.new(pathname)
+    assert_equal File.basename(pathname.to_path), inst.basename
+  end
+
   class SillyHash < Hash
     def path(arg)
     end
