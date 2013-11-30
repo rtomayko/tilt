@@ -36,7 +36,7 @@ class TiltTemplateTest < Minitest::Test
     tempfile = Tempfile.new('tilt_template_test')
     pathname = Pathname.new(tempfile.path)
     inst = MockTemplate.new(pathname)
-    assert_equal File.basename(pathname.to_path), inst.basename
+    assert_equal File.basename(tempfile.path), inst.basename
   end
 
   class SillyHash < Hash
