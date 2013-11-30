@@ -33,7 +33,7 @@ group :engines do
 
   platform :mri do
     gem 'therubyracer'
-    gem 'bluecloth'
+    gem 'bluecloth' if ENV['BLUECLOTH']
   end
 end
 
