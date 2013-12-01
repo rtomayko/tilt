@@ -1,5 +1,10 @@
 ## master
 
+## 2.0.0 (2013-11-30)
+
+* Support Pathname in Template#new (#219, kabturek)
+* Add Mapping#templates_for (judofyr)
+* Support old-style #register (judofyr)
 * Add Handlebars as external template engine (#204, judofyr, jimothyGator)
 * Add org-ruby as external template engine (#207, judofyr, minad)
 * Documentation typo (#208, elgalu)
