@@ -1,5 +1,7 @@
 ## master
 
+* Fix circular require (#221, amarshall)
+
 ## 2.0.0 (2013-11-30)
 
 * Support Pathname in Template#new (#219, kabturek)
