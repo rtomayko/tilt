@@ -148,7 +148,7 @@ module Tilt
     #
     # @return [template class]
     def [](file)
-      prefix, ext = split(file)
+      _, ext = split(file)
       ext && lookup(ext)
     end
 
