@@ -44,9 +44,9 @@ ARGV.options do |o|
   # list all available template engines
   o.on("-l", "--list") do
     groups = {}
-    Tilt.mappings.each do |pattern,engines|
+    Tilt.lazy_map.each do |pattern,engines|
       engines.each do |engine|
-        key = engine.name.split('::').last.sub(/Template$/, '')
+        key = engine[0].split('::').last.sub(/Template$/, '')
         (groups[key] ||= []) << pattern
       end
     end
