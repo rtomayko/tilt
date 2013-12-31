@@ -1,5 +1,7 @@
 ## master
 
+* Fix Tilt::Mapping bug in Ruby 2.1.0 (9589652c569760298f2647f7a0f9ed4f85129f20)
+* Fix `tilt --list` (#223, Achrome)
 * Fix circular require (#221, amarshall)
 
 ## 2.0.0 (2013-11-30)
