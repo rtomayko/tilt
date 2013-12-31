@@ -256,8 +256,8 @@ module Tilt
 
     def constant_defined?(name)
       name.split('::').inject(Object) do |scope, n|
-        return false unless scope.const_defined?(n)
         return false if scope.autoload?(n) # skip autload
+        return false unless scope.const_defined?(n)
         scope.const_get(n)
       end
     end
