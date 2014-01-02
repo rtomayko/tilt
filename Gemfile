@@ -37,3 +37,8 @@ group :engines do
   end
 end
 
+## WHY do I have to do this?!?
+platform :rbx do
+  gem 'rubysl'
+end
+
