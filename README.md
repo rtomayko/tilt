@@ -1,8 +1,8 @@
 Tilt [![Build Status](https://secure.travis-ci.org/rtomayko/tilt.png)](http://travis-ci.org/rtomayko/tilt) [![Dependency Status](https://gemnasium.com/rtomayko/tilt.png)](https://gemnasium.com/rtomayko/tilt)
 ====
 
-**NOTE** The follow file documents the upcoming release of Tilt (2.0). See
-https://github.com/rtomayko/tilt/tree/tilt-1 for the current version.
+**NOTE** The following file documents the upcoming release of Tilt (2.1). See
+https://github.com/rtomayko/tilt/tree/v2.0.0 for the current version.
 
 Tilt is a thin interface over a bunch of different Ruby template engines in
 an attempt to make their usage as generic as possible. This is useful for web
