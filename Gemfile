@@ -21,10 +21,10 @@ group :engines do
   gem 'nokogiri' if RUBY_VERSION > '1.9.2'
   gem 'radius'
   gem 'sass'
-  gem 'wikicloth'
   gem 'rdoc', (ENV['RDOC_VERSION'] || '> 0')
 
   platform :ruby do
+    gem 'wikicloth'
     gem 'yajl-ruby'
     gem 'redcarpet' if RUBY_VERSION > '1.8.7'
     gem 'rdiscount', '>= 2.1.6' if RUBY_VERSION != '1.9.2'
