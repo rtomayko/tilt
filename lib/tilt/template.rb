@@ -1,4 +1,3 @@
-require 'tilt'
 require 'thread'
 
 module Tilt
