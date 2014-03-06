@@ -1,4 +1,4 @@
-Tilt [![Build Status](https://secure.travis-ci.org/rtomayko/tilt.png)](http://travis-ci.org/rtomayko/tilt) [![Dependency Status](https://gemnasium.com/rtomayko/tilt.png)](https://gemnasium.com/rtomayko/tilt)
+Tilt [![Build Status](https://secure.travis-ci.org/rtomayko/tilt.png)](http://travis-ci.org/rtomayko/tilt) [![Dependency Status](https://gemnasium.com/rtomayko/tilt.png)](https://gemnasium.com/rtomayko/tilt) [![Inline docs](http://inch-pages.github.io/github/rtomayko/tilt.png)](http://inch-pages.github.io/github/rtomayko/tilt)
 ====
 
 **NOTE** The following file documents the current release of Tilt (2.0). See
