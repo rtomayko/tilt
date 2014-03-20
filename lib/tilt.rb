@@ -98,8 +98,8 @@ module Tilt
   # Template Implementations ================================================
 
   # ERB
-  register_lazy :ERBTemplate,    'tilt/erb',    'erb', 'rhtml'
   register_lazy :ErubisTemplate, 'tilt/erubis', 'erb', 'rhtml', 'erubis'
+  register_lazy :ERBTemplate,    'tilt/erb',    'erb', 'rhtml'
 
   # Markdown
   register_lazy :BlueClothTemplate,  'tilt/bluecloth', 'markdown', 'mkd', 'md'

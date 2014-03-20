@@ -14,7 +14,7 @@ begin
         lazy = Tilt.lazy_map[ext]
         erubis_idx = lazy.index { |klass, file| klass == 'Tilt::ErubisTemplate' }
         erb_idx = lazy.index { |klass, file| klass == 'Tilt::ERBTemplate' }
-        assert erubis_idx < erb_idx,
+        assert erubis_idx > erb_idx,
           "#{erubis_idx} should be lower than #{erb_idx}"
       end
     end
