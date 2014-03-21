@@ -28,7 +28,7 @@ begin
     test "removes HTML when :filter_html is set" do
       template = Tilt::MarukuTemplate.new(:filter_html => true) { |t|
         "HELLO <blink>WORLD</blink>" }
-      assert_equal "<p>HELLO </p>", template.render.strip
+      assert_equal "<p>HELLO</p>", template.render.strip
     end
   end
 rescue LoadError => boom
