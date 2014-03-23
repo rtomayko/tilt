@@ -24,44 +24,43 @@ template engines included in the distribution.
 
 Support for these template engines is included with the package:
 
-    ENGINE                     FILE EXTENSIONS         REQUIRED LIBRARIES
-    -------------------------- ----------------------- ----------------------------
-    Asciidoctor                .ad, .adoc, .asciidoc   asciidoctor (>= 0.1.0)
-    ERB                        .erb, .rhtml            none (included ruby stdlib)
-    Interpolated String        .str                    none (included ruby core)
-    Erubis                     .erb, .rhtml, .erubis   erubis
-    Haml                       .haml                   haml
-    Sass                       .sass                   haml (< 3.1) or sass (>= 3.1)
-    Scss                       .scss                   haml (< 3.1) or sass (>= 3.1)
-    Less CSS                   .less                   less
-    Builder                    .builder                builder
-    Liquid                     .liquid                 liquid
-    RDiscount                  .markdown, .mkd, .md    rdiscount
-    Redcarpet                  .markdown, .mkd, .md    redcarpet
-    BlueCloth                  .markdown, .mkd, .md    bluecloth
-    Kramdown                   .markdown, .mkd, .md    kramdown
-    Maruku                     .markdown, .mkd, .md    maruku
-    RedCloth                   .textile                redcloth
-    RDoc                       .rdoc                   rdoc
-    Radius                     .radius                 radius
-    Markaby                    .mab                    markaby
-    Nokogiri                   .nokogiri               nokogiri
-    CoffeeScript               .coffee                 coffee-script (+ javascript)
-    Creole (Wiki markup)       .wiki, .creole          creole
-    WikiCloth (Wiki markup)    .wiki, .mediawiki, .mw  wikicloth
-    Yajl                       .yajl                   yajl-ruby
-    CSV                        .rcsv                   none (Ruby >= 1.9), fastercsv (Ruby < 1.9)
-
+| Engine                  | File Extensions        | Required Libraries                         |
+| ----------------------- | ---------------------- | ------------------------------------------ |
+| Asciidoctor             | .ad, .adoc, .asciidoc  | asciidoctor (>= 0.1.0)                     |
+| ERB                     | .erb, .rhtml           | none (included ruby stdlib)                |
+| InterpolatedString      | .str                   | none (included ruby core)                  |
+| Erubis                  | .erb, .rhtml, .erubis  | erubis                                     |
+| Haml                    | .haml                  | haml                                       |
+| Sass                    | .sass                  | haml (< 3.1) or sass (>= 3.1)              |
+| Scss                    | .scss                  | haml (< 3.1) or sass (>= 3.1)              |
+| Less CSS                | .less                  | less                                       |
+| Builder                 | .builder               | builder                                    |
+| Liquid                  | .markdown, .mkd, .md   | liquid                                     |
+| RDiscount               | .markdown, .mkd, .md   | rdiscount                                  |
+| Redcarpet               | .markdown, .mkd, .md   | redcrpet                                   |
+| BlueCloth               | .markdown, .mkd, .md   | bluecloth                                  |
+| Kramdown                | .markdown, .mkd, .md   | kramdown                                   |
+| Maruku                  | .markdown, .mkd, .md   | maruku                                     |
+| RedCloth                | .textile               | redcloth                                   |
+| RDoc                    | .rdoc                  | rdoc                                       |
+| Radius                  | .radius                | radius                                     |
+| Markaby                 | .mab                   | markaby                                    |
+| Nokogiri                | .nokogiri              | nokogiri                                   |
+| CoffeeScript            | .coffee                | coffee-script (+ javascript)               |
+| Creole (Wiki markup)    | .wiki, .creole         | creole                                     |
+| WikiCloth (Wiki markup) | .wiki, .mediawiki, .mw | wikicloth                                  |
+| Yajl                    | .yajl                  | yajl-ruby                                  |
+| CSV                     | .rcsv                  | none (Ruby >= 1.9), fastercsv (Ruby < 1.9) |
 These template engines ship with their own Tilt integration:
 
-    ENGINE                     FILE EXTENSIONS   REQUIRED LIBRARIES
-    -------------------------- ----------------- ----------------------------
-    Slim                       .slim             slim (>= 0.7)
-    Embedded JavaScript                          sprockets
-    Embedded CoffeeScript                        sprockets
-    JST                                          sprockets
-    Org-mode                   .org              org-ruby (>= 0.6.2)
-    Handlebars                 .hbs, .handlebars tilt-handlebars
+| Engine                | File Extensions  | Required Libraries  |
+| -------------------   | ---------------- | ------------------- |
+| Slim                  | .slim            | slim (>= 0.7)       |
+| Embedded JavaScript   |                  | sprockets           |
+| Embedded CoffeeScript |                  | sprockets           |
+| JST                   |                  | sprockets           |
+| Org-mode              | .org             | org-ruby (>= 0.6.2) |
+| Handlebars            | .hbs, handlebars | tilt-handlebars     |
 
 See [TEMPLATES.md][t] for detailed information on template engine
 options and supported features.
