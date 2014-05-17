@@ -115,6 +115,7 @@ module Tilt
   register_lazy :CoffeeScriptTemplate, 'tilt/coffee',    'coffee'
   register_lazy :CreoleTemplate,       'tilt/creole',    'wiki', 'creole'
   register_lazy :EtanniTemplate,       'tilt/etanni',    'etn', 'etanni'
+  register_lazy :JbuilderTemplate,     'tilt/jbuilder',  'jbuilder'
   register_lazy :HamlTemplate,         'tilt/haml',      'haml'
   register_lazy :LessTemplate,         'tilt/less',      'less'
   register_lazy :LiquidTemplate,       'tilt/liquid',    'liquid'

@@ -51,6 +51,8 @@ Support for these template engines is included with the package:
 | WikiCloth (Wiki markup) | .wiki, .mediawiki, .mw | wikicloth                                  |
 | Yajl                    | .yajl                  | yajl-ruby                                  |
 | CSV                     | .rcsv                  | none (Ruby >= 1.9), fastercsv (Ruby < 1.9) |
+| Jbuilder                | .jbuilder              | jbuilder                                   |
+
 These template engines ship with their own Tilt integration:
 
 | Engine                | File Extensions  | Required Libraries  |
