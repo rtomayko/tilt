@@ -30,6 +30,13 @@ YARD::Rake::YardocTask.new do |t|
     '--asset' << 'docs/common.css:css/common.css'
 end
 
+task :man do
+  require 'ronn'
+  ENV['RONN_MANUAL'] = "Tilt Manual"
+  ENV['RONN_ORGANIZATION'] = "Tilt #{SPEC.version}"
+  sh "ronn -w -s toc -r5 --markdown man/*.ronn"
+end
+
 # PACKAGING =================================================================
 
 begin
