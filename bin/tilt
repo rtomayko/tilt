@@ -10,14 +10,15 @@ when <file> is '-', read template from stdin and use the --type option
 to determine the template's type.
 
 Options
-  -l, --list           List template engines + file patterns and exit
-  -t, --type=<pattern> Use this template engine; required if no <file>
-  -y, --layout=<file>  Use <file> as a layout template
+  -l, --list                List template engines + file patterns and exit
+  -t, --type=<pattern>      Use this template engine; required if no <file>
+  -y, --layout=<file>       Use <file> as a layout template
 
-  -D<name>=<value>     Define variable <name> as <value>
-  --vars=<ruby>        Evaluate <ruby> to Hash and use for variables
+  -D<name>=<value>          Define variable <name> as <value>
+  -d, --define-file=<file>  Load YAML from <file> and use for variables
+  --vars=<ruby>             Evaluate <ruby> to Hash and use for variables
 
-  -h, --help           Show this help message
+  -h, --help                Show this help message
 
 Convert markdown to HTML:
   $ tilt foo.markdown > foo.html
@@ -75,6 +76,15 @@ ARGV.options do |o|
   o.on("-D", "--define=PAIR", String) do |pair|
     key, value = pair.split(/[=:]/, 2)
     locals[key.to_sym] = value
+  end
+
+  # define local variables from YAML or JSON
+  o.on("-d", "--define-file=FILE", String) do |file|
+    require 'yaml'
+    abort "no such define file: #{file}" unless File.exist? file
+    hash = File.open(file, 'r:bom|utf-8') { |f| YAML.load f, file }
+    abort "vars must be a Hash, not #{hash.inspect}" if !hash.is_a?(Hash)
+    hash.each { |key, value| locals[key.to_sym] = value }
   end
 
   # define local variables using a Ruby hash
