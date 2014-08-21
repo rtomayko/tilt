@@ -6,6 +6,7 @@ gem 'minitest', '~> 5.0'
 gem 'rake'
 
 group :engines do
+  gem 'execjs', '~> 2.0.0'
   gem 'asciidoctor', '>= 0.1.0'
   gem 'builder'
   gem 'coffee-script'
