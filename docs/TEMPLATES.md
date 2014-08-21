@@ -23,6 +23,7 @@ cross-implementation features.
  * Builder - `Tilt::BuilderTemplate`
  * Markaby - `Tilt::MarkabyTemplate`
  * [Radius](#radius) - `Tilt::RadiusTemplate`
+ * Jbuilder - `Tilt::JbuilderTemplate`
 
 Tilt also includes support for CSS processors like [LessCSS][lesscss] and
 [Sass][sass], [CoffeeScript][coffee-script] and some simple text formats.

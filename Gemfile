@@ -13,6 +13,7 @@ group :engines do
   gem 'creole'
   gem 'erubis'
   gem 'haml', '>= 2.2.11', '< 4'
+  gem 'jbuilder' if RUBY_VERSION > '1.9.2'
   gem 'kramdown'
   gem 'less'
   gem 'liquid'
