@@ -6,7 +6,8 @@ begin
 
   class AsciidoctorTemplateTest < Minitest::Test
     HTML5_OUTPUT = "<div class=\"sect1\"><h2 id=\"_hello_world\">Hello World!</h2><div class=\"sectionbody\"></div></div>"
-    DOCBOOK_OUTPUT = "<section id=\"_hello_world\"><title>Hello World!</title></section>"
+    DOCBOOK45_OUTPUT = "<section id=\"_hello_world\"><title>Hello World!</title></section>"
+    DOCBOOK5_OUTPUT = "<section xml:id=\"_hello_world\"><title>Hello World!</title></section>"
 
     def strip_space(str)
       str.gsub(/>\s+</, '><').strip
@@ -29,9 +30,14 @@ begin
       assert_equal HTML5_OUTPUT, strip_space(template.render)
     end
 
-    test "preparing and evaluating docbook templates on #render" do
-      template = Tilt::AsciidoctorTemplate.new(:attributes => {"backend" => 'docbook'}) { |t| "== Hello World!" } 
-      assert_equal DOCBOOK_OUTPUT, strip_space(template.render)
+    test "preparing and evaluating docbook 4.5 templates on #render" do
+      template = Tilt::AsciidoctorTemplate.new(:attributes => {"backend" => 'docbook45'}) { |t| "== Hello World!" }
+      assert_equal DOCBOOK45_OUTPUT, strip_space(template.render)
+    end
+
+    test "preparing and evaluating docbook 5 templates on #render" do
+      template = Tilt::AsciidoctorTemplate.new(:attributes => {"backend" => 'docbook5'}) { |t| "== Hello World!" }
+      assert_equal DOCBOOK5_OUTPUT, strip_space(template.render)
     end
 
     test "can be rendered more than once" do
