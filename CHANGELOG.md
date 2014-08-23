@@ -1,5 +1,8 @@
 ## master
 
+* Add man page (#241, josephholsten)
+* Support YAML/JSON data in bin/tilt (#241, josephholsten)
+
 ## 2.0.1 (2014-03-21)
 
 * Fix Tilt::Mapping bug in Ruby 2.1.0 (9589652c569760298f2647f7a0f9ed4f85129f20)
