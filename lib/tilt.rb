@@ -113,6 +113,7 @@ module Tilt
   register_lazy :BuilderTemplate,      'tilt/builder',   'builder'
   register_lazy :CSVTemplate,          'tilt/csv',       'rcsv'
   register_lazy :CoffeeScriptTemplate, 'tilt/coffee',    'coffee'
+  register_lazy :LiveScriptTemplate,   'tilt/livescript','ls'
   register_lazy :CreoleTemplate,       'tilt/creole',    'wiki', 'creole'
   register_lazy :EtanniTemplate,       'tilt/etanni',    'etn', 'etanni'
   register_lazy :HamlTemplate,         'tilt/haml',      'haml'
