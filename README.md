@@ -35,7 +35,7 @@ Support for these template engines is included with the package:
 | Scss                    | .scss                  | haml (< 3.1) or sass (>= 3.1)              |
 | Less CSS                | .less                  | less                                       |
 | Builder                 | .builder               | builder                                    |
-| Liquid                  | .markdown, .mkd, .md   | liquid                                     |
+| Liquid                  | .liquid                | liquid                                     |
 | RDiscount               | .markdown, .mkd, .md   | rdiscount                                  |
 | Redcarpet               | .markdown, .mkd, .md   | redcarpet                                  |
 | BlueCloth               | .markdown, .mkd, .md   | bluecloth                                  |
