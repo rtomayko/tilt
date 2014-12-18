@@ -40,7 +40,7 @@ module Tilt
     end
 
     def generate_renderer
-      renderer = options.delete(:renderer) || ::Redcarpet::Render::HTML
+      renderer = options.delete(:renderer) || ::Redcarpet::Render::HTML.new(options)
       return renderer unless options.delete(:smartypants)
       return renderer if renderer.is_a?(Class) && renderer <= ::Redcarpet::Render::SmartyPants
 

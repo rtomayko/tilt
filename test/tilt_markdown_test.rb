@@ -91,13 +91,16 @@ begin
   class MarkdownRedcarpetTest < Minitest::Test
     include MarkdownTests
     template Tilt::RedcarpetTemplate
-    # Doesn't support escaping
-    undef test_escape_html_true
 
     def test_smarty_pants_true
       # Various versions of Redcarpet support various versions of Smart pants.
       html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
       assert_match /<p>Hello “World(''|”) – This is — a test …<\/p>/, html
+    end
+
+    def test_renderer_options
+      html = nrender "Hello [World](http://example.com)", :smartypants => true, :no_links => true
+      assert_equal "<p>Hello [World](http://example.com)</p>", html
     end
 
     def test_fenced_code_blocks_with_lang
