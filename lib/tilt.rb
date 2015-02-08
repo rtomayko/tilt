@@ -85,7 +85,9 @@ module Tilt
 
     # @see Cache
     def fetch(*key)
-      @cache[key] ||= yield
+      @cache.fetch(key) do
+        @cache[key] = yield
+      end
     end
 
     # Clears the cache.
