@@ -3,7 +3,7 @@ require 'liquid'
 
 module Tilt
   # Liquid template implementation. See:
-  # http://liquid.rubyforge.org/
+  # http://liquidmarkup.org/
   #
   # Liquid is designed to be a *safe* template system and threfore
   # does not provide direct access to execuatable scopes. In order to
