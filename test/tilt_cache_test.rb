@@ -20,6 +20,17 @@ class TiltCacheTest < Minitest::Test
     assert_same template, result
   end
 
+  test "caching nil" do
+    called = false
+    result = @cache.fetch("blah") {called = true; nil}
+    assert_equal true, called
+    assert_nil result
+    called = false
+    result = @cache.fetch("blah") {called = true; :blah}
+    assert_equal false, called
+    assert_nil result
+  end
+
   test "clearing the cache with #clear" do
     template, other = nil
     result = @cache.fetch('hello') { template = Tilt::StringTemplate.new {''} }
