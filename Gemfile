@@ -21,6 +21,7 @@ group :engines do
   gem 'markaby'
   gem 'maruku'
   gem 'nokogiri' if RUBY_VERSION > '1.9.2'
+  gem 'pogo-script'
   gem 'radius'
   gem 'sass'
   gem 'rdoc', (ENV['RDOC_VERSION'] || '> 0')
@@ -43,4 +44,3 @@ end
 platform :rbx do
   gem 'rubysl'
 end
-

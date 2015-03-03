@@ -34,6 +34,7 @@ Tilt also includes support for CSS processors like [LessCSS][lesscss] and
  * [Textile](#redcloth) - `Tilt::RedClothTemplate`
  * Creole - `Tilt::CreoleTemplate`
  * [RDoc](#rdoc) - `Tilt::RDocTemplate`
+ * PogoScript - `Tilt::PogoScriptTemplate`
 
 Tilt has extensive support for Markdown, backed by one of four different
 implementations (depending on which are available on your system):
@@ -509,6 +510,7 @@ using this template engine within a threaded environment.
 [lesscss]: http://lesscss.org/ "Less CSS"
 [sass]: http://sass-lang.com/ "Sass"
 [coffee-script]: http://jashkenas.github.com/coffee-script/ "Coffee Script"
+[pogo-script]: http://pogoscript.org/ "PogoScript"
 [erubis]: http://www.kuwata-lab.com/erubis/ "Erubis"
 [haml]: http://haml.info/ "Haml"
 [liquid]: http://www.liquidmarkup.org/ "Liquid"
