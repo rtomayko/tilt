@@ -83,7 +83,8 @@ Instant gratification:
 It's recommended that calling programs explicitly require template engine
 libraries (like 'erb' above) at load time. Tilt attempts to lazy require the
 template engine library the first time a template is created but this is
-prone to error in threaded environments.
+prone to error in threaded environments.  Using the {Tilt.preload} method
+can avoid this.
 
 The {Tilt} module contains generic implementation classes for all supported
 template engines. Each template class adheres to the same interface for

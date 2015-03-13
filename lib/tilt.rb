@@ -58,6 +58,11 @@ module Tilt
     default_mapping.templates_for(file)
   end
 
+  # @see Tilt::Mapping#preload
+  def self.preload
+    default_mapping.preload
+  end
+
   # @return the template object that is currently rendering.
   #
   # @example
@@ -100,37 +105,37 @@ module Tilt
   # Template Implementations ================================================
 
   # ERB
-  register_lazy :ERBTemplate,    'tilt/erb',    'erb', 'rhtml'
-  register_lazy :ErubisTemplate, 'tilt/erubis', 'erb', 'rhtml', 'erubis'
+  register_lazy :ERBTemplate,    'tilt/erb',    'erb', 'rhtml', :preload_if => :ERB
+  register_lazy :ErubisTemplate, 'tilt/erubis', 'erb', 'rhtml', 'erubis', :preload_if => :Erubis
 
   # Markdown
-  register_lazy :BlueClothTemplate,  'tilt/bluecloth', 'markdown', 'mkd', 'md'
-  register_lazy :MarukuTemplate,     'tilt/maruku',    'markdown', 'mkd', 'md'
-  register_lazy :KramdownTemplate,   'tilt/kramdown',  'markdown', 'mkd', 'md'
-  register_lazy :RDiscountTemplate,  'tilt/rdiscount', 'markdown', 'mkd', 'md'
-  register_lazy :RedcarpetTemplate,  'tilt/redcarpet', 'markdown', 'mkd', 'md'
+  register_lazy :BlueClothTemplate,  'tilt/bluecloth', 'markdown', 'mkd', 'md', :preload_if => :BlueCloth
+  register_lazy :MarukuTemplate,     'tilt/maruku',    'markdown', 'mkd', 'md', :preload_if => :Maruku
+  register_lazy :KramdownTemplate,   'tilt/kramdown',  'markdown', 'mkd', 'md', :preload_if => :Kramdown
+  register_lazy :RDiscountTemplate,  'tilt/rdiscount', 'markdown', 'mkd', 'md', :preload_if => :RDiscount
+  register_lazy :RedcarpetTemplate,  'tilt/redcarpet', 'markdown', 'mkd', 'md', :preload_if => :Redcarpet
 
   # Rest (sorted by name)
-  register_lazy :AsciidoctorTemplate,  'tilt/asciidoc',  'ad', 'adoc', 'asciidoc'
-  register_lazy :BuilderTemplate,      'tilt/builder',   'builder'
-  register_lazy :CSVTemplate,          'tilt/csv',       'rcsv'
-  register_lazy :CoffeeScriptTemplate, 'tilt/coffee',    'coffee'
-  register_lazy :CreoleTemplate,       'tilt/creole',    'wiki', 'creole'
+  register_lazy :AsciidoctorTemplate,  'tilt/asciidoc',  'ad', 'adoc', 'asciidoc', :preload_if => :Asciidoctor
+  register_lazy :BuilderTemplate,      'tilt/builder',   'builder', :preload_if => :Builder
+  register_lazy :CSVTemplate,          'tilt/csv',       'rcsv', :preload_if => [:CVS, :FasterCSV]
+  register_lazy :CoffeeScriptTemplate, 'tilt/coffee',    'coffee', :preload_if => :CoffeeScript
+  register_lazy :CreoleTemplate,       'tilt/creole',    'wiki', 'creole', :preload_if => :Creole
   register_lazy :EtanniTemplate,       'tilt/etanni',    'etn', 'etanni'
-  register_lazy :HamlTemplate,         'tilt/haml',      'haml'
-  register_lazy :LessTemplate,         'tilt/less',      'less'
-  register_lazy :LiquidTemplate,       'tilt/liquid',    'liquid'
-  register_lazy :MarkabyTemplate,      'tilt/markaby',   'mab'
-  register_lazy :NokogiriTemplate,     'tilt/nokogiri',  'nokogiri'
+  register_lazy :HamlTemplate,         'tilt/haml',      'haml', :preload_if => :Haml
+  register_lazy :LessTemplate,         'tilt/less',      'less', :preload_if => :Less
+  register_lazy :LiquidTemplate,       'tilt/liquid',    'liquid', :preload_if => :Liquid
+  register_lazy :MarkabyTemplate,      'tilt/markaby',   'mab', :preload_if => :Markaby
+  register_lazy :NokogiriTemplate,     'tilt/nokogiri',  'nokogiri', :preload_if => :Nokogiri
   register_lazy :PlainTemplate,        'tilt/plain',     'html'
-  register_lazy :RDocTemplate,         'tilt/rdoc',      'rdoc'
-  register_lazy :RadiusTemplate,       'tilt/radius',    'radius'
-  register_lazy :RedClothTemplate,     'tilt/redcloth',  'textile'
-  register_lazy :SassTemplate,         'tilt/sass',      'sass'
-  register_lazy :ScssTemplate,         'tilt/sass',      'scss'
+  register_lazy :RDocTemplate,         'tilt/rdoc',      'rdoc', :preload_if => :RDoc
+  register_lazy :RadiusTemplate,       'tilt/radius',    'radius', :preload_if => :Radius
+  register_lazy :RedClothTemplate,     'tilt/redcloth',  'textile', :preload_if => :RedCloth
+  register_lazy :SassTemplate,         'tilt/sass',      'sass', :preload_if => :Sass
+  register_lazy :ScssTemplate,         'tilt/sass',      'scss', :preload_if => :Sass
   register_lazy :StringTemplate,       'tilt/string',    'str'
-  register_lazy :WikiClothTemplate,    'tilt/wikicloth', 'wiki', 'mediawiki', 'mw'
-  register_lazy :YajlTemplate,         'tilt/yajl',      'yajl'
+  register_lazy :WikiClothTemplate,    'tilt/wikicloth', 'wiki', 'mediawiki', 'mw', :preload_if => :WikiCloth
+  register_lazy :YajlTemplate,         'tilt/yajl',      'yajl', :preload_if => :Yajl
 
   # External template engines
   register_lazy 'Slim::Template',            'slim',            'slim'
