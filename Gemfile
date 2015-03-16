@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'yard', '~> 0.8.6'
 gem 'ronn', '~> 0.7.3'
 gem 'minitest', '~> 5.0'
+gem 'pdf-reader', '~> 1.3.3'
 
 gem 'rake'
 
@@ -20,6 +21,7 @@ group :engines do
   gem 'liquid'
   gem 'markaby'
   gem 'maruku'
+  gem 'prawn', '>= 2.0.0'
   gem 'nokogiri' if RUBY_VERSION > '1.9.2'
   gem 'radius'
   gem 'sass'
