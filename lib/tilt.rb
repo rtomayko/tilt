@@ -123,6 +123,7 @@ module Tilt
   register_lazy :MarkabyTemplate,      'tilt/markaby',   'mab'
   register_lazy :NokogiriTemplate,     'tilt/nokogiri',  'nokogiri'
   register_lazy :PlainTemplate,        'tilt/plain',     'html'
+  register_lazy :PrawnTemplate,        'tilt/prawn',     'prawn'
   register_lazy :RDocTemplate,         'tilt/rdoc',      'rdoc'
   register_lazy :RadiusTemplate,       'tilt/radius',    'radius'
   register_lazy :RedClothTemplate,     'tilt/redcloth',  'textile'
