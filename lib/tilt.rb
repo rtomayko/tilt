@@ -118,7 +118,7 @@ module Tilt
   # Rest (sorted by name)
   register_lazy :AsciidoctorTemplate,  'tilt/asciidoc',  'ad', 'adoc', 'asciidoc', :preload_if => :Asciidoctor
   register_lazy :BuilderTemplate,      'tilt/builder',   'builder', :preload_if => :Builder
-  register_lazy :CSVTemplate,          'tilt/csv',       'rcsv', :preload_if => [:CVS, :FasterCSV]
+  register_lazy :CSVTemplate,          'tilt/csv',       'rcsv', :preload_if => [:CSV, :FasterCSV]
   register_lazy :CoffeeScriptTemplate, 'tilt/coffee',    'coffee', :preload_if => :CoffeeScript
   register_lazy :CreoleTemplate,       'tilt/creole',    'wiki', 'creole', :preload_if => :Creole
   register_lazy :EtanniTemplate,       'tilt/etanni',    'etn', 'etanni'
