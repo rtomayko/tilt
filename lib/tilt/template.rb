@@ -5,6 +5,8 @@ module Tilt
   TOPOBJECT = Object.superclass || Object
   # @private
   LOCK = Mutex.new
+  # @private
+  SYMBOL_ARRAY_SORTABLE = RUBY_VERSION >= '1.9'
 
   # Base class for template implementations. Subclasses must implement
   # the #prepare method and one of the #evaluate or #precompiled_template
@@ -151,7 +153,13 @@ module Tilt
     # This method is only used by source generating templates. Subclasses that
     # override render() may not support all features.
     def evaluate(scope, locals, &block)
-      method = compiled_method(locals.keys)
+      locals_keys = locals.keys
+      if SYMBOL_ARRAY_SORTABLE
+        locals_keys.sort!
+      else
+        locals_keys.sort!{|x, y| x.to_s <=> y.to_s}
+      end
+      method = compiled_method(locals_keys)
       method.bind(scope).call(locals, &block)
     end
 
