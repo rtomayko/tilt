@@ -33,6 +33,11 @@ begin
       assert_equal "<p>Hey unknown!</p>\n", template.render(nil)
     end
 
+    test 'evaluating in invalid, frozen scope' do
+      template = Tilt::HamlTemplate.new { |t| '%p Hey unknown!' }
+      assert_raises(ArgumentError) { template.render(Object.new.freeze) }
+    end
+
     test "evaluating in an object scope" do
       template = Tilt::HamlTemplate.new { "%p= 'Hey ' + @name + '!'" }
       scope = Object.new
@@ -97,6 +102,11 @@ begin
       template = Tilt::HamlTemplate.new { |t| '%p Hey unknown!' }
       assert_equal "<p>Hey unknown!</p>\n", template.render
       assert_equal "<p>Hey unknown!</p>\n", template.render(nil)
+    end
+
+    test 'evaluating in invalid, frozen scope' do
+      template = Tilt::HamlTemplate.new { |t| '%p Hey unknown!' }
+      assert_raises(ArgumentError) { template.render(Object.new.freeze) }
     end
 
     test "evaluating in an object scope" do
