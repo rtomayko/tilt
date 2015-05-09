@@ -27,6 +27,12 @@ begin
       assert_equal "<p>Hey Joe!</p>\n", template.render(Object.new, :name => 'Joe')
     end
 
+    test 'evaluating in default/nil scope' do
+      template = Tilt::HamlTemplate.new { |t| '%p Hey unknown!' }
+      assert_equal "<p>Hey unknown!</p>\n", template.render
+      assert_equal "<p>Hey unknown!</p>\n", template.render(nil)
+    end
+
     test "evaluating in an object scope" do
       template = Tilt::HamlTemplate.new { "%p= 'Hey ' + @name + '!'" }
       scope = Object.new
@@ -85,6 +91,12 @@ begin
     test "passing locals" do
       template = Tilt::HamlTemplate.new { "%p= 'Hey ' + name + '!'" }
       assert_equal "<p>Hey Joe!</p>\n", template.render(Scope.new, :name => 'Joe')
+    end
+
+    test 'evaluating in default/nil scope' do
+      template = Tilt::HamlTemplate.new { |t| '%p Hey unknown!' }
+      assert_equal "<p>Hey unknown!</p>\n", template.render
+      assert_equal "<p>Hey unknown!</p>\n", template.render(nil)
     end
 
     test "evaluating in an object scope" do
