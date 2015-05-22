@@ -28,6 +28,11 @@ module Tilt
     default_mapping.register_lazy(class_name, file, *extensions)
   end
 
+  # @see Tilt::Mapping#register_pipeline
+  def self.register_pipeline(ext, options={})
+    default_mapping.register_pipeline(ext, options)
+  end
+
   # @deprecated Use {register} instead.
   def self.prefer(template_class, *extensions)
     register(template_class, *extensions)

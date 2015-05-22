@@ -1,4 +1,5 @@
 require 'monitor'
+require_relative 'pipeline'
 
 module Tilt
   # Tilt::Mapping associates file extensions with template implementations.
@@ -110,6 +111,41 @@ module Tilt
       extensions.each do |ext|
         @template_map[ext.to_s] = template_class
       end
+    end
+
+    # Register a new template class using the given extension that
+    # represents a pipeline of multiple existing template, where the
+    # output from the previous template is used as input to the next
+    # template.
+    #
+    # This will register a template class that processes the input
+    # with the *erb* template processor, and takes the output of
+    # that and feeds it to the *scss* template processor, returning
+    # the output of the *scss* template processor as the result of
+    # the pipeline.
+    #
+    # @param ext [String] Primary extension to register
+    # @option :templates [Array<String>] Extensions of templates
+    #         to execute in order (defaults to the ext.split('.').reverse)
+    # @option :extra_exts [Array<String>] Additional extensions to register
+    # @option String [Hash] Options hash for individual template in the
+    #         pipeline (key is extension).
+    # @return [void]
+    #
+    # @example
+    #   mapping.register_pipeline('scss.erb')
+    #   mapping.register_pipeline('scss.erb', 'erb'=>{:outvar=>'@foo'})
+    #   mapping.register_pipeline('scsserb', :extra_exts => 'scss.erb',
+    #                             :templates=>['erb', 'scss'])
+    def register_pipeline(ext, options={})
+      templates = options[:templates] || ext.split('.').reverse
+      templates = templates.map{|t| [self[t], options[t] || {}]}
+
+      klass = Class.new(Pipeline)
+      klass.send(:const_set, :TEMPLATES, templates)
+
+      register(klass, ext, *Array(options[:extra_exts]))
+      klass
     end
 
     # Checks if a file extension is registered (either eagerly or
