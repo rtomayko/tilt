@@ -81,18 +81,32 @@ module Tilt
   class Cache
     def initialize
       @cache = {}
+      @mutex = Mutex.new
     end
 
     # @see Cache
     def fetch(*key)
-      @cache.fetch(key) do
-        @cache[key] = yield
+      @mutex.synchronize do
+        if @cache.has_key?(key)
+          return @cache[key]
+        end
+      end
+
+      # Creating the value to cache is done unsynchronized so a cache
+      # miss won't delay other threads using the cache.  Multiple
+      # threads may create and cache the "same" value which is ok.
+
+      value = yield
+      @mutex.synchronize do
+        @cache[key] = value
       end
     end
 
     # Clears the cache.
     def clear
-      @cache = {}
+      @mutex.synchronize do
+        @cache = {}
+      end
     end
   end
 
