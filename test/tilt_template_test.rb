@@ -122,6 +122,12 @@ class TiltTemplateTest < Minitest::Test
     assert inst.prepared?
   end
 
+  test 'prepares and evaluates the template on #render with nil arg' do
+    inst = SimpleMockTemplate.new { |t| "Hello World!" }
+    assert_equal '<em>Hello World!</em>', inst.render(nil)
+    assert inst.prepared?
+  end
+
   class SourceGeneratingMockTemplate < PreparingMockTemplate
     def precompiled_template(locals)
       "foo = [] ; foo << %Q{#{data}} ; foo.join"

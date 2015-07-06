@@ -13,6 +13,8 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
+      raise ArgumentError, 'invalid scope: must not be frozen' if scope.frozen?
+
       if @engine.respond_to?(:precompiled_method_return_value, true)
         super
       else
@@ -54,4 +56,3 @@ module Tilt
     end
   end
 end
-

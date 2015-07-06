@@ -92,7 +92,8 @@ module Tilt
     # Render the template in the given scope with the locals specified. If a
     # block is given, it is typically available within the template via
     # +yield+.
-    def render(scope=Object.new, locals={}, &block)
+    def render(scope=nil, locals={}, &block)
+      scope ||= Object.new
       current_template = Thread.current[:tilt_current_template]
       Thread.current[:tilt_current_template] = self
       evaluate(scope, locals || {}, &block)
