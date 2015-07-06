@@ -136,4 +136,5 @@ module Tilt
   register_lazy 'Slim::Template',            'slim',            'slim'
   register_lazy 'Tilt::HandlebarsTemplate',  'tilt/handlebars', 'handlebars', 'hbs'
   register_lazy 'Tilt::OrgTemplate',         'org-ruby',        'org'
+  register_lazy 'Opal::Processor',           'opal',            'opal', 'rb'
 end
