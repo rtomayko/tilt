@@ -43,6 +43,7 @@ Gem::Specification.new do |s|
     lib/tilt/maruku.rb
     lib/tilt/nokogiri.rb
     lib/tilt/plain.rb
+    lib/tilt/pogo.rb
     lib/tilt/radius.rb
     lib/tilt/rdiscount.rb
     lib/tilt/rdoc.rb
@@ -82,6 +83,7 @@ Gem::Specification.new do |s|
     test/tilt_marukutemplate_test.rb
     test/tilt_metadata_test.rb
     test/tilt_nokogiritemplate_test.rb
+    test/tilt_pogoscripttemplate_test.rb
     test/tilt_radiustemplate_test.rb
     test/tilt_rdiscounttemplate_test.rb
     test/tilt_rdoctemplate_test.rb
