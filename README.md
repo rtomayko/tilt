@@ -76,7 +76,7 @@ Instant gratification:
     require 'erb'
     require 'tilt'
     template = Tilt.new('templates/foo.erb')
-    => #<Tilt::ERBTemplate @file="templates/foo.rb" ...>
+    => #<Tilt::ERBTemplate @file="templates/foo.erb" ...>
     output = template.render
     => "Hello world!"
 
