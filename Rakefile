@@ -15,19 +15,22 @@ end
 
 # DOCUMENTATION =============================================================
 
-require 'yard'
-YARD::Rake::YardocTask.new do |t|
-  t.files = [
-    'lib/tilt.rb', 'lib/tilt/mapping.rb', 'lib/tilt/template.rb',
-    '-',
-    '*.md', 'docs/*.md',
-  ]
+begin
+  require 'yard'
+  YARD::Rake::YardocTask.new do |t|
+    t.files = [
+      'lib/tilt.rb', 'lib/tilt/mapping.rb', 'lib/tilt/template.rb',
+      '-',
+      '*.md', 'docs/*.md',
+    ]
 
-  t.options <<
-    '--no-private' <<
-    '--protected' <<
-    '-m' << 'markdown' <<
-    '--asset' << 'docs/common.css:css/common.css'
+    t.options <<
+      '--no-private' <<
+      '--protected' <<
+      '-m' << 'markdown' <<
+      '--asset' << 'docs/common.css:css/common.css'
+  end
+rescue LoadError
 end
 
 task :man do
