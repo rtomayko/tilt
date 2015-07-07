@@ -4,13 +4,16 @@ rvm:
   - 1.8.7
   - 1.9.2
   - 1.9.3
-  - 2.0.0
+  - 2.0
   - 2.1
   - 2.2
   - ruby-head
   - jruby-18mode
   - jruby-19mode
   - rbx
+env:
+  - BUNDLE_WITHOUT=secondary
+  - BUNDLE_WITHOUT=primary
 
 matrix:
   include:
@@ -18,3 +21,4 @@ matrix:
       env: RDOC_VERSION="~>3.0"
   allow_failures:
     - rvm: rbx
+    - env: BUNDLE_WITHOUT=primary
