@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rake'
 gem 'minitest', '~> 5.0'
+gem 'pdf-reader', '~> 1.3.3'
 
 group :development do
   gem 'yard', '~> 0.8.6'
@@ -35,6 +36,7 @@ group :secondary do
   gem 'asciidoctor', '>= 0.1.0'
   gem 'liquid'
   gem 'maruku'
+  gem 'prawn', '>= 2.0.0'
   gem 'nokogiri' if RUBY_VERSION > '1.9.2'
 
   platform :ruby do
