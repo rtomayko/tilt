@@ -24,33 +24,49 @@ template engines included in the distribution.
 
 Support for these template engines is included with the package:
 
-| Engine                  | File Extensions        | Required Libraries                         |
-| ----------------------- | ---------------------- | ------------------------------------------ |
-| Asciidoctor             | .ad, .adoc, .asciidoc  | asciidoctor (>= 0.1.0)                     |
-| ERB                     | .erb, .rhtml           | none (included ruby stdlib)                |
-| InterpolatedString      | .str                   | none (included ruby core)                  |
-| Erubis                  | .erb, .rhtml, .erubis  | erubis                                     |
-| Haml                    | .haml                  | haml                                       |
-| Sass                    | .sass                  | haml (< 3.1) or sass (>= 3.1)              |
-| Scss                    | .scss                  | haml (< 3.1) or sass (>= 3.1)              |
-| Less CSS                | .less                  | less                                       |
-| Builder                 | .builder               | builder                                    |
-| Liquid                  | .liquid                | liquid                                     |
-| RDiscount               | .markdown, .mkd, .md   | rdiscount                                  |
-| Redcarpet               | .markdown, .mkd, .md   | redcarpet                                  |
-| BlueCloth               | .markdown, .mkd, .md   | bluecloth                                  |
-| Kramdown                | .markdown, .mkd, .md   | kramdown                                   |
-| Maruku                  | .markdown, .mkd, .md   | maruku                                     |
-| RedCloth                | .textile               | redcloth                                   |
-| RDoc                    | .rdoc                  | rdoc                                       |
-| Radius                  | .radius                | radius                                     |
-| Markaby                 | .mab                   | markaby                                    |
-| Nokogiri                | .nokogiri              | nokogiri                                   |
-| CoffeeScript            | .coffee                | coffee-script (+ javascript)               |
-| Creole (Wiki markup)    | .wiki, .creole         | creole                                     |
-| WikiCloth (Wiki markup) | .wiki, .mediawiki, .mw | wikicloth                                  |
-| Yajl                    | .yajl                  | yajl-ruby                                  |
-| CSV                     | .rcsv                  | none (Ruby >= 1.9), fastercsv (Ruby < 1.9) |
+| Engine                  | File Extensions        | Required Libraries                         | Maintainer  |
+| ----------------------- | ---------------------- | ------------------------------------------ | ----------- |
+| Asciidoctor             | .ad, .adoc, .asciidoc  | asciidoctor (>= 0.1.0)                     | Community   |
+| ERB                     | .erb, .rhtml           | none (included ruby stdlib)                | Tilt team   |
+| InterpolatedString      | .str                   | none (included ruby core)                  | Tilt team   |
+| Erubis                  | .erb, .rhtml, .erubis  | erubis                                     | Tilt team   |
+| Haml                    | .haml                  | haml                                       | Tilt team   |
+| Sass                    | .sass                  | haml (< 3.1) or sass (>= 3.1)              | Tilt team   |
+| Scss                    | .scss                  | haml (< 3.1) or sass (>= 3.1)              | Tilt team   |
+| Less CSS                | .less                  | less                                       | Tilt team   |
+| Builder                 | .builder               | builder                                    | Tilt team   |
+| Liquid                  | .liquid                | liquid                                     | Community   |
+| RDiscount               | .markdown, .mkd, .md   | rdiscount                                  | Community   |
+| Redcarpet               | .markdown, .mkd, .md   | redcarpet                                  | Community   |
+| BlueCloth               | .markdown, .mkd, .md   | bluecloth                                  | Community   |
+| Kramdown                | .markdown, .mkd, .md   | kramdown                                   | Community   |
+| Maruku                  | .markdown, .mkd, .md   | maruku                                     | Community   |
+| RedCloth                | .textile               | redcloth                                   | Community   |
+| RDoc                    | .rdoc                  | rdoc                                       | Tilt team   |
+| Radius                  | .radius                | radius                                     | Community   |
+| Markaby                 | .mab                   | markaby                                    | Tilt team   |
+| Nokogiri                | .nokogiri              | nokogiri                                   | Community   |
+| CoffeeScript            | .coffee                | coffee-script (+ javascript)               | Tilt team   |
+| Creole (Wiki markup)    | .wiki, .creole         | creole                                     | Community   |
+| WikiCloth (Wiki markup) | .wiki, .mediawiki, .mw | wikicloth                                  | Community   |
+| Yajl                    | .yajl                  | yajl-ruby                                  | Community   |
+| CSV                     | .rcsv                  | none (Ruby >= 1.9), fastercsv (Ruby < 1.9) | Tilt team   |
+
+Every supported template engine has a *maintainer*. Note that this is the
+maintainer of the Tilt integration, not the maintainer of the template engine
+itself. The maintainer is responsible for providing an adequate integration and
+keeping backwards compatibility across Tilt version. Some integrations are
+maintained by the *community*, which is handled in the following way:
+
+- The Tilt team will liberally accept pull requests against the template
+  integration. It's up the community as a whole to make sure the integration
+  stays consistent and backwards compatible over time.
+- Test failures in community-maintained integrations will not be prioritized by
+  the Tilt team and a new version of Tilt might be released even though these
+  tests are failing.
+- Anyone can become a maintainer for a template engine integration they care
+  about. Just open an issue and we'll figure it out.
+
 These template engines ship with their own Tilt integration:
 
 | Engine                | File Extensions  | Required Libraries  |
