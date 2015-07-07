@@ -1,25 +1,23 @@
 require 'test_helper'
 require 'tilt'
-require 'prawn'
-require 'pdf-reader'
-
-class PdfOutput
-  def initialize(pdf_raw)
-    @reader = PDF::Reader.new(StringIO.new(pdf_raw))
-  end
-  
-  def text
-    @reader.pages.map(&:text).join
-  end
-  
-  def page_attributes(page_num=1)
-    @reader.page(page_num).attributes
-  end
-end
-
 
 begin
   require 'tilt/prawn'
+  require 'pdf-reader'
+
+  class PdfOutput
+    def initialize(pdf_raw)
+      @reader = PDF::Reader.new(StringIO.new(pdf_raw))
+    end
+    
+    def text
+      @reader.pages.map(&:text).join
+    end
+    
+    def page_attributes(page_num=1)
+      @reader.page(page_num).attributes
+    end
+  end
 
   class PrawnTemplateTest < Minitest::Test
     test "is registered for '.prawn' files" do
