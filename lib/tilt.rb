@@ -112,6 +112,7 @@ module Tilt
 
   # Rest (sorted by name)
   register_lazy :AsciidoctorTemplate,  'tilt/asciidoc',  'ad', 'adoc', 'asciidoc'
+  register_lazy :BabelTemplate,        'tilt/babel',     'es6', 'babel', 'jsx'
   register_lazy :BuilderTemplate,      'tilt/builder',   'builder'
   register_lazy :CSVTemplate,          'tilt/csv',       'rcsv'
   register_lazy :CoffeeScriptTemplate, 'tilt/coffee',    'coffee'

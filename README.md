@@ -53,6 +53,7 @@ Support for these template engines is included with the package:
 | Yajl                    | .yajl                  | yajl-ruby                                  | Community   |
 | CSV                     | .rcsv                  | none (Ruby >= 1.9), fastercsv (Ruby < 1.9) | Tilt team   |
 | Prawn                   | .prawn                 | prawn (>= 2.0.0)                           | Community   |
+| Babel                   | .es6, .babel, .jsx     | babel-transpiler                           | Tilt team   |
 
 Every supported template engine has a *maintainer*. Note that this is the
 maintainer of the Tilt integration, not the maintainer of the template engine
