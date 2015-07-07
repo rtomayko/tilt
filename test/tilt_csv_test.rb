@@ -48,14 +48,14 @@ begin
     end
 
     test "passing options to engine" do
-      template = Tilt::CSVTemplate.new(col_sep: '|') { 'csv << [1,2,3]' }
+      template = Tilt::CSVTemplate.new(:col_sep => '|') { 'csv << [1,2,3]' }
       assert_equal "1|2|3\n", template.render
     end
 
     test "outvar option" do
       outvar = '@_output'
       scope = Object.new
-      template = Tilt::CSVTemplate.new(outvar: outvar) { 'csv << [1,2,3]' }
+      template = Tilt::CSVTemplate.new(:outvar => outvar) { 'csv << [1,2,3]' }
       output = template.render(scope)
       assert_equal output, scope.instance_variable_get(outvar.to_sym)
     end
