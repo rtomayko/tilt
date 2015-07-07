@@ -45,15 +45,15 @@ module Tilt
     end
 
     def prepare
-      @code =<<-RUBY
-        #{self.class.engine}.generate do |csv|
-          #{data}
-        end
-      RUBY
+      @outvar = options.delete(:outvar) || '_csvout'
     end
 
     def precompiled_template(locals)
-      @code
+      <<-RUBY
+        #{@outvar} = #{self.class.engine}.generate(#{options}) do |csv|
+          #{data}
+        end
+      RUBY
     end
 
     def precompiled(locals)
