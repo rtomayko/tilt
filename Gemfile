@@ -30,7 +30,7 @@ end
 group :secondary do
   gem 'creole'
   gem 'kramdown'
-  gem 'rdoc', (ENV['RDOC_VERSION'] || '> 0')
+  gem 'rdoc'
   gem 'radius'
   gem 'asciidoctor', '>= 0.1.0'
   gem 'liquid'
