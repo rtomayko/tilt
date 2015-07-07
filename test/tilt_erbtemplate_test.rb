@@ -6,11 +6,11 @@ require 'tempfile'
 
 class ERBTemplateTest < Minitest::Test
   test "registered for '.erb' files" do
-    assert_includes Tilt.lazy_map['erb'], ['Tilt::ERBTemplate', 'tilt/erb']
+    assert_includes Tilt.lazy_map['erb'], ['Tilt::ERBTemplate', 'tilt/erb', :ERB]
   end
 
   test "registered for '.rhtml' files" do
-    assert_includes Tilt.lazy_map['rhtml'], ['Tilt::ERBTemplate', 'tilt/erb']
+    assert_includes Tilt.lazy_map['rhtml'], ['Tilt::ERBTemplate', 'tilt/erb', :ERB]
   end
 
   test "loading and evaluating templates on #render" do

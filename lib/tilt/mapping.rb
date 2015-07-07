@@ -18,21 +18,25 @@ module Tilt
   # are multiple alternatives.
   #
   #     mapping = Tilt::Mapping.new
-  #     mapping.register_lazy('RDiscount::Template', 'rdiscount/template', 'md')
+  #     mapping.register_lazy('RDiscount::Template', 'rdiscount/template', 'md', :preload_if => :RDiscount)
   #     mapping['index.md']
   #     # => RDiscount::Template
   #
-  # {#register_lazy} takes a class name, a filename, and a list of file
-  # extensions. When you try to lookup a template name that matches the
-  # file extension, Tilt will automatically try to require the filename and
-  # constantize the class name.
+  # {#register_lazy} takes a class name, a filename, a list of file
+  # extensions, and an optional options Hash. When you try to lookup a
+  # template name that matches the file extension, Tilt will
+  # automatically try to require the filename and constantize the
+  # class name. This will likely result in Tilt giving a
+  # "non thread-safe autoload" warning.  To avoid this warning, specify
+  # :preload_if => :class_name in the {#register_lazy} options, and
+  # call {#preload} after all template engines have been required.
   #
   # Unlike {#register}, there can be multiple template implementations
   # registered lazily to the same file extension. Tilt will attempt to load the
   # template implementations in order (registered *last* would be tried first),
   # returning the first which doesn't raise LoadError.
   #
-  # If all of the registered template implementations fails, Tilt will raise
+  # If all of the registered template implementations fail, Tilt will raise
   # the exception of the first, since that was the most preferred one.
   #
   #     mapping = Tilt::Mapping.new
@@ -60,7 +64,7 @@ module Tilt
       @lazy_map = other.lazy_map.dup
     end
 
-    # Registrers a lazy template implementation by file extension. You
+    # Registers a lazy template implementation by file extension. You
     # can have multiple lazy template implementations defined on the
     # same file extension, in which case the template implementation
     # defined *last* will be attempted loaded *first*.
@@ -68,6 +72,10 @@ module Tilt
     # @param class_name [String] Class name of a template class.
     # @param file [String] Filename where the template class is defined.
     # @param extensions [Array<String>] List of extensions.
+    # @param options [Hash] Optional Hash of options.
+    # @option options [Symbol, Array<Symbol>] :preload_if One or more
+    #   engine classnames as symbols.  If the classname is defined when
+    #   {#preload} is called then file will be required.
     # @return [void]
     #
     # @example
@@ -78,13 +86,14 @@ module Tilt
     #   defined?(MyEngine::Template) # => true
     def register_lazy(class_name, file, *extensions)
       # Internal API
+      options = extensions.last.is_a?(Hash) ? extensions.pop : {}
       if class_name.is_a?(Symbol)
         Tilt.autoload class_name, file
         class_name = "Tilt::#{class_name}"
       end
 
       extensions.each do |ext|
-        @lazy_map[ext].unshift([class_name, file])
+        @lazy_map[ext].unshift([class_name, file, options[:preload_if]])
       end
     end
 
@@ -189,6 +198,21 @@ module Tilt
       res
     end
 
+    # Loads any tilt/* files we may need according to whether a
+    # corresponding engine class has been defined.  This avoids the
+    # "non thread-safe autoload" warning that can happen if we left the
+    # file to be autoloaded.
+    def preload
+      @lazy_map.values.flatten(1).each do |class_name, file, preload_if|
+        if preload_if
+          found = Array(preload_if).any? do |class_name|
+            constant_defined?(class_name.to_s)
+          end
+          require file if found
+        end
+      end
+    end
+
     private
 
     def lazy?(ext)
@@ -237,7 +261,7 @@ module Tilt
 
           if Thread.list.size > 1
             warn "WARN: tilt autoloading '#{file}' in a non thread-safe way; " +
-              "explicit require '#{file}' suggested."
+              "explicit require '#{file}' or calling Tilt.preload suggested."
           end
 
           # It's safe to eval() here because constant_defined? will

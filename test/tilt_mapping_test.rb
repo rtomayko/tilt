@@ -200,6 +200,91 @@ module Tilt
       end
     end
 
+    context "preload" do
+      setup do
+        @mapping.register_lazy('MyTemplate', 'my_template', 'mt', :preload_if => :My)
+      end
+
+      teardown do
+        Object.send :remove_const, :MyTemplate if defined? ::MyTemplate
+        Object.send :remove_const, :My if defined? ::My
+      end
+
+      test "autoloads when engine class is undefined" do
+        required_file = false
+
+        req = proc do |file|
+          assert_equal 'my_template', file
+          class ::MyTemplate; end
+          required_file = true
+          true
+        end
+
+        Tilt.preload
+
+        assert_equal required_file, false
+
+        @mapping.stub :require, req do
+          @mapping['hello.mt']
+        end
+
+        assert required_file
+      end
+
+      test "preloads when engine class is defined" do
+        required_file = false
+
+        req = proc do |file|
+          assert_equal 'my_template', file
+          class ::MyTemplate; end
+          required_file = true
+          true
+        end
+
+        class ::My; end
+        @mapping.stub :require, req do
+          @mapping.preload
+        end
+
+        assert required_file
+      end
+    end
+
+    context "preload with multiple engines" do
+      setup do
+        @mapping.register_lazy('MyTemplate', 'my_template', 'mt', :preload_if => [:My, :My2])
+      end
+
+      teardown do
+        Object.send :remove_const, :MyTemplate if defined? ::MyTemplate
+        Object.send :remove_const, :My if defined? ::My
+        Object.send :remove_const, :My2 if defined? ::My2
+      end
+
+      test "preloads when any one of multiple engine classes is defined" do
+        required_count = 0
+        
+        req = proc do |file|
+          assert_equal 'my_template', file
+          class ::MyTemplate; end
+          required_count += 1
+          true
+        end
+        
+        @mapping.stub :require, req do
+          class ::My; end
+          @mapping.preload
+          Object.send :remove_const, :My
+          
+          class ::My2; end
+          @mapping.preload
+          Object.send :remove_const, :My2
+        end
+        
+        assert_equal 2, required_count
+      end
+    end
+
     test "raises NameError on invalid class name" do
       @mapping.register_lazy '#foo', 'my_template', 'mt'
 
