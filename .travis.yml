@@ -12,8 +12,8 @@ rvm:
   - jruby-19mode
   - rbx
 env:
-  - BUNDLE_WITHOUT=secondary
-  - BUNDLE_WITHOUT=primary
+  - BUNDLE_WITHOUT=secondary:development
+  - BUNDLE_WITHOUT=primary:development
 
 matrix:
   include:
@@ -21,4 +21,4 @@ matrix:
       env: RDOC_VERSION="~>3.0"
   allow_failures:
     - rvm: rbx
-    - env: BUNDLE_WITHOUT=primary
+    - env: BUNDLE_WITHOUT=primary:development

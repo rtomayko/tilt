@@ -1,20 +1,30 @@
 source 'https://rubygems.org'
 
-gem 'yard', '~> 0.8.6'
-gem 'ronn', '~> 0.7.3'
-gem 'minitest', '~> 5.0'
-gem 'contest'
-
 gem 'rake'
+gem 'minitest', '~> 5.0'
+
+group :development do
+  gem 'yard', '~> 0.8.6'
+  gem 'ronn', '~> 0.7.3'
+end
+
+can_execjs = (RUBY_VERSION >= '1.9.3')
 
 group :primary do
   gem 'builder'
-  gem 'erubis'
   gem 'haml', '>= 2.2.11', '< 4'
-  gem 'less'
-  gem 'coffee-script'
+  gem 'erubis'
   gem 'markaby'
   gem 'sass'
+
+  if can_execjs
+    gem 'less'
+    gem 'coffee-script'
+  end
+end
+
+platform :mri do
+  gem 'therubyracer' if can_execjs
 end
 
 group :secondary do
@@ -36,8 +46,7 @@ group :secondary do
   end
 
   platform :mri do
-    gem 'therubyracer'
-    gem 'bluecloth' if ENV['BLUECLOTH']
+    gem 'bluecloth'
   end
 end
 
