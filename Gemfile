@@ -24,7 +24,7 @@ group :primary do
 end
 
 platform :mri do
-  gem 'therubyracer' if can_execjs
+  gem 'duktape', '~> 1.2.1.0' if can_execjs
 end
 
 group :secondary do
