@@ -75,20 +75,6 @@ class TiltTemplateTest < Minitest::Test
     MockTemplate.new { |template| "Hello World!" }
   end
 
-  class InitializingMockTemplate < Tilt::Template
-    @@initialized_count = 0
-    def self.initialized_count
-      @@initialized_count
-    end
-
-    def initialize_engine
-      @@initialized_count += 1
-    end
-
-    def prepare
-    end
-  end
-
   class PreparingMockTemplate < Tilt::Template
     def prepare
       raise "data must be set" if data.nil?

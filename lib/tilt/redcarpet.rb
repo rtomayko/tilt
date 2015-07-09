@@ -35,10 +35,6 @@ module Tilt
   class Redcarpet2Template < Template
     self.default_mime_type = 'text/html'
 
-    def self.engine_initialized?
-      defined? ::Redcarpet::Render and defined? ::Redcarpet::Markdown
-    end
-
     def generate_renderer
       renderer = options.delete(:renderer) || ::Redcarpet::Render::HTML
       return renderer unless options.delete(:smartypants)

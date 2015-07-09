@@ -9,14 +9,6 @@ module Tilt
   class LessTemplate < Template
     self.default_mime_type = 'text/css'
 
-    def self.engine_initialized?
-      defined? ::Less
-    end
-
-    def initialize_engine
-      require_template_library 'less'
-    end
-
     def prepare
       if ::Less.const_defined? :Engine
         @engine = ::Less::Engine.new(data)

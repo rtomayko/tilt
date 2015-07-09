@@ -7,14 +7,6 @@ module Tilt
   class KramdownTemplate < Template
     DUMB_QUOTES = [39, 39, 34, 34]
 
-    def self.engine_initialized?
-      defined? ::Kramdown
-    end
-
-    def initialize_engine
-      require_template_library 'kramdown'
-    end
-
     def prepare
       options[:smart_quotes] = DUMB_QUOTES unless options[:smartypants]
       @engine = Kramdown::Document.new(data, options)
