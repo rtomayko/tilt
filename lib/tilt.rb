@@ -78,12 +78,27 @@ module Tilt
   #     cache.fetch(path, line, options) { Tilt.new(path, line, options) }
   #
   # Subsequent invocations return the already loaded template object.
+  #
+  # @note
+  #   Tilt::Cache is a thin wrapper around Hash.  It has the following
+  #   limitations:
+  #   * Not thread-safe.
+  #   * Size is unbounded.
+  #   * Keys are not copied defensively, and should not be modified after
+  #     being passed to #fetch.  More specifically, the values returned by
+  #     key#hash and key#eql? should not change.
+  #   If this is too limiting for you, use a different cache implementation.
   class Cache
     def initialize
       @cache = {}
     end
 
-    # @see Cache
+    # Caches a value for key, or returns the previously cached value.
+    # If a value has been previously cached for key then it is
+    # returned. Otherwise, block is yielded to and its return value
+    # which may be nil, is cached under key and returned.
+    # @yield
+    # @yieldreturn the value to cache for key
     def fetch(*key)
       @cache.fetch(key) do
         @cache[key] = yield
