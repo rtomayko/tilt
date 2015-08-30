@@ -49,7 +49,7 @@ module Tilt
         <<-RUBY
             #{precompiled_method_return_value}
           ensure
-            @haml_buffer = @haml_buffer.upper
+            @haml_buffer = @haml_buffer.upper if @haml_buffer
           end
         RUBY
       end
