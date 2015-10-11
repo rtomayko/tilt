@@ -10,6 +10,7 @@ rvm:
   - ruby-head
   - jruby-18mode
   - jruby-19mode
+  - jruby-9.0.1.0
   - rbx
 env:
   - BUNDLE_WITHOUT=secondary:development
