@@ -28,7 +28,12 @@ module Tilt
     end
 
     def precompiled_postamble(locals)
-      [@outvar, super].join("\n")
+      # HACK: Fix for JRuby-9.0.1.0
+      <<-RUBY
+        __tilt_long_unique_lvar = #{@outvar}
+        __tilt_long_unique_lvar
+        #{super}
+      RUBY
     end
 
     # Erubis doesn't have ERB's line-off-by-one under 1.9 problem.
