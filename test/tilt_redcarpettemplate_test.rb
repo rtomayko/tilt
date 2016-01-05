@@ -25,11 +25,6 @@ begin
       end
     end
 
-    test "redcarpet2 is our default choice" do
-      template = Tilt::RedcarpetTemplate.new {}
-      assert_equal Tilt::RedcarpetTemplate::Redcarpet2, template.prepare.class
-    end
-
     test "preparing and evaluating templates on #render" do
       template = Tilt::RedcarpetTemplate.new { |t| "# Hello World!" }
       assert_equal "<h1>Hello World!</h1>\n", template.render
