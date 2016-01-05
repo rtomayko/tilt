@@ -11,12 +11,10 @@ rvm:
   - jruby-18mode
   - jruby-19mode
   - jruby-9.0.4.0
-  - rbx
 env:
   - BUNDLE_WITHOUT=secondary:development
   - BUNDLE_WITHOUT=primary:development
 
 matrix:
   allow_failures:
-    - rvm: rbx
     - env: BUNDLE_WITHOUT=primary:development
