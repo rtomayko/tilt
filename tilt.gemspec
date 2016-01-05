@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'tilt'
-  s.version = '2.0.1'
-  s.date = '2014-03-21'
+  s.version = '2.0.2'
+  s.date = '2016-01-05'
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     docs/common.css
     lib/tilt.rb
     lib/tilt/asciidoc.rb
+    lib/tilt/babel.rb
     lib/tilt/bluecloth.rb
     lib/tilt/builder.rb
     lib/tilt/coffee.rb
@@ -43,6 +44,7 @@ Gem::Specification.new do |s|
     lib/tilt/maruku.rb
     lib/tilt/nokogiri.rb
     lib/tilt/plain.rb
+    lib/tilt/prawn.rb
     lib/tilt/radius.rb
     lib/tilt/rdiscount.rb
     lib/tilt/rdoc.rb
@@ -53,6 +55,8 @@ Gem::Specification.new do |s|
     lib/tilt/template.rb
     lib/tilt/wikicloth.rb
     lib/tilt/yajl.rb
+    man/index.txt
+    man/tilt.1.ronn
     test/markaby/locals.mab
     test/markaby/markaby.mab
     test/markaby/markaby_other_static.mab
@@ -61,6 +65,7 @@ Gem::Specification.new do |s|
     test/markaby/yielding.mab
     test/test_helper.rb
     test/tilt_asciidoctor_test.rb
+    test/tilt_babeltemplate.rb
     test/tilt_blueclothtemplate_test.rb
     test/tilt_buildertemplate_test.rb
     test/tilt_cache_test.rb
@@ -82,6 +87,8 @@ Gem::Specification.new do |s|
     test/tilt_marukutemplate_test.rb
     test/tilt_metadata_test.rb
     test/tilt_nokogiritemplate_test.rb
+    test/tilt_prawntemplate.prawn
+    test/tilt_prawntemplate_test.rb
     test/tilt_radiustemplate_test.rb
     test/tilt_rdiscounttemplate_test.rb
     test/tilt_rdoctemplate_test.rb

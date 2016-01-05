@@ -1,4 +1,4 @@
-## master
+## 2.0.2 (2016-01-06)
 
 * Pass options to Redcarpet (#250, hughbien)
 * Haml: Improve error message on frozen self (judofyr)
