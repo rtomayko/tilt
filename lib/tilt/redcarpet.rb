@@ -74,27 +74,10 @@ module Tilt
     end
   end
 
-  # Upskirt Markdown implementation. See:
-  # https://github.com/tanoku/redcarpet
-  #
-  # Supports both Redcarpet 1.x and 2.x
-  class RedcarpetTemplate < Template
-    Redcarpet1 = Redcarpet1Template
-    Redcarpet2 = Redcarpet2Template
-
-    def prepare
-      klass = Redcarpet2.engine_initialized? ? Redcarpet2 : Redcarpet1
-      @engine = klass.new(file, line, options) { data }
-    end
-
-    def evaluate(scope, locals, &block)
-      @engine.evaluate(scope, locals, &block)
-    end
-
-    def allows_script?
-      false
-    end
+  if defined? ::Redcarpet::Render and defined? ::Redcarpet::Markdown
+    RedcarpetTemplate = Redcarpet2Template
+  else
+    RedcarpetTemplate = Redcarpet1Template
   end
-
 end
 
