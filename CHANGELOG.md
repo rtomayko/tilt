@@ -1,5 +1,14 @@
 ## master
 
+* Pass options to Redcarpet (#250, hughbien)
+* Haml: Improve error message on frozen self (judofyr)
+* Add basic support for Babel (judofyr)
+* Add support for .litcoffee (#243, judofyr, mr-vinn)
+* Document Tilt::Cache (#266, tommay)
+* Sort local keys for better caching (#257, jeremyevans)
+* Add more CSV options (#256, Juanmcuello)
+* Add Prawn template (kematzy)
+* Improve cache-miss performance in Tilt::Cache (#251, tommay)
 * Add man page (#241, josephholsten)
 * Support YAML/JSON data in bin/tilt (#241, josephholsten)
 
