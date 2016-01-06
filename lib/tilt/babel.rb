@@ -3,6 +3,8 @@ require 'babel/transpiler'
 
 module Tilt
   class BabelTemplate < Template
+    self.default_mime_type = 'application/javascript'
+
     def prepare
       options[:filename] ||= file
     end
@@ -12,4 +14,3 @@ module Tilt
     end
   end
 end
-
