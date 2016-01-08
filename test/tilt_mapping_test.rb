@@ -57,10 +57,12 @@ module Tilt
     context "lazy with one template class" do
       setup do
         @mapping.register_lazy('MyTemplate', 'my_template', 'mt')
+        @loaded_before = $LOADED_FEATURES.dup
       end
 
       teardown do
         Object.send :remove_const, :MyTemplate if defined? ::MyTemplate
+        $LOADED_FEATURES.replace(@loaded_before)
       end
 
       test "registered?" do
@@ -86,6 +88,21 @@ module Tilt
 
       test "doesn't require when template class is present" do
         class ::MyTemplate; end
+
+        req = proc do |file|
+          flunk "#require shouldn't be called"
+        end
+
+        @mapping.stub :require, req do
+          klass = @mapping['hello.mt']
+          assert_equal ::MyTemplate, klass
+        end
+      end
+
+      test "doesn't require when the template class is autoloaded, and then defined" do
+        Object.autoload :MyTemplate, 'mytemplate'
+        did_load = require 'mytemplate'
+        assert did_load, "mytemplate wasn't freshly required"
 
         req = proc do |file|
           flunk "#require shouldn't be called"
