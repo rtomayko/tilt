@@ -24,7 +24,7 @@ module Tilt
     end
 
     def precompiled_preamble(locals)
-      [super, "#{@outvar} = _buf = ''"].join("\n")
+      [super, "#{@outvar} = _buf = String.new"].join("\n")
     end
 
     def precompiled_postamble(locals)
