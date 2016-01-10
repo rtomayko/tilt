@@ -254,10 +254,35 @@ module Tilt
       raise first_failure if first_failure
     end
 
+    # This is due to a bug in JRuby (see GH issue jruby/jruby#3585)
+    Tilt.autoload :Dummy, "tilt/dummy"
+    require "tilt/dummy"
+    AUTOLOAD_IS_BROKEN = Tilt.autoload?(:Dummy)
+
+    # The proper behavior (in MRI) for autoload? is to
+    # return `false` when the constant/file has been
+    # explicitly required.
+    #
+    # However, in JRuby it returns `true` even after it's
+    # been required. In that case it turns out that `defined?`
+    # returns `"constant"` if it exists and `nil` when it doesn't.
+    # This is actually a second bug: `defined?` should resolve
+    # autoload (aka. actually try to require the file).
+    #
+    # We use the second bug in order to resolve the first bug.
+
     def constant_defined?(name)
       name.split('::').inject(Object) do |scope, n|
-        return false if scope.autoload?(n) # skip autload
-        return false unless scope.const_defined?(n)
+        if scope.autoload?(n)
+          if !AUTOLOAD_IS_BROKEN
+            return false
+          end
+
+          if eval("!defined?(scope::#{n})")
+            return false
+          end
+        end
+        return false if !scope.const_defined?(n)
         scope.const_get(n)
       end
     end
