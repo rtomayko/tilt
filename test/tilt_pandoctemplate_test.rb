@@ -30,7 +30,9 @@ begin
       assert_equal "<p>Here is an inline note.<a href=\"#fn1\" class=\"footnoteRef\" id=\"fnref1\"><sup>1</sup></a></p>\n<div class=\"footnotes\">\n<hr />\n<ol>\n<li id=\"fn1\"><p>Inlines notes are cool!<a href=\"#fnref1\">↩</a></p></li>\n</ol>\n</div>", template.render.strip
     end
 
-    test "passes in Pandoc options"
+    test "passes in Pandoc options" do
+      # TODO
+    end
   end
 rescue LoadError => boom
   warn "Tilt::PandocTemplate (disabled)"
