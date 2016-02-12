@@ -6,8 +6,7 @@ module Tilt
   # http://pandoc.org/
   class PandocTemplate < Template
     def prepare
-      # What about the options?
-      @output = PandocRuby.convert(data, to: :html).strip
+      @output = PandocRuby.convert(data, {:to => :html}, *options).strip
     end
 
     def evaluate(scope, locals, &block)

@@ -180,10 +180,14 @@ begin
   class MarkdownPandocTest < Minitest::Test
     include MarkdownTests
     template Tilt::PandocTemplate
-    # Doesn't support escaping
+
+    # undef test_escape_html
+    undef test_escape_html_false
     undef test_escape_html_true
-    # Smarty Pants is *always* on, but doesn't support it fully
-    undef test_smarty_pants
+    # undef test_smart_quotes
+    undef test_smart_quotes_false
+    undef test_smart_quotes_true
+    # undef test_smarty_pants
     undef test_smarty_pants_false
   end
 rescue LoadError => boom
