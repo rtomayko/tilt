@@ -60,7 +60,7 @@ module Tilt
       @lazy_map = other.lazy_map.dup
     end
 
-    # Registrers a lazy template implementation by file extension. You
+    # Registers a lazy template implementation by file extension. You
     # can have multiple lazy template implementations defined on the
     # same file extension, in which case the template implementation
     # defined *last* will be attempted loaded *first*.
