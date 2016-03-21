@@ -53,6 +53,7 @@ Gem::Specification.new do |s|
     lib/tilt/sass.rb
     lib/tilt/string.rb
     lib/tilt/template.rb
+    lib/tilt/typescript.rb
     lib/tilt/wikicloth.rb
     lib/tilt/yajl.rb
     man/index.txt
@@ -97,6 +98,7 @@ Gem::Specification.new do |s|
     test/tilt_sasstemplate_test.rb
     test/tilt_stringtemplate_test.rb
     test/tilt_template_test.rb
+    test/tilt_typescript_test.rb
     test/tilt_test.rb
     test/tilt_wikiclothtemplate_test.rb
     test/tilt_yajltemplate_test.rb
