@@ -21,6 +21,7 @@ group :primary do
     gem 'less'
     gem 'coffee-script'
     gem 'babel-transpiler'
+    gem 'typescript-node'
   end
 end
 
