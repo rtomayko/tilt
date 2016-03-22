@@ -19,6 +19,11 @@ begin
       assert_match @js, template.render
     end
 
+    test "supports source map" do
+      template = Tilt::TypeScriptTemplate.new(inlineSourceMap: true)  { @ts }
+      assert_match /sourceMappingURL/, template.render
+    end
+
     test "can be rendered more than once" do
       template = Tilt::TypeScriptTemplate.new { @ts }
       3.times { assert_match @js, template.render }

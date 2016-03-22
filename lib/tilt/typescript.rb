@@ -6,10 +6,21 @@ module Tilt
     self.default_mime_type = 'application/javascript'
 
     def prepare
+      @option_args = []
+
+      options.each do |key, value|
+        next unless value
+
+        @option_args << "--#{key}"
+
+        if value != true
+          @option_args << value.to_s
+        end
+      end
     end
 
     def evaluate(scope, locals, &block)
-      @output ||= TypeScript::Node.compile(data, '--target', 'ES5')
+      @output ||= TypeScript::Node.compile(data, *@option_args)
     end
   end
 end
