@@ -49,6 +49,7 @@ class StringTemplateTest < Minitest::Test
       fail 'should have raised an exception'
     rescue => boom
       assert_kind_of NameError, boom
+      assert_equal 1, boom.backtrace.count { |x| x['test.str'] }
       line = boom.backtrace.grep(/^test\.str:/).first
       assert line, "Backtrace didn't contain test.str"
       file, line, meth = line.split(":")

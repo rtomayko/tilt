@@ -189,7 +189,7 @@ class TiltTemplateTest < Minitest::Test
   end
 
   test "template which accesses a constant" do
-    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
+    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{self.class::CONSTANT}!' }
     assert_equal "Hey Bob!", inst.render(Person.new("Joe"))
   end
 

@@ -2,8 +2,6 @@ require 'thread'
 
 module Tilt
   # @private
-  TOPOBJECT = Object.superclass || Object
-  # @private
   LOCK = Mutex.new
   # @private
   SYMBOL_ARRAY_SORTABLE = RUBY_VERSION >= '1.9'
@@ -252,28 +250,23 @@ module Tilt
       method_source = String.new
 
       if method_source.respond_to?(:force_encoding)
-        method_source.force_encoding(source.encoding) 
+        method_source.force_encoding(source.encoding)
       end
 
       method_source << <<-RUBY
-        TOPOBJECT.class_eval do
-          def #{method_name}(locals)
-            Thread.current[:tilt_vars] = [self, locals]
-            class << self
-              this, locals = Thread.current[:tilt_vars]
-              this.instance_eval do
-                #{local_code}
+        def #{method_name}(locals)
+          #{local_code}
       RUBY
       offset += method_source.count("\n")
       method_source << source
-      method_source << "\nend;end;end;end"
+      method_source << "\nend"
       Object.class_eval(method_source, eval_file, line - offset)
       unbind_compiled_method(method_name)
     end
 
     def unbind_compiled_method(method_name)
-      method = TOPOBJECT.instance_method(method_name)
-      TOPOBJECT.class_eval { remove_method(method_name) }
+      method = Object.instance_method(method_name)
+      Object.class_eval { remove_method(method_name) }
       method
     end
 
