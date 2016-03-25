@@ -42,6 +42,30 @@ module Tilt
       def default_mime_type=(value)
         metadata[:mime_type] = value
       end
+
+      # Initializes template with string and automatically sets appropriate
+      # source location. Strips heredoc by default. This can be disabled
+      # by passing `strip: false` option.
+      #
+      # :args: string, file = nil, line = nil, **options
+      def from_heredoc(str, *args)
+        options = args.last.is_a?(Hash) ? args.pop : {}
+        file, line = args
+
+        if options.fetch(:strip) { true }
+          indent = str.scan(/^[ \t]*(?=\S)/)
+          indent = indent && indent.min.size || 0
+          str = str.gsub(/^[ \t]{#{indent}}/, '')
+        end
+
+        unless file
+          location = caller_locations(1, 1)[0]
+          line = location.lineno + 1
+          file = location.path
+        end
+
+        new(file, line) { str }
+      end
     end
 
     # Create a new template with the file, line, and options specified. By

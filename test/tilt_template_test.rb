@@ -11,32 +11,59 @@ class TiltTemplateTest < Minitest::Test
     end
   end
 
+  def assert_location(inst, file, line)
+    assert_equal file, inst.file
+    assert_equal line, inst.line
+  end
+
   test "needs a file or block" do
     assert_raises(ArgumentError) { Tilt::Template.new }
   end
 
   test "initializing with a file" do
     inst = MockTemplate.new('foo.erb') {}
-    assert_equal 'foo.erb', inst.file
+    assert_location inst, 'foo.erb', 1
   end
 
   test "initializing with a file and line" do
     inst = MockTemplate.new('foo.erb', 55) {}
-    assert_equal 'foo.erb', inst.file
-    assert_equal 55, inst.line
+    assert_location inst, 'foo.erb', 55
   end
 
   test "initializing with a tempfile" do
     tempfile = Tempfile.new('tilt_template_test')
     inst = MockTemplate.new(tempfile)
-    assert_equal File.basename(tempfile.path), inst.basename
+    assert_location inst, tempfile.path, 1
   end
 
   test "initializing with a pathname" do
     tempfile = Tempfile.new('tilt_template_test')
     pathname = Pathname.new(tempfile.path)
     inst = MockTemplate.new(pathname)
-    assert_equal File.basename(tempfile.path), inst.basename
+    assert_location inst, tempfile.path, 1
+  end
+
+  test "initializing with heredoc" do
+    inst = MockTemplate.from_heredoc <<-TXT
+      Hello
+    TXT
+    assert_location inst, __FILE__, __LINE__ - 2
+    assert_equal "Hello\n", inst.data
+  end
+
+  test "initializing with not stripped heredoc" do
+    inst = MockTemplate.from_heredoc <<-TXT, strip: false
+      Hello
+    TXT
+    assert_location inst, __FILE__, __LINE__ - 2
+    assert_equal "      Hello\n", inst.data
+  end
+
+  test "initializing with heredoc and custom location" do
+    inst = MockTemplate.from_heredoc <<-TXT, 'test.str', 7
+      Hello
+    TXT
+    assert_location inst, 'test.str', 7
   end
 
   class SillyHash < Hash
