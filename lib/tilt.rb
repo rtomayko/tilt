@@ -119,11 +119,12 @@ module Tilt
   register_lazy :ErubisTemplate, 'tilt/erubis', 'erb', 'rhtml', 'erubis'
 
   # Markdown
-  register_lazy :BlueClothTemplate,  'tilt/bluecloth', 'markdown', 'mkd', 'md'
-  register_lazy :MarukuTemplate,     'tilt/maruku',    'markdown', 'mkd', 'md'
-  register_lazy :KramdownTemplate,   'tilt/kramdown',  'markdown', 'mkd', 'md'
-  register_lazy :RDiscountTemplate,  'tilt/rdiscount', 'markdown', 'mkd', 'md'
-  register_lazy :RedcarpetTemplate,  'tilt/redcarpet', 'markdown', 'mkd', 'md'
+  register_lazy :BlueClothTemplate,    'tilt/bluecloth',    'markdown', 'mkd', 'md'
+  register_lazy :MarukuTemplate,       'tilt/maruku',       'markdown', 'mkd', 'md'
+  register_lazy :KramdownTemplate,     'tilt/kramdown',     'markdown', 'mkd', 'md'
+  register_lazy :RDiscountTemplate,    'tilt/rdiscount',    'markdown', 'mkd', 'md'
+  register_lazy :RedcarpetTemplate,    'tilt/redcarpet',    'markdown', 'mkd', 'md'
+  register_lazy :CommonMarkerTemplate, 'tilt/commonmarker', 'markdown', 'mkd', 'md'
 
   # Rest (sorted by name)
   register_lazy :AsciidoctorTemplate,  'tilt/asciidoc',  'ad', 'adoc', 'asciidoc'
