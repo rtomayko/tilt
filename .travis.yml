@@ -1,4 +1,10 @@
 sudo: false
+addons:
+  apt:
+    sources:
+      - kalakris-cmake
+    packages:
+      - cmake
 language: ruby
 rvm:
   - 1.9.3
