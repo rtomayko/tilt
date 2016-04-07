@@ -37,6 +37,7 @@ group :secondary do
   gem 'asciidoctor', '>= 0.1.0'
   gem 'liquid'
   gem 'maruku'
+  gem 'commonmarker'
 
   if RUBY_VERSION > '1.9.3'
     gem 'prawn', '>= 2.0.0'
