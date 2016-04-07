@@ -41,7 +41,6 @@ group :secondary do
   if RUBY_VERSION > '1.9.3'
     gem 'prawn', '>= 2.0.0'
     gem 'pdf-reader', '~> 1.3.3'
-    gem 'commonmarker'
   end
 
   gem 'nokogiri' if RUBY_VERSION > '1.9.2'
@@ -52,6 +51,7 @@ group :secondary do
     gem 'redcarpet' if RUBY_VERSION > '1.8.7'
     gem 'rdiscount', '>= 2.1.6' if RUBY_VERSION != '1.9.2'
     gem 'RedCloth'
+    gem 'commonmarker' if RUBY_VERSION > '1.9.3'
   end
 
   platform :mri do
