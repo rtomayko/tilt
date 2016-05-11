@@ -119,12 +119,13 @@ module Tilt
   register_lazy :ErubisTemplate, 'tilt/erubis', 'erb', 'rhtml', 'erubis'
 
   # Markdown
-  register_lazy :BlueClothTemplate,  'tilt/bluecloth', 'markdown', 'mkd', 'md'
-  register_lazy :PandocTemplate,     'tilt/pandoc',    'markdown', 'mkd', 'md'
-  register_lazy :MarukuTemplate,     'tilt/maruku',    'markdown', 'mkd', 'md'
-  register_lazy :KramdownTemplate,   'tilt/kramdown',  'markdown', 'mkd', 'md'
-  register_lazy :RDiscountTemplate,  'tilt/rdiscount', 'markdown', 'mkd', 'md'
-  register_lazy :RedcarpetTemplate,  'tilt/redcarpet', 'markdown', 'mkd', 'md'
+  register_lazy :BlueClothTemplate,    'tilt/bluecloth',    'markdown', 'mkd', 'md'
+  register_lazy :MarukuTemplate,       'tilt/maruku',       'markdown', 'mkd', 'md'
+  register_lazy :KramdownTemplate,     'tilt/kramdown',     'markdown', 'mkd', 'md'
+  register_lazy :RDiscountTemplate,    'tilt/rdiscount',    'markdown', 'mkd', 'md'
+  register_lazy :RedcarpetTemplate,    'tilt/redcarpet',    'markdown', 'mkd', 'md'
+  register_lazy :CommonMarkerTemplate, 'tilt/commonmarker', 'markdown', 'mkd', 'md'
+  register_lazy :PandocTemplate,       'tilt/pandoc',       'markdown', 'mkd', 'md'
 
   # Rest (sorted by name)
   register_lazy :AsciidoctorTemplate,  'tilt/asciidoc',  'ad', 'adoc', 'asciidoc'
@@ -148,6 +149,7 @@ module Tilt
   register_lazy :SassTemplate,         'tilt/sass',      'sass'
   register_lazy :ScssTemplate,         'tilt/sass',      'scss'
   register_lazy :StringTemplate,       'tilt/string',    'str'
+  register_lazy :TypeScriptTemplate,   'tilt/typescript', 'ts'
   register_lazy :WikiClothTemplate,    'tilt/wikicloth', 'wiki', 'mediawiki', 'mw'
   register_lazy :YajlTemplate,         'tilt/yajl',      'yajl'
 
