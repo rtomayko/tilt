@@ -38,7 +38,7 @@ begin
     end
 
     describe "passing in Pandoc options" do
-      test "accepts arguments with values" do
+      test "accepts arguments with values (e.g. :id_prefix => 'xyz')" do
         # Table of contents isn't on by default
         template = Tilt::PandocTemplate.new { |t| "# This is a heading" }
         assert_equal "<h1 id=\"this-is-a-heading\">This is a heading</h1>", template.render
@@ -48,8 +48,7 @@ begin
         assert_equal "<h1 id=\"test-this-is-a-heading\">This is a heading</h1>", template.render
       end
 
-      # Arguments without value (e.g. --standalone) need to be passed as hash keys, too (simply set them to true)
-      test "requires arguments without value as true values" do
+      test "requires arguments without value (e.g. --standalone) to be passed as hash keys (:standalone => true)" do
         template = Tilt::PandocTemplate.new(:standalone => true) { |t| "# This is a heading" }
         assert_match /^<!DOCTYPE html.*<h1 id="this-is-a-heading">This is a heading<\/h1>.*<\/html>$/m, template.render
       end
