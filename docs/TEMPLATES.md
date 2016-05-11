@@ -460,7 +460,7 @@ To wrap a Markdown formatted document with a layout:
 ### Options
 
 Every implementation of Markdown *should* support these options, but there are
-some known problems with the Kramdown and Maruku engines.
+some known problems with the Kramdown, Maruku and Pandoc engines.
 
 #### `:smartypants => true|false`
 
