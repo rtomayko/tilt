@@ -26,7 +26,7 @@ module Tilt
 
     def options_hash
       options.inject({}) do |hash, option|
-        hash[option[0]] = option[1] unless option[1] === true
+        hash[option[0]] = option[1] unless option[1] === true or option[1] === false
         hash
       end
     end

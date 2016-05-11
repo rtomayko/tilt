@@ -181,14 +181,8 @@ begin
     include MarkdownTests
     template Tilt::PandocTemplate
 
-    # undef test_escape_html
-    undef test_escape_html_false
+    # Doesn't support escaping
     undef test_escape_html_true
-    # undef test_smart_quotes
-    undef test_smart_quotes_false
-    undef test_smart_quotes_true
-    # undef test_smarty_pants
-    undef test_smarty_pants_false
   end
 rescue LoadError => boom
   # It should already be warned in the main tests
