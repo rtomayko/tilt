@@ -5,16 +5,6 @@ begin
   require 'tilt/pandoc'
 
   class PandocTemplateTest < Minitest::Test
-    test "registered below Kramdown" do
-      %w[md mkd markdown].each do |ext|
-        lazy = Tilt.lazy_map[ext]
-        kram_idx = lazy.index { |klass, file| klass == 'Tilt::KramdownTemplate' }
-        pandoc_idx = lazy.index { |klass, file| klass == 'Tilt::PandocTemplate' }
-        assert pandoc_idx > kram_idx,
-          "#{pandoc_idx} should be higher than #{kram_idx}"
-      end
-    end
-
     test "preparing and evaluating templates on #render" do
       template = Tilt::PandocTemplate.new { |t| "# Hello World!" }
       assert_equal "<h1 id=\"hello-world\">Hello World!</h1>", template.render.strip
