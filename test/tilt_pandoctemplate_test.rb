@@ -50,13 +50,13 @@ begin
         assert_equal "<h1 id=\"this-is-a-heading\">This is a heading</h1>", template.render
 
         # But it can be activated
-        template = Tilt::PandocTemplate.new(id_prefix: 'test-') { |t| "# This is a heading" }
+        template = Tilt::PandocTemplate.new(:id_prefix => 'test-') { |t| "# This is a heading" }
         assert_equal "<h1 id=\"test-this-is-a-heading\">This is a heading</h1>", template.render
       end
 
       # Arguments without value (e.g. --standalone) need to be passed as hash keys, too (simply set them to true)
       test "requires arguments without value as true values" do
-        template = Tilt::PandocTemplate.new(standalone: true) { |t| "# This is a heading" }
+        template = Tilt::PandocTemplate.new(:standalone => true) { |t| "# This is a heading" }
         assert_match /^<!DOCTYPE html.*<h1 id="this-is-a-heading">This is a heading<\/h1>.*<\/html>$/m, template.render
       end
     end

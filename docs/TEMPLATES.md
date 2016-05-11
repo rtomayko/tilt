@@ -476,7 +476,7 @@ Maruku ignores this option and always applies smart quotes (and nothing else).
 Set `true` disallow raw HTML in Markdown contents. HTML is converted to
 literal text by escaping `<` characters.
 
-Kramdown and Maruku doesn't support this option.
+Kramdown, Maruku and Pandoc don't support this option.
 
 ### See also
 
