@@ -13,9 +13,7 @@ module Tilt
     end
 
     def tilt_to_pandoc_mapping
-      { :smartypants => :smart,
-        :escape_html => :markdown_strict
-      }
+      { :smartypants => :smart }
     end
 
     def options_array
