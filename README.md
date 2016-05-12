@@ -40,6 +40,7 @@ Support for these template engines is included with the package:
 | Redcarpet               | .markdown, .mkd, .md   | redcarpet                                  | Community   |
 | BlueCloth               | .markdown, .mkd, .md   | bluecloth                                  | Community   |
 | Kramdown                | .markdown, .mkd, .md   | kramdown                                   | Community   |
+| Pandoc                  | .markdown, .mkd, .md   | pandoc                                     | Community   |
 | Maruku                  | .markdown, .mkd, .md   | maruku                                     | Community   |
 | CommonMarker            | .markdown, .mkd, .md   | commonmarker                               | Community   |
 | RedCloth                | .textile               | redcloth                                   | Community   |

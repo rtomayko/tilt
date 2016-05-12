@@ -125,6 +125,7 @@ module Tilt
   register_lazy :RDiscountTemplate,    'tilt/rdiscount',    'markdown', 'mkd', 'md'
   register_lazy :RedcarpetTemplate,    'tilt/redcarpet',    'markdown', 'mkd', 'md'
   register_lazy :CommonMarkerTemplate, 'tilt/commonmarker', 'markdown', 'mkd', 'md'
+  register_lazy :PandocTemplate,       'tilt/pandoc',       'markdown', 'mkd', 'md'
 
   # Rest (sorted by name)
   register_lazy :AsciidoctorTemplate,  'tilt/asciidoc',  'ad', 'adoc', 'asciidoc'

@@ -174,4 +174,16 @@ rescue LoadError
   warn "Markdown tests need Nokogiri"
 end
 
+begin
+  require 'tilt/pandoc'
 
+  class MarkdownPandocTest < Minitest::Test
+    include MarkdownTests
+    template Tilt::PandocTemplate
+
+    # Doesn't support escaping
+    undef test_escape_html_true
+  end
+rescue LoadError => boom
+  # It should already be warned in the main tests
+end

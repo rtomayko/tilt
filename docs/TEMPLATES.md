@@ -44,6 +44,7 @@ implementations (depending on which are available on your system):
  * Redcarpet - `Tilt::RedcarpetTemplate`
  * BlueCloth - `Tilt::BlueClothTemplate`
  * Kramdown - `Tilt::KramdownTemplate`
+ * Pandoc - `Tilt::PandocTemplate`
  * Maruku - `Tilt::MarukuTemplate`
 
 <a name='erb'></a>
@@ -432,6 +433,7 @@ Markdown formatted texts are converted to HTML with one of these libraries:
   * Redcarpet - `Tilt::RedcarpetTemplate`
   * BlueCloth - `Tilt::BlueClothTemplate`
   * Kramdown - `Tilt::KramdownTemplate`
+  * Pandoc - `Tilt::PandocTemplate`
   * Maruku - `Tilt::MarukuTemplate`
 
 Tilt will use fallback mode (as documented in the README) for determining which
@@ -458,7 +460,7 @@ To wrap a Markdown formatted document with a layout:
 ### Options
 
 Every implementation of Markdown *should* support these options, but there are
-some known problems with the Kramdown and Maruku engines. 
+some known problems with the Kramdown, Maruku and Pandoc engines.
 
 #### `:smartypants => true|false`
 
@@ -474,7 +476,7 @@ Maruku ignores this option and always applies smart quotes (and nothing else).
 Set `true` disallow raw HTML in Markdown contents. HTML is converted to
 literal text by escaping `<` characters.
 
-Kramdown and Maruku doesn't support this option.
+Kramdown, Maruku and Pandoc don't support this option.
 
 ### See also
 
@@ -521,4 +523,3 @@ using this template engine within a threaded environment.
 [rdiscount]: http://github.com/rtomayko/rdiscount/ "RDiscount"
 [smartypants]: http://daringfireball.net/projects/smartypants/ "Smarty Pants"
 [markdown]: http://en.wikipedia.org/wiki/Markdown "Markdown"
-
