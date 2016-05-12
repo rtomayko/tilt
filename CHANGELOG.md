@@ -1,3 +1,11 @@
+## 2.0.3 (2016-05-12)
+
+* Add Pandoc support (#276, jmuheim)
+* Add CommonMark support (#282, raphink)
+* Add TypeScript support (#278, nghitran)
+* Work with frozen string literal (#274, jeremyevans)
+* Add MIME type for Babel (#273, SaitoWu)
+
 ## 2.0.2 (2016-01-06)
 
 * Pass options to Redcarpet (#250, hughbien)

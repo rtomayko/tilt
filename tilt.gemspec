@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'tilt'
-  s.version = '2.0.2'
-  s.date = '2016-01-05'
+  s.version = '2.0.3'
+  s.date = '2016-05-12'
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
@@ -30,8 +30,10 @@ Gem::Specification.new do |s|
     lib/tilt/bluecloth.rb
     lib/tilt/builder.rb
     lib/tilt/coffee.rb
+    lib/tilt/commonmarker.rb
     lib/tilt/creole.rb
     lib/tilt/csv.rb
+    lib/tilt/dummy.rb
     lib/tilt/erb.rb
     lib/tilt/erubis.rb
     lib/tilt/etanni.rb
@@ -43,6 +45,7 @@ Gem::Specification.new do |s|
     lib/tilt/markaby.rb
     lib/tilt/maruku.rb
     lib/tilt/nokogiri.rb
+    lib/tilt/pandoc.rb
     lib/tilt/plain.rb
     lib/tilt/prawn.rb
     lib/tilt/radius.rb
@@ -64,6 +67,7 @@ Gem::Specification.new do |s|
     test/markaby/render_twice.mab
     test/markaby/scope.mab
     test/markaby/yielding.mab
+    test/mytemplate.rb
     test/test_helper.rb
     test/tilt_asciidoctor_test.rb
     test/tilt_babeltemplate.rb
@@ -71,6 +75,7 @@ Gem::Specification.new do |s|
     test/tilt_buildertemplate_test.rb
     test/tilt_cache_test.rb
     test/tilt_coffeescripttemplate_test.rb
+    test/tilt_commonmarkertemplate_test.rb
     test/tilt_compilesite_test.rb
     test/tilt_creoletemplate_test.rb
     test/tilt_csv_test.rb
@@ -88,6 +93,7 @@ Gem::Specification.new do |s|
     test/tilt_marukutemplate_test.rb
     test/tilt_metadata_test.rb
     test/tilt_nokogiritemplate_test.rb
+    test/tilt_pandoctemplate_test.rb
     test/tilt_prawntemplate.prawn
     test/tilt_prawntemplate_test.rb
     test/tilt_radiustemplate_test.rb
@@ -98,8 +104,8 @@ Gem::Specification.new do |s|
     test/tilt_sasstemplate_test.rb
     test/tilt_stringtemplate_test.rb
     test/tilt_template_test.rb
-    test/tilt_typescript_test.rb
     test/tilt_test.rb
+    test/tilt_typescript_test.rb
     test/tilt_wikiclothtemplate_test.rb
     test/tilt_yajltemplate_test.rb
     tilt.gemspec
