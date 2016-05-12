@@ -20,8 +20,13 @@ begin
       assert_equal "<p>OKAY – ‘Smarty Pants’</p>", template.render
     end
 
-    # Pandoc has tons of additional markdown features.
-    # The test for footnotes should be see as a general representation for all of them.
+    test "stripping HTML when :escape_html is set" do
+      template = Tilt::PandocTemplate.new(:escape_html => true) { |t| "HELLO <blink>WORLD</blink>" }
+      assert_equal "<p>HELLO &lt;blink&gt;WORLD&lt;/blink&gt;</p>", template.render
+    end
+
+    # Pandoc has tons of additional markdown features (see http://pandoc.org/README.html#pandocs-markdown).
+    # The test for footnotes should be seen as a general representation for all of them.
     test "generates footnotes" do
       template = Tilt::PandocTemplate.new { |t| "Here is an inline note.^[Inlines notes are cool!]" }
       assert_equal "<p>Here is an inline note.<a href=\"#fn1\" class=\"footnoteRef\" id=\"fnref1\"><sup>1</sup></a></p>\n<div class=\"footnotes\">\n<hr />\n<ol>\n<li id=\"fn1\"><p>Inlines notes are cool!<a href=\"#fnref1\">↩</a></p></li>\n</ol>\n</div>", template.render.strip

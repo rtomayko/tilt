@@ -6,24 +6,33 @@ module Tilt
   # http://pandoc.org/
   class PandocTemplate < Template
     def prepare
-      @output = PandocRuby.convert(data, options_hash.merge(
-                                           {:to => :html}
-                                         ), *options_array
-                                  ).strip
+      @output = PandocRuby.convert(data, options_hash, *options_array).strip
     end
 
-    def tilt_to_pandoc_mapping
-      { :smartypants => :smart }
+    def pandoc_optimised_options
+      options.inject({}) do |hash, option|
+        if option[0] == :smartypants
+          hash[:smart] = true if option[1] === true
+        elsif option[0] == :escape_html
+          hash[:f] = 'markdown-raw_html' if option[1] === true
+        else
+          hash[option[0]] = option[1]
+        end
+
+        hash
+      end.merge({:to => :html})
     end
 
     def options_array
-      options.map do |option|
-        tilt_to_pandoc_mapping[option[0]] || option[0] if option[1] === true
+      pandoc_optimised_options.map do |option|
+        option[0] if option[1] === true
       end.compact
     end
 
     def options_hash
-      options.inject({}) do |hash, option|
+      pandoc_optimised_options.inject({}) do |hash, option|
+        # next if option[1] === true
+        # next if option[1] === false
         hash[option[0]] = option[1] unless option[1] === true or option[1] === false
         hash
       end
