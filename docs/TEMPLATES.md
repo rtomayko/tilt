@@ -460,7 +460,7 @@ To wrap a Markdown formatted document with a layout:
 ### Options
 
 Every implementation of Markdown *should* support these options, but there are
-some known problems with the Kramdown, Maruku and Pandoc engines.
+some known problems with the Kramdown and Maruku engines.
 
 #### `:smartypants => true|false`
 
@@ -476,7 +476,7 @@ Maruku ignores this option and always applies smart quotes (and nothing else).
 Set `true` disallow raw HTML in Markdown contents. HTML is converted to
 literal text by escaping `<` characters.
 
-Kramdown, Maruku and Pandoc don't support this option.
+Kramdown and Maruku don't support this option.
 
 ### See also
 
