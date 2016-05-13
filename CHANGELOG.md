@@ -1,3 +1,7 @@
+## master
+
+* Fix regression in BuilderTemplate (#283, judofyr)
+
 ## 2.0.3 (2016-05-12)
 
 * Add Pandoc support (#276, jmuheim)

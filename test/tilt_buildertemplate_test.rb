@@ -49,6 +49,14 @@ begin
       assert_equal "<div><em>Hey</em></div>", template.render
     end
 
+    test "can re-use locals for multiple calls" do
+      locals = { :name => "world" }
+      template = Tilt::BuilderTemplate.new(:indent => 0) { "xml.em name" }
+      3.times do
+        assert_equal "<em>world</em>", template.render(self, locals)
+      end
+    end
+
     test "allows nesting raw XML" do
       subtemplate = Tilt::BuilderTemplate.new { "xml.em 'Hello World!'" }
       template = Tilt::BuilderTemplate.new { "xml.strong { xml << yield }" }

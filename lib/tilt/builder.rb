@@ -12,8 +12,15 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      xml = (locals[:xml] ||= ::Builder::XmlMarkup.new(options))
-      return super(scope, locals, &block) if data.respond_to?(:to_str)
+      xml = (locals[:xml] || ::Builder::XmlMarkup.new(options))
+
+      if data.respond_to?(:to_str)
+        if !locals[:xml]
+          locals = locals.merge(:xml => xml)
+        end
+        return super(scope, locals, &block)
+      end
+
       data.call(xml)
       xml.target!
     end
