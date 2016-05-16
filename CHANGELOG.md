@@ -1,4 +1,4 @@
-## master
+## 2.0.4 (2016-05-16)
 
 * Fix regression in BuilderTemplate (#283, judofyr)
 
