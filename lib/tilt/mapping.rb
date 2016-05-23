@@ -1,3 +1,5 @@
+require 'monitor'
+
 module Tilt
   # Tilt::Mapping associates file extensions with template implementations.
   #
@@ -214,8 +216,13 @@ module Tilt
       @template_map[ext] || lazy_load(ext)
     end
 
+    LOCK = Monitor.new
+
     def lazy_load(pattern)
       return unless @lazy_map.has_key?(pattern)
+
+      LOCK.enter
+      entered = true
 
       choices = @lazy_map[pattern]
 
@@ -234,12 +241,6 @@ module Tilt
       choices.each do |class_name, file|
         begin
           require file
-
-          if Thread.list.size > 1
-            warn "WARN: tilt autoloading '#{file}' in a non thread-safe way; " +
-              "explicit require '#{file}' suggested."
-          end
-
           # It's safe to eval() here because constant_defined? will
           # raise NameError on invalid constant names
           template_class = eval(class_name)
@@ -252,6 +253,8 @@ module Tilt
       end
 
       raise first_failure if first_failure
+    ensure
+      LOCK.exit if entered
     end
 
     # This is due to a bug in JRuby (see GH issue jruby/jruby#3585)

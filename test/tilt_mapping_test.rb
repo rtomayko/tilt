@@ -125,20 +125,6 @@ module Tilt
           end
         end
       end
-
-      test "warns when there's multiple threads" do
-        Thread.new do
-          req = proc do |file|
-            class ::MyTemplate; end
-          end
-
-          @mapping.stub :require, req do
-            assert_output '', /autoloading 'my_template'/ do
-              @mapping['hello.mt']
-            end
-          end
-        end.join
-      end
     end
 
     context "lazy with two template classes" do
