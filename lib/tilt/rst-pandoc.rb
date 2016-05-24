@@ -1,11 +1,11 @@
 require 'tilt/template'
-require 'pandoc-ruby'
+require 'tilt/pandoc'
 
 module Tilt
   # Pandoc reStructuredText implementation. See:
   # http://pandoc.org/
   # Use PandocTemplate and specify input format
-  class RstTemplate < PandocTemplate
+  class RstPandocTemplate < PandocTemplate
     def tilt_to_pandoc_mapping
       { :smartypants => :smart }
     end

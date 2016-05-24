@@ -146,7 +146,7 @@ module Tilt
   register_lazy :RDocTemplate,         'tilt/rdoc',      'rdoc'
   register_lazy :RadiusTemplate,       'tilt/radius',    'radius'
   register_lazy :RedClothTemplate,     'tilt/redcloth',  'textile'
-  register_lazy :RstTemplate,          'tilt/rst',       'rst'
+  register_lazy :RstPandocTemplate,    'tilt/rst-pandoc', 'rst'
   register_lazy :SassTemplate,         'tilt/sass',      'sass'
   register_lazy :ScssTemplate,         'tilt/sass',      'scss'
   register_lazy :StringTemplate,       'tilt/string',    'str'
