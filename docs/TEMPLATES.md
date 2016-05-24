@@ -33,7 +33,7 @@ Tilt also includes support for CSS processors like [LessCSS][lesscss] and
  * CoffeeScript - `Tilt::CoffeeScriptTemplate`
  * Literate CoffeeScript - `Tilt::CoffeeScriptLiterateTemplate`
  * [Textile](#redcloth) - `Tilt::RedClothTemplate`
- * reStructuredText - `Tilt::RstTemplate`
+ * reStructuredText - `Tilt::RstPandocTemplate`
  * Creole - `Tilt::CreoleTemplate`
  * [RDoc](#rdoc) - `Tilt::RDocTemplate`
 
