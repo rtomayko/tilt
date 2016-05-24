@@ -33,10 +33,11 @@ Tilt also includes support for CSS processors like [LessCSS][lesscss] and
  * CoffeeScript - `Tilt::CoffeeScriptTemplate`
  * Literate CoffeeScript - `Tilt::CoffeeScriptLiterateTemplate`
  * [Textile](#redcloth) - `Tilt::RedClothTemplate`
+ * reStructuredText - `Tilt::RstTemplate`
  * Creole - `Tilt::CreoleTemplate`
  * [RDoc](#rdoc) - `Tilt::RDocTemplate`
 
-Tilt has extensive support for Markdown, backed by one of four different
+Tilt has extensive support for Markdown, backed by one of seven different
 implementations (depending on which are available on your system):
 
  * [Markdown](#markdown) - Generic Markdown implementation
@@ -45,6 +46,7 @@ implementations (depending on which are available on your system):
  * BlueCloth - `Tilt::BlueClothTemplate`
  * Kramdown - `Tilt::KramdownTemplate`
  * Pandoc - `Tilt::PandocTemplate`
+ * CommonMarker - `Tilt::CommonMarkerTemplate`
  * Maruku - `Tilt::MarukuTemplate`
 
 <a name='erb'></a>
@@ -393,6 +395,31 @@ when using this template engine in a threaded environment.
 
   * [RedCloth][redcloth]
 
+<a name='rst'></a>
+reStructuredText (`rst`)
+-------------------
+
+reStructuredText is a lightweight markup language originally developed by David Goodger,
+based on StructuredText and Setext. reStructuredText is primarily used for technical
+documentation in the Python programming language community, e.g. by the
+[Sphinx](http://www.sphinx-doc.org/en/stable/rest.html) Python documentation generator.
+
+reStructuredText formatted texts are converted to HTML with [Pandoc][pandoc], which
+is an application written in Haskell, with a Ruby wrapper provided by the
+[pandoc-ruby][pandoc-ruby] gem.
+
+### Example
+
+    Hello Rst Templates
+    ===================
+
+    Hello World. This is a paragraph.
+
+### See Also
+
+  * [Pandoc][pandoc]
+  * [pandoc-ruby][pandoc-ruby]
+
 
 <a name='rdoc'></a>
 RDoc (`rdoc`)
@@ -523,3 +550,5 @@ using this template engine within a threaded environment.
 [rdiscount]: http://github.com/rtomayko/rdiscount/ "RDiscount"
 [smartypants]: http://daringfireball.net/projects/smartypants/ "Smarty Pants"
 [markdown]: http://en.wikipedia.org/wiki/Markdown "Markdown"
+[pandoc]: http://pandoc.org/ "Pandoc"
+[pandoc-ruby]: https://github.com/alphabetum/pandoc-ruby "pandoc-ruby"
