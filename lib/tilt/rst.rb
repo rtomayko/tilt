@@ -6,6 +6,10 @@ module Tilt
   # http://pandoc.org/
   # Use PandocTemplate and specify input format
   class RstTemplate < PandocTemplate
+    def tilt_to_pandoc_mapping
+      { :smartypants => :smart }
+    end
+
     def pandoc_options
       options.merge!(f: 'rst')
       super
