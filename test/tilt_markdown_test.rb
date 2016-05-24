@@ -180,9 +180,6 @@ begin
   class MarkdownPandocTest < Minitest::Test
     include MarkdownTests
     template Tilt::PandocTemplate
-
-    # Doesn't support escaping
-    undef test_escape_html_true
   end
 rescue LoadError => boom
   # It should already be warned in the main tests
