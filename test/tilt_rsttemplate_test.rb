@@ -2,7 +2,8 @@ require 'test_helper'
 require 'tilt'
 
 begin
-  require 'tilt/rdoc'
+  require 'tilt/rst'
+
   class RstTest < Minitest::Test
     test "is registered for '.rst' files" do
       assert_equal Tilt::RstTemplate, Tilt['test.rst']
