@@ -1,5 +1,6 @@
 ## master
 
+* Add support for reST using Pandoc (#284, mfenner)
 * Make lazy loading thread-safe; remove warning (judofyr)
 
 ## 2.0.4 (2016-05-16)
