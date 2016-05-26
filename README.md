@@ -41,6 +41,7 @@ Support for these template engines is included with the package:
 | BlueCloth               | .markdown, .mkd, .md   | bluecloth                                  | Community   |
 | Kramdown                | .markdown, .mkd, .md   | kramdown                                   | Community   |
 | Pandoc                  | .markdown, .mkd, .md   | pandoc                                     | Community   |
+| reStructuredText        | .rst                   | pandoc                                     | Community   |
 | Maruku                  | .markdown, .mkd, .md   | maruku                                     | Community   |
 | CommonMarker            | .markdown, .mkd, .md   | commonmarker                               | Community   |
 | RedCloth                | .textile               | redcloth                                   | Community   |
