@@ -1,4 +1,4 @@
-## master
+## 2.0.5 (2016-06-02)
 
 * Add support for reST using Pandoc (#284, mfenner)
 * Make lazy loading thread-safe; remove warning (judofyr)
