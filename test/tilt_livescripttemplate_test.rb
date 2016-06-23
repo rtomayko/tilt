@@ -53,7 +53,6 @@ begin
             assert_match "puts(\"Hello, \" + name);", template.render
             refute_match "(function() {", template.render
           end
-=
         end
 
         context "wrapper globally disabled" do
@@ -95,7 +94,6 @@ begin
       assert_equal @renderer, Tilt['test.ls']
     end
   end
-
 rescue LoadError => boom
   warn "Tilt::LiveScriptTemplate (disabled)"
 end
