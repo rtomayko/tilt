@@ -1,3 +1,7 @@
+## 2.0.6 (2016-06-03)
+
+* Add support for LiveScript
+
 ## 2.0.5 (2016-06-02)
 
 * Add support for reST using Pandoc (#284, mfenner)
@@ -98,4 +102,3 @@
 * Support RDoc 3.10 (#112, timfel)
 * Always compile templates; remove old source evaluator (rtomayko)
 * Less: Options are now being passed to the parser (#106, cowboyd)
-
