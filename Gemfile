@@ -26,7 +26,7 @@ group :primary do
 end
 
 platform :mri do
-  gem 'duktape', '~> 1.2.1.0' if can_execjs
+  gem 'duktape', '~> 1.3.0.6' if can_execjs
 end
 
 group :secondary do
@@ -64,4 +64,3 @@ end
 platform :rbx do
   gem 'rubysl'
 end
-
