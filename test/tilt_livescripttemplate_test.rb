@@ -5,11 +5,6 @@ begin
   require 'tilt/livescript'
 
   module LiveScriptTests
-    setup do
-      @code_without_variables = "puts 'Hello, World!'\n"
-      @code_with_variables = 'name = "Josh"; puts "Hello, #{name}"'
-      @renderer = Tilt::LiveScriptTemplate
-    end
     def self.included(mod)
       mod.class_eval do
         test "bare is disabled by default" do
@@ -87,6 +82,11 @@ begin
   end
 
   class LiveScriptTemplateTest < Minitest::Test
+    setup do
+      @code_without_variables = "puts 'Hello, World!'\n"
+      @code_with_variables = 'name = "Josh"; puts "Hello, #{name}"'
+      @renderer = Tilt::LiveScriptTemplate
+    end
 
     include LiveScriptTests
 
