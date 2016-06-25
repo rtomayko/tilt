@@ -1,4 +1,4 @@
-## 2.0.6 (2016-06-03)
+## master
 
 * Add support for LiveScript
 
