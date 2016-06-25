@@ -20,6 +20,7 @@ group :primary do
   if can_execjs
     gem 'less'
     gem 'coffee-script'
+    gem 'livescript'
     gem 'babel-transpiler'
     gem 'typescript-node'
   end
