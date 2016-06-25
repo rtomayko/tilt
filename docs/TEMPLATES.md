@@ -490,6 +490,17 @@ To wrap a Markdown formatted document with a layout:
 Every implementation of Markdown *should* support these options, but there are
 some known problems with the Kramdown and Maruku engines.
 
+#### Kramdown
+
+- Doesn't support escaping
+- Smarty Pants is *always* on, but doesn't support it fully
+
+### Maruku
+
+- Doesn't support escaping
+- Doesn't support Smarty Pants, and even fails on ``Foobar''
+- Smart Quotes is always on
+
 #### `:smartypants => true|false`
 
 Set `true` to enable [Smarty Pants][smartypants] style punctuation replacement.
