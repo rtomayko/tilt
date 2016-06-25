@@ -1,6 +1,6 @@
 ## master
 
-* Add support for LiveScript
+* Add support for LiveScript (#286, @Announcement Jacob Francis Powers)
 
 ## 2.0.5 (2016-06-02)
 
