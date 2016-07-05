@@ -52,6 +52,7 @@ Support for these template engines is included with the package:
 | CoffeeScript            | .coffee                | coffee-script (+ javascript)               | Tilt team   |
 | CoffeeScript (literate) | .litcoffee             | coffee-script (>= 1.5.0) (+ javascript)    | Tilt team   |
 | LiveScript              | .ls                    | livescript (+ javascript)                  | Tilt team   |
+| TypeScript              | .ts                    | typescript (+ javascript)                  | Tilt team   |
 | Creole (Wiki markup)    | .wiki, .creole         | creole                                     | Community   |
 | WikiCloth (Wiki markup) | .wiki, .mediawiki, .mw | wikicloth                                  | Community   |
 | Yajl                    | .yajl                  | yajl-ruby                                  | Community   |
