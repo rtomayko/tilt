@@ -2,7 +2,7 @@ require 'tilt/template'
 require 'builder'
 
 module Tilt
-   # Builder template implementation. See:
+  # Builder template implementation. See:
   # http://builder.rubyforge.org/
   class BuilderTemplate < Template
     self.default_mime_type = 'text/xml'
