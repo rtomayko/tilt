@@ -68,7 +68,7 @@ keeping backwards compatibility across Tilt version. Some integrations are
 maintained by the *community*, which is handled in the following way:
 
 - The Tilt team will liberally accept pull requests against the template
-  integration. It's up the community as a whole to make sure the integration
+  integration. It's up to the community as a whole to make sure the integration
   stays consistent and backwards compatible over time.
 - Test failures in community-maintained integrations will not be prioritized by
   the Tilt team and a new version of Tilt might be released even though these
