@@ -252,7 +252,7 @@ module Tilt
       method_source = String.new
 
       if method_source.respond_to?(:force_encoding)
-        method_source.force_encoding(source.encoding) 
+        method_source.force_encoding(source.encoding)
       end
 
       method_source << <<-RUBY
