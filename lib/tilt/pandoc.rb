@@ -51,6 +51,5 @@ module Tilt
     def allows_script?
       false
     end
-end
   end
 end
