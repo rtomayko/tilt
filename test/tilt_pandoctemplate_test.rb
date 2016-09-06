@@ -60,6 +60,12 @@ begin
         template = Tilt::PandocTemplate.new(:standalone => true) { |t| "# This is a heading" }
         assert_match /^<!DOCTYPE html.*<h1 id="this-is-a-heading">This is a heading<\/h1>.*<\/html>$/m, template.render
       end
+
+      # pandoc-ruby can't handle some middleman options
+      test "ignore unsupported options" do
+        template = Tilt::PandocTemplate.new(:context => true) { |t| "# This is a heading" }
+        assert_equal "<h1 id=\"this-is-a-heading\">This is a heading</h1>", template.render
+      end
     end
   end
 rescue LoadError => boom
