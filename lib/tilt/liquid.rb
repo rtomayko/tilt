@@ -17,7 +17,7 @@ module Tilt
   # time when using this template engine.
   class LiquidTemplate < Template
     def prepare
-      @engine = ::Liquid::Template.parse(data)
+      @engine = ::Liquid::Template.parse(data, liquid_options)
     end
 
     def evaluate(scope, locals, &block)
@@ -33,6 +33,12 @@ module Tilt
 
     def allows_script?
       false
+    end
+    
+    private
+    
+    def liquid_options
+      options.merge(line_numbers: true)
     end
   end
 end
