@@ -24,6 +24,15 @@ begin
       assert_equal "Hey Joe!", template.render(nil, :name => 'Joe')
     end
 
+    test "options can be set" do
+      err = assert_raises(Liquid::SyntaxError) do
+        options = { line_numbers: false, error_mode: :strict }
+        Tilt::LiquidTemplate.new(options) { "{{%%%}}" }.render
+      end
+      assert_equal 'Liquid syntax error: Unexpected character % in "{{%%%}}"',
+        err.message
+    end
+
     # Object's passed as "scope" to LiquidTemplate may respond to
     # #to_h with a Hash. The Hash's contents are merged underneath
     # Tilt locals.
