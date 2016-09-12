@@ -34,11 +34,11 @@ module Tilt
     def allows_script?
       false
     end
-    
+
     private
-    
+
     def liquid_options
-      options.merge(line_numbers: true)
+      { line_numbers: true }.merge options
     end
   end
 end
