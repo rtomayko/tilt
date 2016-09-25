@@ -123,7 +123,8 @@ module Tilt
   register_lazy :MarukuTemplate,       'tilt/maruku',       'markdown', 'mkd', 'md'
   register_lazy :KramdownTemplate,     'tilt/kramdown',     'markdown', 'mkd', 'md'
   register_lazy :RDiscountTemplate,    'tilt/rdiscount',    'markdown', 'mkd', 'md'
-  register_lazy :RedcarpetTemplate,    'tilt/redcarpet',    'markdown', 'mkd', 'md'
+  register_lazy :Redcarpet1Template,    'tilt/redcarpet',    'markdown', 'mkd', 'md'
+  register_lazy :Redcarpet2Template,    'tilt/redcarpet',    'markdown', 'mkd', 'md'
   register_lazy :CommonMarkerTemplate, 'tilt/commonmarker', 'markdown', 'mkd', 'md'
   register_lazy :PandocTemplate,       'tilt/pandoc',       'markdown', 'mkd', 'md'
 
