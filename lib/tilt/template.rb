@@ -255,6 +255,10 @@ module Tilt
         method_source.force_encoding(source.encoding)
       end
 
+      if freeze_string_literals?
+        method_source << "# frozen-string-literal: true\n"
+      end
+
       method_source << <<-RUBY
         TOPOBJECT.class_eval do
           def #{method_name}(locals)
@@ -285,6 +289,10 @@ module Tilt
       binary(script) do
         script[/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*$/n, 1]
       end
+    end
+
+    def freeze_string_literals?
+      false
     end
 
     def binary(string)
