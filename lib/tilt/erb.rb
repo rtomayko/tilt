@@ -19,6 +19,7 @@ module Tilt
     end
 
     def prepare
+      @freeze_string_literals = !!@options[:freeze]
       @outvar = options[:outvar] || self.class.default_output_variable
       trim = case options[:trim]
       when false
@@ -62,6 +63,10 @@ module Tilt
     def precompiled(locals)
       source, offset = super
       [source, offset + 1]
+    end
+
+    def freeze_string_literals?
+      @freeze_string_literals
     end
   end
 end

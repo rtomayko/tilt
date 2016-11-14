@@ -16,6 +16,7 @@ module Tilt
   #                   within <%= %> blocks will be automatically html escaped.
   class ErubisTemplate < ERBTemplate
     def prepare
+      @freeze_string_literals = !!@options.delete(:freeze)
       @outvar = options.delete(:outvar) || self.class.default_output_variable
       @options.merge!(:preamble => false, :postamble => false, :bufvar => @outvar)
       engine_class = options.delete(:engine_class)
@@ -36,6 +37,10 @@ module Tilt
     def precompiled(locals)
       source, offset = super
       [source, offset - 1]
+    end
+
+    def freeze_string_literals?
+      @freeze_string_literals
     end
   end
 end
