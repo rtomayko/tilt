@@ -141,6 +141,13 @@ begin
       Tilt::ErubiTemplate.new(nil, options_hash) { |t| "Hello World!" }
       assert_equal({:escape_html => true}, options_hash)
     end
+
+    if RUBY_VERSION >= '2.3'
+      it "uses frozen literal strings if :freeze option is used" do
+        template = Tilt::ErubiTemplate.new(nil, :freeze => true) { |t| %(<%= "".frozen? %>) }
+        assert_equal "true", template.render
+      end
+    end
   end
 rescue LoadError
   warn "Tilt::ErubiTemplate (disabled)"

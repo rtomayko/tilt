@@ -274,8 +274,13 @@ module Tilt
         method_source.force_encoding(source.encoding)
       end
 
+      if freeze_string_literals?
+        method_source << "# frozen-string-literal: true\n"
+      end
+
       # Don't indent method source, to avoid indentation warnings when using compiled paths
       method_source << "::Tilt::TOPOBJECT.class_eval do\ndef #{method_name}(locals)\n#{local_code}\n"
+
       offset += method_source.count("\n")
       method_source << source
       method_source << "\nend;end;"
@@ -335,6 +340,10 @@ module Tilt
       binary(script) do
         script[/\A[ \t]*\#.*coding\s*[=:]\s*([[:alnum:]\-_]+).*$/n, 1]
       end
+    end
+
+    def freeze_string_literals?
+      false
     end
 
     def binary(string)

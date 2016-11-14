@@ -311,8 +311,28 @@ describe "tilt/template" do
     assert_equal inst2, $inst2
     assert_nil Tilt.current_template
   end
+
+  if RUBY_VERSION >= '2.3'
+    _FrozenStringMockTemplate = Class.new(_PreparingMockTemplate) do
+      def freeze_string_literals?
+        true
+      end
+      def precompiled_template(locals)
+        "'bar'"
+      end
+    end
+
+    it "uses frozen literal strings if freeze_literal_strings? is true" do
+      inst = _FrozenStringMockTemplate.new{|d| 'a'}
+      assert_equal "bar", inst.render
+      assert_equal true, inst.render.frozen?
+      assert inst.prepared?
+    end
+  end
 end
 
+  ##
+  # Encodings
 describe "tilt/template (encoding)" do
   _DynamicMockTemplate = Class.new(_MockTemplate) do
     def precompiled_template(locals)

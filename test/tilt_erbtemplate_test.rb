@@ -225,6 +225,13 @@ describe 'tilt/erb (compiled)' do
     3.times { assert_equal 'UTF-8', erb.render(self).encoding.to_s }
     f.delete
   end
+
+  if RUBY_VERSION >= '2.3'
+    it "uses frozen literal strings if :freeze option is used" do
+      template = Tilt::ERBTemplate.new(nil, :freeze => true) { |t| %(<%= "".frozen? %>) }
+      assert_equal "true", template.render
+    end
+  end
 end
 
 __END__
