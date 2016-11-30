@@ -55,6 +55,7 @@ Gem::Specification.new do |s|
     lib/tilt/redcloth.rb
     lib/tilt/rst-pandoc.rb
     lib/tilt/sass.rb
+    lib/tilt/sigil.rb
     lib/tilt/string.rb
     lib/tilt/template.rb
     lib/tilt/typescript.rb
@@ -104,6 +105,7 @@ Gem::Specification.new do |s|
     test/tilt_redclothtemplate_test.rb
     test/tilt_rstpandoctemplate_test.rb
     test/tilt_sasstemplate_test.rb
+    test/tilt_sigil_test.rb
     test/tilt_stringtemplate_test.rb
     test/tilt_template_test.rb
     test/tilt_test.rb
