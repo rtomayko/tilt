@@ -60,6 +60,7 @@ Support for these template engines is included with the package:
 | Prawn                   | .prawn                 | prawn (>= 2.0.0)                           | Community   |
 | Babel                   | .es6, .babel, .jsx     | babel-transpiler                           | Tilt team   |
 | Opal                    | .rb                    | opal                                       | Community   |
+| Sigil                   | .sigil                 | sigil                                      | Community   |
 
 Every supported template engine has a *maintainer*. Note that this is the
 maintainer of the Tilt integration, not the maintainer of the template engine

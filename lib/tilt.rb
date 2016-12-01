@@ -150,6 +150,7 @@ module Tilt
   register_lazy :RstPandocTemplate,    'tilt/rst-pandoc', 'rst'
   register_lazy :SassTemplate,         'tilt/sass',      'sass'
   register_lazy :ScssTemplate,         'tilt/sass',      'scss'
+  register_lazy :SigilTemplate,        'tilt/sigil',     'sigil'
   register_lazy :StringTemplate,       'tilt/string',    'str'
   register_lazy :TypeScriptTemplate,   'tilt/typescript', 'ts'
   register_lazy :WikiClothTemplate,    'tilt/wikicloth', 'wiki', 'mediawiki', 'mw'
