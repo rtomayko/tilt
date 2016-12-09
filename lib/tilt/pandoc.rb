@@ -8,7 +8,7 @@ module Tilt
     self.default_mime_type = 'text/html'
 
     # some options are not recognized by Pandoc
-    UNRECOGNIZED_OPTIONS = [:outvar, :context, :fenced_code_blocks, :lang, :locale]
+    UNRECOGNIZED_OPTIONS = [:outvar, :context, :fenced_code_blocks, :locale]
 
     def tilt_to_pandoc_mapping
       { :smartypants => :smart,
