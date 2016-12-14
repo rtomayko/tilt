@@ -132,7 +132,7 @@ begin
 
     test "does not modify options argument" do
       options_hash = {:escape_html => true}
-      template = Tilt::ErubisTemplate.new(nil, options_hash) { |t| "Hello World!" }
+      Tilt::ErubisTemplate.new(nil, options_hash) { |t| "Hello World!" }
       assert_equal({:escape_html => true}, options_hash)
     end
   end

@@ -71,7 +71,7 @@ begin
       fail unless data[0] == ?%
       template = Tilt::HamlTemplate.new('test.haml') { data }
       begin
-        res = template.render(Object.new, :name => 'Joe', :foo => 'bar')
+        template.render(Object.new, :name => 'Joe', :foo => 'bar')
       rescue => boom
         assert_kind_of MockError, boom
         line = boom.backtrace.first
@@ -142,7 +142,7 @@ begin
       fail unless data[0] == ?%
       template = Tilt::HamlTemplate.new('test.haml') { data }
       begin
-        res = template.render(Scope.new, :name => 'Joe', :foo => 'bar')
+        template.render(Scope.new, :name => 'Joe', :foo => 'bar')
       rescue => boom
         assert_kind_of MockError, boom
         line = boom.backtrace.first
