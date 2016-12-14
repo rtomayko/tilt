@@ -58,7 +58,7 @@ begin
 
       test "requires arguments without value (e.g. --standalone) to be passed as hash keys (:standalone => true)" do
         template = Tilt::PandocTemplate.new(:standalone => true) { |t| "# This is a heading" }
-        assert_match /^<!DOCTYPE html.*<h1 id="this-is-a-heading">This is a heading<\/h1>.*<\/html>$/m, template.render
+        assert_match(/^<!DOCTYPE html.*<h1 id="this-is-a-heading">This is a heading<\/h1>.*<\/html>$/m, template.render)
       end
     end
   end

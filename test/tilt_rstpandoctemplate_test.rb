@@ -24,7 +24,7 @@ begin
     test "doens't use markdown options" do
       template = Tilt::RstPandocTemplate.new(:escape_html => true) { |t| "HELLO <blink>WORLD</blink>" }
       err = assert_raises(RuntimeError) { template.render }
-      assert_match /pandoc: unrecognized option `--escape-html/, err.message
+      assert_match %r(pandoc: unrecognized option `--escape-html), err.message
     end
   end
 rescue LoadError => boom

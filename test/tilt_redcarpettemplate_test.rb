@@ -38,14 +38,14 @@ begin
     test "smartypants when :smart is set" do
       template = Tilt::RedcarpetTemplate.new(:smartypants => true) { |t|
         "OKAY -- 'Smarty Pants'" }
-      assert_match /<p>OKAY &ndash; (&#39;|&lsquo;)Smarty Pants(&#39;|&rsquo;)<\/p>/,
+      assert_match %r!<p>OKAY &ndash; (&#39;|&lsquo;)Smarty Pants(&#39;|&rsquo;)<\/p>!,
         template.render
     end
 
     test "smartypants with a rendererer instance" do
       template = Tilt::RedcarpetTemplate.new(:renderer => Redcarpet::Render::HTML.new(:hard_wrap => true), :smartypants => true) { |t|
         "OKAY -- 'Smarty Pants'" }
-      assert_match /<p>OKAY &ndash; (&#39;|&lsquo;)Smarty Pants(&#39;|&rsquo;)<\/p>/,
+      assert_match %r!<p>OKAY &ndash; (&#39;|&lsquo;)Smarty Pants(&#39;|&rsquo;)<\/p>!,
         template.render
     end
   end
