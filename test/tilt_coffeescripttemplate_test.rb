@@ -30,7 +30,7 @@ begin
           refute_match "(function() {", template.render
           assert_equal "var name;\n\nname = \"Josh\";\n\nputs(\"Hello, \" + name);\n", template.render
 
-          template2 = @renderer.new(:no_wrap => true) { @code_with_variables}
+          template = @renderer.new(:no_wrap => true) { @code_with_variables}
           refute_match "(function() {", template.render
           assert_equal "var name;\n\nname = \"Josh\";\n\nputs(\"Hello, \" + name);\n", template.render
         end
