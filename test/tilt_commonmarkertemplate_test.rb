@@ -15,6 +15,6 @@ begin
       3.times { assert_equal "<h1>Hello World!</h1>\n", template.render }
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::CommonMarkerTemplate (disabled)"
 end

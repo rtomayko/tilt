@@ -28,6 +28,6 @@ begin
       assert_equal "<p>HELLO &lt;blink>WORLD&lt;/blink></p>", template.render
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::BlueClothTemplate (disabled)"
 end

@@ -69,7 +69,7 @@ begin
     end
   end
 
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::RadiusTemplate (disabled)"
 end
 

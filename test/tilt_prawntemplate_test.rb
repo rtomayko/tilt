@@ -70,6 +70,6 @@ begin
     
   end
   
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::PrawnTemplate (disabled)"
 end

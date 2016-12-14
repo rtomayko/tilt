@@ -32,6 +32,6 @@ begin
       assert_equal @renderer, Tilt['test.ls']
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::LiveScriptTemplate (disabled)"
 end

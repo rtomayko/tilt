@@ -49,6 +49,6 @@ begin
         template.render
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::RedcarpetTemplate (disabled)"
 end

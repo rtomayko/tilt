@@ -136,6 +136,6 @@ EOLIT
     end
   end
 
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::CoffeeScriptTemplate (disabled)"
 end

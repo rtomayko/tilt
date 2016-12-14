@@ -136,7 +136,7 @@ begin
       assert_equal({:escape_html => true}, options_hash)
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::ErubisTemplate (disabled)"
 end
 

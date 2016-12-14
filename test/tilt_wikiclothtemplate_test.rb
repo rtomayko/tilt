@@ -27,6 +27,6 @@ begin
       3.times { assert_match /<h1>.*Hello World!.*<\/h1>/m, template.render }
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::WikiClothTemplate (disabled)"
 end

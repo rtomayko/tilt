@@ -45,6 +45,6 @@ begin
       3.times { assert_equal HTML5_OUTPUT, strip_space(template.render) }
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::AsciidoctorTemplate (disabled)"
 end

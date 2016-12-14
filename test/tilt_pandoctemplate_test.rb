@@ -62,6 +62,6 @@ begin
       end
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::PandocTemplate (disabled)"
 end

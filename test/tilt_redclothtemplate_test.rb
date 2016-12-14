@@ -31,6 +31,6 @@ begin
       assert_equal "<p>But they can be\nturned off.</p>", template.render
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::RedClothTemplate (disabled)"
 end

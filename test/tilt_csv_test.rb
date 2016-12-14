@@ -61,7 +61,7 @@ begin
     end
   end
 
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::CSVTemplate (disabled) please install 'fastercsv' if using ruby 1.8.x"
 end
 
