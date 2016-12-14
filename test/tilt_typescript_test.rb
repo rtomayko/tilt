@@ -21,7 +21,7 @@ begin
 
     test "supports source map" do
       template = Tilt::TypeScriptTemplate.new(inlineSourceMap: true)  { @ts }
-      assert_match /sourceMappingURL/, template.render
+      assert_match %r(sourceMappingURL), template.render
     end
 
     test "can be rendered more than once" do
@@ -29,6 +29,6 @@ begin
       3.times { assert_match @js, template.render }
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::TypeScriptTemplate (disabled)"
 end

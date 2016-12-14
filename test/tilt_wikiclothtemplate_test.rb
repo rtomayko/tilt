@@ -19,14 +19,14 @@ begin
 
     test "compiles and evaluates the template on #render" do
       template = Tilt::WikiClothTemplate.new { |t| "= Hello World! =" }
-      assert_match /<h1>.*Hello World!.*<\/h1>/m, template.render
+      assert_match(/<h1>.*Hello World!.*<\/h1>/m, template.render)
     end
 
     test "can be rendered more than once" do
       template = Tilt::WikiClothTemplate.new { |t| "= Hello World! =" }
-      3.times { assert_match /<h1>.*Hello World!.*<\/h1>/m, template.render }
+      3.times { assert_match(/<h1>.*Hello World!.*<\/h1>/m, template.render) }
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::WikiClothTemplate (disabled)"
 end

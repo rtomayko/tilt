@@ -51,7 +51,7 @@ class StringTemplateTest < Minitest::Test
       assert_kind_of NameError, boom
       line = boom.backtrace.grep(/^test\.str:/).first
       assert line, "Backtrace didn't contain test.str"
-      file, line, meth = line.split(":")
+      _file, line, _meth = line.split(":")
       assert_equal '13', line
     end
   end
@@ -66,7 +66,7 @@ class StringTemplateTest < Minitest::Test
     rescue => boom
       assert_kind_of RuntimeError, boom
       line = boom.backtrace.first
-      file, line, meth = line.split(":")
+      file, line, _meth = line.split(":")
       assert_equal 'test.str', file
       assert_equal '6', line
     end
@@ -138,7 +138,7 @@ class CompiledStringTemplateTest < Minitest::Test
       line = boom.backtrace.first
       line = boom.backtrace.grep(/^test\.str:/).first
       assert line, "Backtrace didn't contain test.str"
-      file, line, meth = line.split(":")
+      _file, line, _meth = line.split(":")
       assert_equal '13', line
     end
   end
@@ -153,7 +153,7 @@ class CompiledStringTemplateTest < Minitest::Test
     rescue => boom
       assert_kind_of RuntimeError, boom
       line = boom.backtrace.first
-      file, line, meth = line.split(":")
+      file, line, _meth = line.split(":")
       assert_equal 'test.str', file
       assert_equal '6', line
     end

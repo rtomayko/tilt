@@ -31,6 +31,6 @@ begin
       assert_equal "<p>HELLO</p>", template.render.strip
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::MarukuTemplate (disabled)"
 end

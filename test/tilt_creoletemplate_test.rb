@@ -19,6 +19,6 @@ begin
       3.times { assert_equal "<h1>Hello World!</h1>", template.render }
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::CreoleTemplate (disabled)"
 end

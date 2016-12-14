@@ -55,7 +55,7 @@ class EtanniTemplateTest < Minitest::Test
       assert_kind_of NameError, boom
       line = boom.backtrace.grep(/^test\.etn:/).first
       assert line, "Backtrace didn't contain test.etn"
-      file, line, meth = line.split(":")
+      _file, line, _meth = line.split(":")
       assert_equal '13', line
     end
   end
@@ -70,7 +70,7 @@ class EtanniTemplateTest < Minitest::Test
     rescue => boom
       assert_kind_of RuntimeError, boom
       line = boom.backtrace.first
-      file, line, meth = line.split(":")
+      file, line, _meth = line.split(":")
       assert_equal 'test.etn', file
       assert_equal '6', line
     end
@@ -141,7 +141,7 @@ class CompiledEtanniTemplateTest < Minitest::Test
       line = boom.backtrace.first
       line = boom.backtrace.grep(/^test\.etn:/).first
       assert line, "Backtrace didn't contain test.etn"
-      file, line, meth = line.split(":")
+      _file, line, _meth = line.split(":")
       assert_equal '13', line
     end
   end
@@ -156,7 +156,7 @@ class CompiledEtanniTemplateTest < Minitest::Test
     rescue => boom
       assert_kind_of RuntimeError, boom
       line = boom.backtrace.first
-      file, line, meth = line.split(":")
+      file, line, _meth = line.split(":")
       assert_equal 'test.etn', file
       assert_equal '6', line
     end

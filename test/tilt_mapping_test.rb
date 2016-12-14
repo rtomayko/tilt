@@ -188,7 +188,7 @@ module Tilt
 
         @mapping.stub :require, req do
           err = assert_raises(LoadError) do
-            klass = @mapping['hello.mt']
+            @mapping['hello.mt']
           end
 
           assert_equal 'my_template2', err.message

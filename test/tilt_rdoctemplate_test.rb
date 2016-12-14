@@ -11,16 +11,16 @@ begin
     test "preparing and evaluating the template with #render" do
       template = Tilt::RDocTemplate.new { |t| "= Hello World!" }
       result = template.render.strip
-      assert_match /<h1/, result
-      assert_match />Hello World!</, result
+      assert_match %r(<h1), result
+      assert_match %r(>Hello World!<), result
     end
 
     test "can be rendered more than once" do
       template = Tilt::RDocTemplate.new { |t| "= Hello World!" }
       3.times do
         result = template.render.strip
-        assert_match /<h1/, result
-        assert_match />Hello World!</, result
+        assert_match %r(<h1), result
+        assert_match %r(>Hello World!<), result
       end
     end
   end

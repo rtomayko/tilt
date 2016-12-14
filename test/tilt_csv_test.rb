@@ -42,7 +42,7 @@ begin
         assert_kind_of NameError, boom
         line = boom.backtrace.grep(/^test\.csv:/).first
         assert line, "Backtrace didn't contain test.csv"
-        file, line, meth = line.split(":")
+        _file, line, _meth = line.split(":")
         assert_equal '4', line
       end
     end
@@ -61,7 +61,7 @@ begin
     end
   end
 
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::CSVTemplate (disabled) please install 'fastercsv' if using ruby 1.8.x"
 end
 

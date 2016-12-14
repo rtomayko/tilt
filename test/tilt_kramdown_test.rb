@@ -15,6 +15,6 @@ begin
       3.times { assert_equal '<h1 id="hello-world">Hello World!</h1>', template.render.strip }
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::KramdownTemplate (disabled)"
 end

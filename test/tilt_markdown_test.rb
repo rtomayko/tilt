@@ -95,7 +95,7 @@ begin
     def test_smarty_pants_true
       # Various versions of Redcarpet support various versions of Smart pants.
       html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
-      assert_match /<p>Hello “World(''|”) – This is — a test …<\/p>/, html
+      assert_match %r!<p>Hello “World(''|”) – This is — a test …<\/p>!, html
     end
 
     def test_renderer_options

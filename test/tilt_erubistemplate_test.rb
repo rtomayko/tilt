@@ -74,7 +74,7 @@ begin
         assert_kind_of NameError, boom
         line = boom.backtrace.grep(/^test\.erubis:/).first
         assert line, "Backtrace didn't contain test.erubis"
-        file, line, meth = line.split(":")
+        _file, line, _meth = line.split(":")
         assert_equal '13', line
       end
     end
@@ -89,7 +89,7 @@ begin
       rescue => boom
         assert_kind_of RuntimeError, boom
         line = boom.backtrace.first
-        file, line, meth = line.split(":")
+        file, line, _meth = line.split(":")
         assert_equal 'test.erubis', file
         assert_equal '6', line
       end
@@ -132,11 +132,11 @@ begin
 
     test "does not modify options argument" do
       options_hash = {:escape_html => true}
-      template = Tilt::ErubisTemplate.new(nil, options_hash) { |t| "Hello World!" }
+      Tilt::ErubisTemplate.new(nil, options_hash) { |t| "Hello World!" }
       assert_equal({:escape_html => true}, options_hash)
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::ErubisTemplate (disabled)"
 end
 

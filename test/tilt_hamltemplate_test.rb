@@ -61,7 +61,7 @@ begin
         assert_kind_of NameError, boom
         line = boom.backtrace.grep(/^test\.haml:/).first
         assert line, "Backtrace didn't contain test.haml"
-        file, line, meth = line.split(":")
+        _file, line, _meth = line.split(":")
         assert_equal '12', line
       end
     end
@@ -71,11 +71,11 @@ begin
       fail unless data[0] == ?%
       template = Tilt::HamlTemplate.new('test.haml') { data }
       begin
-        res = template.render(Object.new, :name => 'Joe', :foo => 'bar')
+        template.render(Object.new, :name => 'Joe', :foo => 'bar')
       rescue => boom
         assert_kind_of MockError, boom
         line = boom.backtrace.first
-        file, line, meth = line.split(":")
+        file, line, _meth = line.split(":")
         assert_equal 'test.haml', file
         assert_equal '5', line
       end
@@ -132,7 +132,7 @@ begin
         assert_kind_of NameError, boom
         line = boom.backtrace.grep(/^test\.haml:/).first
         assert line, "Backtrace didn't contain test.haml"
-        file, line, meth = line.split(":")
+        _file, line, _meth = line.split(":")
         assert_equal '12', line
       end
     end
@@ -142,17 +142,17 @@ begin
       fail unless data[0] == ?%
       template = Tilt::HamlTemplate.new('test.haml') { data }
       begin
-        res = template.render(Scope.new, :name => 'Joe', :foo => 'bar')
+        template.render(Scope.new, :name => 'Joe', :foo => 'bar')
       rescue => boom
         assert_kind_of MockError, boom
         line = boom.backtrace.first
-        file, line, meth = line.split(":")
+        file, line, _meth = line.split(":")
         assert_equal 'test.haml', file
         assert_equal '5', line
       end
     end
   end
-rescue LoadError => boom
+rescue LoadError
   warn "Tilt::HamlTemplate (disabled)"
 end
 
