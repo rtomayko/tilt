@@ -68,7 +68,7 @@ class ERBTemplateTest < Minitest::Test
       assert_kind_of NameError, boom
       line = boom.backtrace.grep(/^test\.erb:/).first
       assert line, "Backtrace didn't contain test.erb"
-      file, line, meth = line.split(":")
+      _file, line, _meth = line.split(":")
       assert_equal '13', line
     end
   end
@@ -83,7 +83,7 @@ class ERBTemplateTest < Minitest::Test
     rescue => boom
       assert_kind_of RuntimeError, boom
       line = boom.backtrace.first
-      file, line, meth = line.split(":")
+      file, line, _meth = line.split(":")
       assert_equal 'test.erb', file
       assert_equal '6', line
     end
@@ -170,7 +170,7 @@ class CompiledERBTemplateTest < Minitest::Test
       assert_kind_of NameError, boom
       line = boom.backtrace.grep(/^test\.erb:/).first
       assert line, "Backtrace didn't contain test.erb"
-      file, line, meth = line.split(":")
+      _file, line, _meth = line.split(":")
       assert_equal '13', line
     end
   end
@@ -185,7 +185,7 @@ class CompiledERBTemplateTest < Minitest::Test
     rescue => boom
       assert_kind_of RuntimeError, boom
       line = boom.backtrace.first
-      file, line, meth = line.split(":")
+      file, line, _meth = line.split(":")
       assert_equal 'test.erb', file
       assert_equal '6', line
     end

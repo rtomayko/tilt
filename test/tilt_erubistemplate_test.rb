@@ -74,7 +74,7 @@ begin
         assert_kind_of NameError, boom
         line = boom.backtrace.grep(/^test\.erubis:/).first
         assert line, "Backtrace didn't contain test.erubis"
-        file, line, meth = line.split(":")
+        _file, line, _meth = line.split(":")
         assert_equal '13', line
       end
     end
@@ -89,7 +89,7 @@ begin
       rescue => boom
         assert_kind_of RuntimeError, boom
         line = boom.backtrace.first
-        file, line, meth = line.split(":")
+        file, line, _meth = line.split(":")
         assert_equal 'test.erubis', file
         assert_equal '6', line
       end

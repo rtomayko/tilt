@@ -61,7 +61,7 @@ begin
         assert_kind_of NameError, boom
         line = boom.backtrace.grep(/^test\.haml:/).first
         assert line, "Backtrace didn't contain test.haml"
-        file, line, meth = line.split(":")
+        _file, line, _meth = line.split(":")
         assert_equal '12', line
       end
     end
@@ -75,7 +75,7 @@ begin
       rescue => boom
         assert_kind_of MockError, boom
         line = boom.backtrace.first
-        file, line, meth = line.split(":")
+        file, line, _meth = line.split(":")
         assert_equal 'test.haml', file
         assert_equal '5', line
       end
@@ -132,7 +132,7 @@ begin
         assert_kind_of NameError, boom
         line = boom.backtrace.grep(/^test\.haml:/).first
         assert line, "Backtrace didn't contain test.haml"
-        file, line, meth = line.split(":")
+        _file, line, _meth = line.split(":")
         assert_equal '12', line
       end
     end
@@ -146,7 +146,7 @@ begin
       rescue => boom
         assert_kind_of MockError, boom
         line = boom.backtrace.first
-        file, line, meth = line.split(":")
+        file, line, _meth = line.split(":")
         assert_equal 'test.haml', file
         assert_equal '5', line
       end
