@@ -261,6 +261,7 @@ module Tilt
             Thread.current[:tilt_vars] = [self, locals]
             class << self
               this, locals = Thread.current[:tilt_vars]
+              locals = locals
               this.instance_eval do
                 #{local_code}
       RUBY
