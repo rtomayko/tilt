@@ -11,7 +11,7 @@ module Tilt
     UNRECOGNIZED_OPTIONS = [:outvar, :context, :fenced_code_blocks]
 
     # some options are passed via variable parameter
-    VARIABLE_OPTIONS = [:lang]
+    VARIABLE_OPTIONS = [:lang, :locale]
 
     def tilt_to_pandoc_mapping
       { :smartypants => :smart,
