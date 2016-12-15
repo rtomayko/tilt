@@ -8,7 +8,7 @@ module Tilt
     self.default_mime_type = 'text/html'
 
     # some options are not recognized by Pandoc
-    UNRECOGNIZED_OPTIONS = [:outvar, :context, :fenced_code_blocks]
+    UNRECOGNIZED_OPTIONS = [:outvar, :context, :fenced_code_blocks, :keep_separator]
 
     # some options are passed via variable parameter
     VARIABLE_OPTIONS = [:lang, :locale]
