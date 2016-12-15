@@ -8,7 +8,10 @@ module Tilt
     self.default_mime_type = 'text/html'
 
     # some options are not recognized by Pandoc
-    UNRECOGNIZED_OPTIONS = [:outvar, :context, :fenced_code_blocks, :lang, :locale]
+    UNRECOGNIZED_OPTIONS = [:outvar, :context, :fenced_code_blocks]
+
+    # some options are passed via variable parameter
+    VARIABLE_OPTIONS = [:lang]
 
     def tilt_to_pandoc_mapping
       { :smartypants => :smart,
@@ -34,7 +37,11 @@ module Tilt
         when false
           sum
         else
-          sum << { k => v }
+          if VARIABLE_OPTIONS.include?(k)
+            sum << { "variable" => "#{k}:#{v}" }
+          else
+            sum << { k => v }
+          end
         end
       end
     end

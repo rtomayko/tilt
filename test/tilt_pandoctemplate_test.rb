@@ -66,6 +66,12 @@ begin
         template = Tilt::PandocTemplate.new(:context => true) { |t| "# This is a heading" }
         assert_equal "<h1 id=\"this-is-a-heading\">This is a heading</h1>", template.render
       end
+
+      # some options need to be passed via --variable
+      test "support variable options" do
+        template = Tilt::PandocTemplate.new(:lang => "en") { |t| "# This is a heading" }
+        assert_equal "<h1 id=\"this-is-a-heading\">This is a heading</h1>", template.render
+      end
     end
   end
 rescue LoadError => boom
