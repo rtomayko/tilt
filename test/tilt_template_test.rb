@@ -132,6 +132,12 @@ class TiltTemplateTest < Minitest::Test
     assert inst.prepared?
   end
 
+  test "template_source with locals of strings" do
+    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{name}!' }
+    assert_equal "Hey Joe!", inst.render(Object.new, 'name' => 'Joe', :name=>'Joe')
+    assert inst.prepared?
+  end
+
   test "template_source with locals having non-variable keys raises error" do
     inst = SourceGeneratingMockTemplate.new { |t| '1 + 2 = #{_answer}' }
     err = assert_raises(RuntimeError) { inst.render(Object.new, 'ANSWER' => 3) }
