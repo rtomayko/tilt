@@ -29,6 +29,7 @@ Support for these template engines is included with the package:
 | Asciidoctor             | .ad, .adoc, .asciidoc  | asciidoctor (>= 0.1.0)                     | Community   |
 | ERB                     | .erb, .rhtml           | none (included ruby stdlib)                | Tilt team   |
 | InterpolatedString      | .str                   | none (included ruby core)                  | Tilt team   |
+| Erubi                   | .erb, .rhtml, .erubi   | erubi                                      | Community   |
 | Erubis                  | .erb, .rhtml, .erubis  | erubis                                     | Tilt team   |
 | Haml                    | .haml                  | haml                                       | Tilt team   |
 | Sass                    | .sass                  | haml (< 3.1) or sass (>= 3.1)              | Tilt team   |
