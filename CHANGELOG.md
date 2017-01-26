@@ -1,6 +1,15 @@
 ## master
 
 * Add support for LiveScript (#286, @Announcement Jacob Francis Powers)
+* Add support for Sigil (#302, winebarrel)
+* Add support for Erubi (#308, jeremyevans)
+* Add support for options in Liquid (#298, #299, laCour)
+* Always sort locals by strings (#307, jeremyevans)
+
+* Fix test warnings (#305, amatsuda)
+* Fix indentation (#293, yui-knk)
+* Use SVG badges in README (#294, vasinov)
+* Fix typo and trailing space (#295, #296, karloescota)
 
 ## 2.0.5 (2016-06-02)
 
