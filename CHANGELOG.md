@@ -1,4 +1,4 @@
-## master
+## 2.0.6 (2017-01-26)
 
 * Add support for LiveScript (#286, @Announcement Jacob Francis Powers)
 * Add support for Sigil (#302, winebarrel)

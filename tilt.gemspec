@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
 
   s.name = 'tilt'
-  s.version = '2.0.5'
-  s.date = '2016-06-02'
+  s.version = '2.0.6'
+  s.date = '2017-01-26'
 
   s.description = "Generic interface to multiple Ruby template engines"
   s.summary     = s.description
@@ -35,12 +35,14 @@ Gem::Specification.new do |s|
     lib/tilt/csv.rb
     lib/tilt/dummy.rb
     lib/tilt/erb.rb
+    lib/tilt/erubi.rb
     lib/tilt/erubis.rb
     lib/tilt/etanni.rb
     lib/tilt/haml.rb
     lib/tilt/kramdown.rb
     lib/tilt/less.rb
     lib/tilt/liquid.rb
+    lib/tilt/livescript.rb
     lib/tilt/mapping.rb
     lib/tilt/markaby.rb
     lib/tilt/maruku.rb
@@ -83,12 +85,14 @@ Gem::Specification.new do |s|
     test/tilt_csv_test.rb
     test/tilt_erbtemplate_test.rb
     test/tilt_erubistemplate_test.rb
+    test/tilt_erubitemplate_test.rb
     test/tilt_etannitemplate_test.rb
     test/tilt_hamltemplate_test.rb
     test/tilt_kramdown_test.rb
     test/tilt_lesstemplate_test.less
     test/tilt_lesstemplate_test.rb
     test/tilt_liquidtemplate_test.rb
+    test/tilt_livescripttemplate_test.rb
     test/tilt_mapping_test.rb
     test/tilt_markaby_test.rb
     test/tilt_markdown_test.rb
