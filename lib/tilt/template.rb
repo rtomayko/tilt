@@ -2,7 +2,16 @@ require 'thread'
 
 module Tilt
   # @private
-  TOPOBJECT = Object.superclass || Object
+  TOPOBJECT = if RUBY_VERSION >= '2.0'
+    # @private
+    module CompiledTemplates
+      self
+    end
+  elsif RUBY_VERSION >= '1.9'
+    BasicObject
+  else
+    Object
+  end
   # @private
   LOCK = Mutex.new
 
