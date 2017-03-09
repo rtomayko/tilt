@@ -4,7 +4,7 @@ gem 'rake'
 gem 'minitest', '~> 5.0'
 
 group :development do
-  gem 'yard', '~> 0.8.6'
+  gem 'yard', '~> 0.9.0'
   gem 'ronn', '~> 0.7.3'
 end
 
