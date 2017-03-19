@@ -1,4 +1,4 @@
-## master
+## 2.0.7 (2017-03-19)
 
 * Do not modify BasicObject during template compilation on ruby 2.0+ (#309, jeremyevans)
 
