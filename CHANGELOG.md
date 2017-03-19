@@ -1,3 +1,7 @@
+## master
+
+* Do not modify BasicObject during template compilation on ruby 2.0+ (#309, jeremyevans)
+
 ## 2.0.6 (2017-01-26)
 
 * Add support for LiveScript (#286, @Announcement Jacob Francis Powers)
