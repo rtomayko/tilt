@@ -7,15 +7,19 @@ module Tilt
   class RadiusTemplate < Template
     def self.context_class
       @context_class ||= Class.new(Radius::Context) do
-        attr_accessor :tilt_scope
+        attr_accessor :scope
 
         def tag_missing(name, attributes)
-          tilt_scope.__send__(name)
+          if method = scope.method(name)
+            # XXX 1.9 specific.
+            arguments = method.parameters.map(&:last).map { |key| attributes[key.to_s] }
+            method.call(*arguments)
+          end
         end
 
         def dup
           i = super
-          i.tilt_scope = tilt_scope
+          i.scope = scope
           i
         end
       end
@@ -26,7 +30,7 @@ module Tilt
 
     def evaluate(scope, locals, &block)
       context = self.class.context_class.new
-      context.tilt_scope = scope
+      context.scope = scope
       context.define_tag("yield") do
         block.call
       end
