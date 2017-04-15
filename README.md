@@ -113,11 +113,11 @@ libraries (like 'erb' above) at load time. Tilt attempts to lazy require the
 template engine library the first time a template is created but this is
 prone to error in threaded environments.
 
-The {Tilt} module contains generic implementation classes for all supported
+The `Tilt` module contains generic implementation classes for all supported
 template engines. Each template class adheres to the same interface for
 creation and rendering. In the instant gratification example, we let Tilt
 determine the template implementation class based on the filename, but
-{Tilt::Template} implementations can also be used directly:
+`Tilt::Template` implementations can also be used directly:
 
     require 'tilt/haml'
     template = Tilt::HamlTemplate.new('templates/foo.haml')
@@ -157,14 +157,14 @@ The block passed to `render` is called on `yield`:
 Template Mappings
 -----------------
 
-The {Tilt::Mapping} class includes methods for associating template
+The `Tilt::Mapping` class includes methods for associating template
 implementation classes with filename patterns and for locating/instantiating
 template classes based on those associations.
 
-The {Tilt} module has a global instance of `Mapping` that is populated with the
+The `Tilt` module has a global instance of `Mapping` that is populated with the
 table of template engines above.
 
-The {Tilt.register} method associates a filename pattern with a specific
+The `Tilt.register` method associates a filename pattern with a specific
 template implementation. To use ERB for files ending in a `.bar` extension:
 
      >> Tilt.register Tilt::ERBTemplate, 'bar'
