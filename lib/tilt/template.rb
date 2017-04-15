@@ -193,8 +193,7 @@ module Tilt
         source.force_encoding(template_encoding)
         template.force_encoding(template_encoding)
       end
-
-      source << preamble << "\n" << template << "\n" << postamble
+      source << [preamble, template, postamble].join("\n")
 
       [source, preamble.count("\n")+1]
     end
