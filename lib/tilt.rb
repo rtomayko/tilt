@@ -153,7 +153,7 @@ module Tilt
   register_lazy :ScssTemplate,         'tilt/sass',      'scss'
   register_lazy :SigilTemplate,        'tilt/sigil',     'sigil'
   register_lazy :StringTemplate,       'tilt/string',    'str'
-  register_lazy :TypeScriptTemplate,   'tilt/typescript', 'ts'
+  register_lazy :TypeScriptTemplate,   'tilt/typescript', 'ts', 'tsx'
   register_lazy :WikiClothTemplate,    'tilt/wikicloth', 'wiki', 'mediawiki', 'mw'
   register_lazy :YajlTemplate,         'tilt/yajl',      'yajl'
 

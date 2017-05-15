@@ -14,6 +14,10 @@ begin
       assert_equal Tilt::TypeScriptTemplate, Tilt['test.ts']
     end
 
+    test "is registered for '.tsx' files" do
+      assert_equal Tilt::TypeScriptTemplate, Tilt['test.tsx']
+    end
+
     test "compiles and evaluates the template on #render" do
       template = Tilt::TypeScriptTemplate.new { @ts }
       assert_match @js, template.render
