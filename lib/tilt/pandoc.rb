@@ -7,6 +7,12 @@ module Tilt
   class PandocTemplate < Template
     self.default_mime_type = 'text/html'
 
+    # some options are not recognized by Pandoc
+    UNRECOGNIZED_OPTIONS = [:outvar, :context, :fenced_code_blocks, :keep_separator]
+
+    # some options are passed via variable parameter
+    VARIABLE_OPTIONS = [:lang, :locale]
+
     def tilt_to_pandoc_mapping
       { :smartypants => :smart,
         :escape_html => { :f => 'markdown-raw_html' },
@@ -19,16 +25,23 @@ module Tilt
     # Map tilt options to pandoc options
     # Replace hash keys with value true with symbol for key
     # Remove hash keys with value false
+    # Remove unrecognized keys
     # Leave other hash keys untouched
     def pandoc_options
       options.reduce([]) do |sum, (k,v)|
+        return sum if UNRECOGNIZED_OPTIONS.include?(k)
+
         case v
         when true
           sum << (tilt_to_pandoc_mapping[k] || k)
         when false
           sum
         else
-          sum << { k => v }
+          if VARIABLE_OPTIONS.include?(k)
+            sum << { "variable" => "#{k}:#{v}" }
+          else
+            sum << { k => v }
+          end
         end
       end
     end
