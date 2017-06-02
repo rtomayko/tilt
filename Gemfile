@@ -12,7 +12,11 @@ can_execjs = (RUBY_VERSION >= '1.9.3')
 
 group :primary do
   gem 'builder'
-  gem 'haml', '>= 4'
+  if RUBY_VERSION >= '2.0.0'
+    gem 'haml', '>= 4'
+  else
+    gem 'haml', '~> 4'
+  end
   gem 'erubis'
   gem 'markaby'
   gem 'sass'
