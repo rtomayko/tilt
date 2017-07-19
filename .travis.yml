@@ -8,8 +8,6 @@ addons:
       - pandoc
 language: ruby
 rvm:
-  - 1.9.3
-  - 2.0.0
   - 2.1.10
   - 2.2.7
   - 2.3.4
