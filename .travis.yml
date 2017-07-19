@@ -5,6 +5,7 @@ addons:
       - kalakris-cmake
     packages:
       - cmake
+      - pandoc
 language: ruby
 rvm:
   - 1.9.3
