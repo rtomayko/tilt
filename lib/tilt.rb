@@ -4,7 +4,7 @@ require 'tilt/template'
 # Namespace for Tilt. This module is not intended to be included anywhere.
 module Tilt
   # Current version.
-  VERSION = '2.0.7'
+  VERSION = '2.0.8'
 
   @default_mapping = Mapping.new
 

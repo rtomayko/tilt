@@ -1,5 +1,7 @@
 ## master
 
+## 2.0.8 (2017-07-24)
+
 * Register .tsx for TypeScript (#315, backus)
 * Use Haml 5's new API (#312, k0kubun)
 * Use correct parser options for CommonMarker (#320, rewritten)
