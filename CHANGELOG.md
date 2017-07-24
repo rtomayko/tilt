@@ -1,6 +1,10 @@
 ## master
 
 * Register .tsx for TypeScript (#315, backus)
+* Use Haml 5's new API (#312, k0kubun)
+* Use correct parser options for CommonMarker (#320, rewritten)
+* Suppress warnings when no locals are used (#304, amatsuda)
+* Haml: Accept `outvar` (#317, k0kubun)
 
 ## 2.0.7 (2017-03-19)
 
