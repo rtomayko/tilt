@@ -134,7 +134,13 @@ class TiltTemplateTest < Minitest::Test
 
   test "template_source with locals of strings" do
     inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{name}!' }
-    assert_equal "Hey Joe!", inst.render(Object.new, 'name' => 'Joe', :name=>'Joe')
+    assert_equal "Hey Joe!", inst.render(Object.new, 'name' => 'Joe', :name => 'Joe')
+    assert inst.prepared?
+  end
+
+  test "template_source with locals of string question mark" do
+    inst = SourceGeneratingMockTemplate.new { |t| 'Name? #{has_a_name?}' }
+    assert_equal "Name? true", inst.render(Object.new, 'has_a_name?' => true, has_a_name?: true)
     assert inst.prepared?
   end
 
