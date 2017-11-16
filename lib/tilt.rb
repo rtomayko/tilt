@@ -140,7 +140,7 @@ module Tilt
   register_lazy :HamlTemplate,         'tilt/haml',      'haml'
   register_lazy :LessTemplate,         'tilt/less',      'less'
   register_lazy :LiquidTemplate,       'tilt/liquid',    'liquid'
-  register_lazy :LiveScriptTemplate,   'tilt/livescript','ls'
+  register_lazy :LiveScriptTemplate,   'tilt/livescript','ls', 'livescript'
   register_lazy :MarkabyTemplate,      'tilt/markaby',   'mab'
   register_lazy :NokogiriTemplate,     'tilt/nokogiri',  'nokogiri'
   register_lazy :PlainTemplate,        'tilt/plain',     'html'
