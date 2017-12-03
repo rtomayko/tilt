@@ -24,6 +24,13 @@ begin
       assert_equal Tilt::AsciidoctorTemplate, Tilt['asciidoc']
     end
 
+    test "#extensions_for returns a unique list of extensions" do
+      Tilt.default_mapping.extensions_for(Tilt::AsciidoctorTemplate).each do |ext|
+        Tilt[ext]
+      end
+      assert_equal ['ad', 'adoc', 'asciidoc'], Tilt.default_mapping.extensions_for(Tilt::AsciidoctorTemplate).sort
+    end
+
     test "preparing and evaluating html5 templates on #render" do
       template = Tilt::AsciidoctorTemplate.new(:attributes => {"backend" => 'html5'}) { |t| "== Hello World!" } 
       assert_equal HTML5_OUTPUT, strip_space(template.render)
