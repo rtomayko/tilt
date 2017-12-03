@@ -188,7 +188,7 @@ module Tilt
       lazy_map.each do |ext, choices|
         res << ext if choices.any? { |klass, file| template_class.to_s == klass }
       end
-      res
+      res.uniq
     end
 
     private
