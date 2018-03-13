@@ -7,6 +7,8 @@ module Tilt
   class ERBTemplate < Template
     @@default_output_variable = '_erbout'
 
+    SUPPORTS_KVARGS = ::ERB.instance_method(:initialize).parameters.assoc(:key) rescue false
+
     def self.default_output_variable
       @@default_output_variable
     end
@@ -19,7 +21,11 @@ module Tilt
     def prepare
       @outvar = options[:outvar] || self.class.default_output_variable
       options[:trim] = '<>' if !(options[:trim] == false) && (options[:trim].nil? || options[:trim] == true)
-      @engine = ::ERB.new(data, options[:safe], options[:trim], @outvar)
+      @engine = if SUPPORTS_KVARGS
+        ::ERB.new(data, trim_mode: options[:trim], eoutvar: @outvar)
+      else
+        ::ERB.new(data, options[:safe], options[:trim], @outvar)
+      end
     end
 
     def precompiled_template(locals)
