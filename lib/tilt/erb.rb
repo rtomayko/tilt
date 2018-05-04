@@ -19,7 +19,11 @@ module Tilt
     def prepare
       @outvar = options[:outvar] || self.class.default_output_variable
       options[:trim] = '<>' if !(options[:trim] == false) && (options[:trim].nil? || options[:trim] == true)
-      @engine = ::ERB.new(data, options[:safe], options[:trim], @outvar)
+      @engine = if ::ERB.instance_method(:initialize).parameters.assoc(:key) # Ruby 2.6+
+        ::ERB.new(data, trim_mode: options[:trim], eoutvar: @outvar)
+      else
+        ::ERB.new(data, options[:safe], options[:trim], @outvar)
+      end
     end
 
     def precompiled_template(locals)
