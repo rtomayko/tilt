@@ -1,5 +1,7 @@
 ## master
 
+* Use new ERB API in Ruby 2.6 (#329, koic)
+
 ## 2.0.8 (2017-07-24)
 
 * Register .tsx for TypeScript (#315, backus)
