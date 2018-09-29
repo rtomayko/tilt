@@ -13,7 +13,7 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      @output ||= LiveScript.compile(data, options)
+      @output ||= LiveScript.compile(data, {bare: true, header: false})
     end
 
     def allows_script?
