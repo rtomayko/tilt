@@ -17,9 +17,10 @@ group :primary do
   gem 'haml', '>= 4' if RUBY_VERSION >= '2.0.0'
   gem 'erubis'
   gem 'markaby'
-  gem 'sass'
+  gem 'sassc'
 
   if can_execjs
+    gem 'therubyracer' # needed by 'less'
     gem 'less'
     gem 'coffee-script'
     gem 'livescript'
