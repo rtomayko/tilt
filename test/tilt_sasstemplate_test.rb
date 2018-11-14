@@ -36,6 +36,7 @@ begin
     end
   end
 
-rescue LoadError
+rescue LoadError => err
+  raise err if ENV['FORCE_SASS']
   warn "Tilt::SassTemplate (disabled)"
 end
