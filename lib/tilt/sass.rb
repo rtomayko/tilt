@@ -1,5 +1,4 @@
 require 'tilt/template'
-require 'sass'
 
 module Tilt
   # Sass template implementation. See:
@@ -9,8 +8,20 @@ module Tilt
   class SassTemplate < Template
     self.default_mime_type = 'text/css'
 
+    begin
+      require 'sassc'
+      Sass = ::SassC
+    rescue LoadError => err
+      begin
+        require 'sass'
+        Sass == ::Sass
+      rescue LoadError
+        raise err
+      end
+    end
+
     def prepare
-      @engine = ::Sass::Engine.new(data, sass_options)
+      @engine = Sass::Engine.new(data, sass_options)
     end
 
     def evaluate(scope, locals, &block)
