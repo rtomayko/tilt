@@ -17,7 +17,12 @@ group :primary do
   gem 'haml', '>= 4' if RUBY_VERSION >= '2.0.0'
   gem 'erubis'
   gem 'markaby'
-  gem 'sass'
+
+  if ENV['OLD_SASS']
+    gem 'sass'
+  else
+    gem 'sassc'
+  end
 
   if can_execjs
     gem 'less'

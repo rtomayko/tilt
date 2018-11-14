@@ -15,7 +15,7 @@ rvm:
   - ruby-head
   - jruby-9.1.5.0
 env:
-  - BUNDLE_WITHOUT=secondary:development
+  - BUNDLE_WITHOUT=secondary:development FORCE_SASS=1
   - BUNDLE_WITHOUT=primary:development
 install:
   - curl -L https://github.com/gliderlabs/sigil/releases/download/v0.4.0/sigil_0.4.0_Linux_x86_64.tgz | tar -zxC $TRAVIS_BUILD_DIR/bin/
@@ -27,3 +27,6 @@ matrix:
     - env: BUNDLE_WITHOUT=primary:development
     - rvm: ruby-head
   fast_finish: true
+  include:
+    - rvm: 2.4.1
+      env: BUNDLE_WITHOUT=secondary:development OLD_SASS=1 FORCE_SASS=1
