@@ -14,7 +14,7 @@ module Tilt
     rescue LoadError => err
       begin
         require 'sass'
-        Sass == ::Sass
+        Sass = ::Sass
       rescue LoadError
         raise err
       end
