@@ -1,5 +1,7 @@
 ## master
 
+## 2.0.9 (2018-11-28)
+
 * Use new ERB API in Ruby 2.6 (#329, koic)
 * Support the new sassc gem (#336, jdickey, judofyr)
 
