@@ -94,7 +94,7 @@ file 'tilt.gemspec' => FileList['{lib,test}/**','Rakefile'] do |f|
     sub(/s\.version\s*=\s*'.*'/, "s.version = '#{version}'")
   parts = spec.split("  # = MANIFEST =\n")
   # determine file list from git ls-files
-  files = `git ls-files`.
+  files = `git ls-files -- lib bin COPYING`.
     split("\n").sort.reject{ |file| file =~ /^\./ }.
     map{ |file| "    #{file}" }.join("\n")
   # piece file back together and write...
