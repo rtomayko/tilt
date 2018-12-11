@@ -16,7 +16,7 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      @output ||= Hamdown::Engine.render(data, options, &block)
+      @output ||= Hamdown::Engine.perform(data, options, &block)
     end
 
     def allows_script?
