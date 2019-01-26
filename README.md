@@ -101,12 +101,14 @@ Basic Usage
 
 Instant gratification:
 
-    require 'erb'
-    require 'tilt'
-    template = Tilt.new('templates/foo.erb')
-    => #<Tilt::ERBTemplate @file="templates/foo.erb" ...>
-    output = template.render
-    => "Hello world!"
+~~~ruby
+require 'erb'
+require 'tilt'
+template = Tilt.new('templates/foo.erb')
+=> #<Tilt::ERBTemplate @file="templates/foo.erb" ...>
+output = template.render
+=> "Hello world!"
+~~~
 
 It's recommended that calling programs explicitly require template engine
 libraries (like 'erb' above) at load time. Tilt attempts to lazy require the
@@ -119,18 +121,22 @@ creation and rendering. In the instant gratification example, we let Tilt
 determine the template implementation class based on the filename, but
 {Tilt::Template} implementations can also be used directly:
 
-    require 'tilt/haml'
-    template = Tilt::HamlTemplate.new('templates/foo.haml')
-    output = template.render
+~~~ruby
+require 'tilt/haml'
+template = Tilt::HamlTemplate.new('templates/foo.haml')
+output = template.render
+~~~
 
 The `render` method takes an optional evaluation scope and locals hash
 arguments. Here, the template is evaluated within the context of the
 `Person` object with locals `x` and `y`:
 
-    require 'tilt/erb'
-    template = Tilt::ERBTemplate.new('templates/foo.erb')
-    joe = Person.find('joe')
-    output = template.render(joe, :x => 35, :y => 42)
+~~~ruby
+require 'tilt/erb'
+template = Tilt::ERBTemplate.new('templates/foo.erb')
+joe = Person.find('joe')
+output = template.render(joe, :x => 35, :y => 42)
+~~~
 
 If no scope is provided, the template is evaluated within the context of an
 object created with `Object.new`.
@@ -139,20 +145,26 @@ A single `Template` instance's `render` method may be called multiple times
 with different scope and locals arguments. Continuing the previous example,
 we render the same compiled template but this time in jane's scope:
 
-    jane = Person.find('jane')
-    output = template.render(jane, :x => 22, :y => nil)
+~~~ruby
+jane = Person.find('jane')
+output = template.render(jane, :x => 22, :y => nil)
+~~~
 
 Blocks can be passed to `render` for templates that support running
 arbitrary ruby code (usually with some form of `yield`). For instance,
 assuming the following in `foo.erb`:
 
-    Hey <%= yield %>!
+~~~ruby
+Hey <%= yield %>!
+~~~
 
 The block passed to `render` is called on `yield`:
 
-    template = Tilt::ERBTemplate.new('foo.erb')
-    template.render { 'Joe' }
-    # => "Hey Joe!"
+~~~ruby
+template = Tilt::ERBTemplate.new('foo.erb')
+template.render { 'Joe' }
+# => "Hey Joe!"
+~~~
 
 Template Mappings
 -----------------
@@ -167,23 +179,29 @@ table of template engines above.
 The {Tilt.register} method associates a filename pattern with a specific
 template implementation. To use ERB for files ending in a `.bar` extension:
 
-     >> Tilt.register Tilt::ERBTemplate, 'bar'
-     >> Tilt.new('views/foo.bar')
-     => #<Tilt::ERBTemplate @file="views/foo.bar" ...>
+~~~ruby
+>> Tilt.register Tilt::ERBTemplate, 'bar'
+>> Tilt.new('views/foo.bar')
+=> #<Tilt::ERBTemplate @file="views/foo.bar" ...>
+~~~
 
 Retrieving the template class for a file or file extension:
 
-     >> Tilt['foo.bar']
-     => Tilt::ERBTemplate
-     >> Tilt['haml']
-     => Tilt::HamlTemplate
+~~~ruby
+>> Tilt['foo.bar']
+=> Tilt::ERBTemplate
+>> Tilt['haml']
+=> Tilt::HamlTemplate
+~~~
 
 Retrieving a list of template classes for a file:
 
-    >> Tilt.templates_for('foo.bar')
-    => [Tilt::ERBTemplate]
-    >> Tilt.templates_for('foo.haml.bar')
-    => [Tilt::ERBTemplate, Tilt::HamlTemplate]
+~~~ruby
+>> Tilt.templates_for('foo.bar')
+=> [Tilt::ERBTemplate]
+>> Tilt.templates_for('foo.haml.bar')
+=> [Tilt::ERBTemplate, Tilt::HamlTemplate]
+~~~
 
 The template class is determined by searching for a series of decreasingly
 specific name patterns. When creating a new template with
@@ -208,9 +226,9 @@ recommend setting this option. When providing a custom reader block (`Tilt.new
 Most of the template engines in Tilt also allows you to override the encoding
 using the `:default_encoding`-option:
 
-```ruby
+~~~ruby
 tmpl = Tilt.new('hello.erb', :default_encoding => 'Big5')
-```
+~~~
 
 Ultimately it's up to the template engine how to handle the encoding: It might
 respect `:default_encoding`, it might always assume it's UTF-8 (like
