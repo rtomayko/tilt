@@ -166,7 +166,7 @@ module Tilt
     def evaluate(scope, locals, &block)
       locals_keys = locals.keys
       locals_keys.sort!{|x, y| x.to_s <=> y.to_s}
-      method = compiled_method(locals_keys, scope.class)
+      method = compiled_method(locals_keys, scope.is_a?(Module) ? scope : scope.class)
       method.bind(scope).call(locals, &block)
     end
 
