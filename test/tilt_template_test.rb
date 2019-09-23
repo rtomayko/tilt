@@ -199,6 +199,11 @@ class TiltTemplateTest < Minitest::Test
     assert_equal "Hey Bob!", inst.render(Person.new("Joe"))
   end
 
+  test "template which accesses a constant using scope class" do
+    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
+    assert_equal "Hey Bob!", inst.render(Person)
+  end
+
   test "populates Tilt.current_template during rendering" do
     inst = SourceGeneratingMockTemplate.new { '#{$inst = Tilt.current_template}' }
     inst.render
