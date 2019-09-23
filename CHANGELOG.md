@@ -1,5 +1,10 @@
 ## master
 
+## 2.0.10 (2019-09-23)
+
+* Remove test files from bundled gem (#339, greysteil)
+* Fix warning when using yield in templates on ruby 2.7 (#343, jeremyevans)
+
 ## 2.0.9 (2018-11-28)
 
 * Use new ERB API in Ruby 2.6 (#329, koic)
