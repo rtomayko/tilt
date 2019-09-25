@@ -157,6 +157,8 @@ module Tilt
       raise NotImplementedError
     end
 
+    CLASS_METHOD = Kernel.instance_method(:class)
+
     # Execute the compiled template and return the result string. Template
     # evaluation is guaranteed to be performed in the scope object with the
     # locals specified and with support for yielding to the block.
@@ -166,7 +168,16 @@ module Tilt
     def evaluate(scope, locals, &block)
       locals_keys = locals.keys
       locals_keys.sort!{|x, y| x.to_s <=> y.to_s}
-      method = compiled_method(locals_keys, scope.is_a?(Module) ? scope : scope.class)
+      case scope
+      when Object
+        method = compiled_method(locals_keys, Module === scope ? scope : scope.class)
+      else
+        if RUBY_VERSION >= '2'
+          method = compiled_method(locals_keys, CLASS_METHOD.bind(scope).call)
+        else
+          method = compiled_method(locals_keys, Object)
+        end
+      end
       method.bind(scope).call(locals, &block)
     end
 
