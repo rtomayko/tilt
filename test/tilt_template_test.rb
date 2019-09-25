@@ -204,6 +204,38 @@ class TiltTemplateTest < Minitest::Test
     assert_equal "Hey Bob!", inst.render(Person)
   end
 
+  class BasicPerson < BasicObject
+    CONSTANT = "Bob"
+
+    attr_accessor :name
+    def initialize(name)
+      @name = name
+    end
+  end
+
+  test "template_source with an BasicObject scope" do
+    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{@name}!' }
+    scope = BasicPerson.new('Joe')
+    assert_equal "Hey Joe!", inst.render(scope)
+  end
+
+  test "template_source with a block for yield using BasicObject instance" do
+    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{yield}!' }
+    assert_equal "Hey Joe!", inst.render(BasicObject.new){ 'Joe' }
+  end
+
+  if RUBY_VERSION >= '2'
+    test "template which accesses a BasicObject constant" do
+      inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
+      assert_equal "Hey Bob!", inst.render(BasicPerson.new("Joe"))
+    end
+  end
+
+  test "template which accesses a constant using BasicObject scope class" do
+    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
+    assert_equal "Hey Bob!", inst.render(BasicPerson)
+  end
+
   test "populates Tilt.current_template during rendering" do
     inst = SourceGeneratingMockTemplate.new { '#{$inst = Tilt.current_template}' }
     inst.render
