@@ -2,38 +2,13 @@ require 'tilt/template'
 require 'redcarpet'
 
 module Tilt
-  # Compatibility mode for Redcarpet 1.x
-  class Redcarpet1Template < Template
+  class RedcarpetTemplate < Template
     self.default_mime_type = 'text/html'
 
     ALIAS = {
       :escape_html => :filter_html,
       :smartypants => :smart
     }
-
-    FLAGS = [:smart, :filter_html, :smartypants, :escape_html]
-
-    def flags
-      FLAGS.select { |flag| options[flag] }.map { |flag| ALIAS[flag] || flag }
-    end
-
-    def prepare
-      @engine = RedcarpetCompat.new(data, *flags)
-      @output = nil
-    end
-
-    def evaluate(scope, locals, &block)
-      @output ||= @engine.to_html
-    end
-
-    def allows_script?
-      false
-    end
-  end
-
-  # Future proof mode for Redcarpet 2.x (not yet released)
-  class Redcarpet2Template < Template
-    self.default_mime_type = 'text/html'
 
     def generate_renderer
       renderer = options.delete(:renderer) || ::Redcarpet::Render::HTML.new(options)
@@ -52,8 +27,7 @@ module Tilt
     end
 
     def prepare
-      # try to support the same aliases
-      Redcarpet1Template::ALIAS.each do |opt, aka|
+      ALIAS.each do |opt, aka|
         next if options.key? opt or not options.key? aka
         options[opt] = options.delete(aka)
       end
@@ -72,12 +46,6 @@ module Tilt
     def allows_script?
       false
     end
-  end
-
-  if defined? ::Redcarpet::Render and defined? ::Redcarpet::Markdown
-    RedcarpetTemplate = Redcarpet2Template
-  else
-    RedcarpetTemplate = Redcarpet1Template
   end
 end
 
