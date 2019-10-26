@@ -75,9 +75,12 @@ module Tilt
   end
 
   if defined? ::Redcarpet::Render and defined? ::Redcarpet::Markdown
-    RedcarpetTemplate = Redcarpet2Template
+    superclass = Redcarpet2Template
   else
-    RedcarpetTemplate = Redcarpet1Template
+    superclass = Redcarpet1Template
+  end
+
+  class RedcarpetTemplate < superclass
   end
 end
 

@@ -5,6 +5,11 @@ begin
   require 'tilt/redcarpet'
 
   class RedcarpetTemplateTest < Minitest::Test
+    test "works correctly with #extensions_for" do
+      extensions = Tilt.default_mapping.extensions_for(Tilt::RedcarpetTemplate)
+      assert_equal ['markdown', 'mkd', 'md'], extensions
+    end
+
     test "registered above BlueCloth" do
       %w[md mkd markdown].each do |ext|
         lazy = Tilt.lazy_map[ext]

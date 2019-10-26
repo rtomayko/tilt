@@ -1,5 +1,7 @@
 ## master
 
+* Fix #extensions\_for for RedcarpetTemplate (judofyr)
+
 ## 2.0.10 (2019-09-23)
 
 * Remove test files from bundled gem (#339, greysteil)
