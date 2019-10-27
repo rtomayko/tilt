@@ -157,6 +157,8 @@ module Tilt
       raise NotImplementedError
     end
 
+    CLASS_METHOD = Kernel.instance_method(:class)
+
     # Execute the compiled template and return the result string. Template
     # evaluation is guaranteed to be performed in the scope object with the
     # locals specified and with support for yielding to the block.
@@ -166,7 +168,16 @@ module Tilt
     def evaluate(scope, locals, &block)
       locals_keys = locals.keys
       locals_keys.sort!{|x, y| x.to_s <=> y.to_s}
-      method = compiled_method(locals_keys)
+      case scope
+      when Object
+        method = compiled_method(locals_keys, Module === scope ? scope : scope.class)
+      else
+        if RUBY_VERSION >= '2'
+          method = compiled_method(locals_keys, CLASS_METHOD.bind(scope).call)
+        else
+          method = compiled_method(locals_keys, Object)
+        end
+      end
       method.bind(scope).call(locals, &block)
     end
 
@@ -231,9 +242,9 @@ module Tilt
     end
 
     # The compiled method for the locals keys provided.
-    def compiled_method(locals_keys)
+    def compiled_method(locals_keys, scope_class=nil)
       LOCK.synchronize do
-        @compiled_method[locals_keys] ||= compile_template_method(locals_keys)
+        @compiled_method[[scope_class, locals_keys]] ||= compile_template_method(locals_keys, scope_class)
       end
     end
 
@@ -247,7 +258,7 @@ module Tilt
       end.join("\n")
     end
 
-    def compile_template_method(local_keys)
+    def compile_template_method(local_keys, scope_class=nil)
       source, offset = precompiled(local_keys)
       local_code = local_extraction(local_keys)
 
@@ -261,17 +272,12 @@ module Tilt
       method_source << <<-RUBY
         TOPOBJECT.class_eval do
           def #{method_name}(locals)
-            Thread.current[:tilt_vars] = [self, locals]
-            class << self
-              this, locals = Thread.current[:tilt_vars]
-              locals = locals
-              this.instance_eval do
-                #{local_code}
+            #{local_code}
       RUBY
       offset += method_source.count("\n")
       method_source << source
-      method_source << "\nend;end;end;end"
-      Object.class_eval(method_source, eval_file, line - offset)
+      method_source << "\nend;end;"
+      (scope_class || Object).class_eval(method_source, eval_file, line - offset)
       unbind_compiled_method(method_name)
     end
 
