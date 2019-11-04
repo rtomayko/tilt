@@ -11,6 +11,7 @@ module Tilt
     PARSE_OPTIONS = [
       :SMART,
       :smartypants,
+      :UNSAFE,
     ].freeze
     RENDER_OPTIONS = [
       :GITHUB_PRE_LANG,
@@ -18,6 +19,7 @@ module Tilt
       :NOBREAKS,
       :SAFE,
       :SOURCEPOS,
+      :UNSAFE,
     ].freeze
     EXTENSIONS = [
       :autolink,
