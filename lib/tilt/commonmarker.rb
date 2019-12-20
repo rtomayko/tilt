@@ -6,7 +6,8 @@ module Tilt
     self.default_mime_type = 'text/html'
 
     OPTION_ALIAS = {
-      :smartypants => :SMART
+      :smartypants => :SMART,
+      :escape_html => :UNSAFE,
     }
     PARSE_OPTIONS = [
       :SMART,
@@ -16,8 +17,10 @@ module Tilt
       :GITHUB_PRE_LANG,
       :HARDBREAKS,
       :NOBREAKS,
-      :SAFE,
       :SOURCEPOS,
+      :SAFE,
+      :UNSAFE,
+      :escape_html,
     ].freeze
     EXTENSIONS = [
       :autolink,
