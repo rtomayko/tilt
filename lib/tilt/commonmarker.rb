@@ -21,7 +21,6 @@ module Tilt
       :HARDBREAKS,
       :NOBREAKS,
       :SOURCEPOS,
-      :SAFE,
       :UNSAFE,
       :escape_html,
     ].freeze
