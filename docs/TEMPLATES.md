@@ -508,7 +508,7 @@ Kramdown and Maruku don't support this option.
 
 ### See also
 
- * [Markdown Syntax Documentation](http://daringfireball.net/projects/markdown/syntax/)
+ * [Markdown Syntax Documentation](http://daringfireball.net/projects/markdown/syntax)
 
 <a name='rdiscount'></a>
 RDiscount (`markdown`, `md`, `mkd`)
