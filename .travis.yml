@@ -15,6 +15,7 @@ rvm:
   - 2.5.3
   - ruby-head
   - jruby-9.1.5.0
+  - truffleruby-head
 env:
   - BUNDLE_WITHOUT=secondary:development FORCE_SASS=1
   - BUNDLE_WITHOUT=primary:development
