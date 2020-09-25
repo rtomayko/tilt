@@ -61,7 +61,7 @@ Gem::Specification.new do |s|
 
   s.executables = ['tilt']
 
-  s.homepage = "http://github.com/rtomayko/tilt/"
+  s.homepage = "https://github.com/rtomayko/tilt/"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Tilt", "--main", "Tilt"]
   s.require_paths = %w[lib]
   s.rubygems_version = '1.1.1'
