@@ -50,7 +50,7 @@ module Tilt
 
     def precompiled_template(locals)
       <<-RUBY
-        #{@outvar} = #{self.class.engine}.generate(#{options}) do |csv|
+        #{@outvar} = #{self.class.engine}.generate(**#{options}) do |csv|
           #{data}
         end
       RUBY
