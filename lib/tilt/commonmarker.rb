@@ -16,7 +16,7 @@ module Tilt
       :GITHUB_PRE_LANG,
       :HARDBREAKS,
       :NOBREAKS,
-      :SAFE,
+      :UNSAFE,
       :SOURCEPOS,
     ].freeze
     EXTENSIONS = [
