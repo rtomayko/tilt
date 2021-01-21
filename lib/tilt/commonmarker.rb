@@ -6,8 +6,12 @@ module Tilt
     self.default_mime_type = 'text/html'
 
     OPTION_ALIAS = {
-      :smartypants => :SMART
+      :smartypants => :SMART,
+      :escape_html => :UNSAFE,
     }
+    INVERT_OPTIONS = [
+      :escape_html,
+    ]
     PARSE_OPTIONS = [
       :SMART,
       :smartypants,
@@ -16,8 +20,9 @@ module Tilt
       :GITHUB_PRE_LANG,
       :HARDBREAKS,
       :NOBREAKS,
-      :SAFE,
       :SOURCEPOS,
+      :UNSAFE,
+      :escape_html,
     ].freeze
     EXTENSIONS = [
       :autolink,
@@ -34,7 +39,11 @@ module Tilt
 
     def parse_options
       raw_options = PARSE_OPTIONS.select do |option|
-        options[option]
+        if INVERT_OPTIONS.include? option
+          !options[option]
+        else
+          options[option]
+        end
       end
       actual_options = raw_options.map do |option|
         OPTION_ALIAS[option] || option
@@ -49,7 +58,11 @@ module Tilt
 
     def render_options
       raw_options = RENDER_OPTIONS.select do |option|
-        options[option]
+        if INVERT_OPTIONS.include? option
+          !options[option]
+        else
+          options[option]
+        end
       end
       actual_options = raw_options.map do |option|
         OPTION_ALIAS[option] || option
