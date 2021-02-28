@@ -22,6 +22,37 @@ begin
       assert_match('<p>OKAY – ‘Smarty Pants’</p>', template.render)
     end
 
+    test 'Renders unsafe HTML when :UNSAFE is set' do
+      template = Tilt::CommonMarkerTemplate.new(UNSAFE: true) do |_t|
+        <<~MARKDOWN
+          <div class="alert alert-info full-width">
+            <h5 class="card-title">TL;DR</h5>
+            <p>This is an unsafe HTML block</p>
+          </div>
+
+          And then some **other** Markdown
+        MARKDOWN
+      end
+
+      expected = <<~EXPECTED_HTML
+        <div class="alert alert-info full-width">
+          <h5 class="card-title">TL;DR</h5>
+          <p>This is an unsafe HTML block</p>
+        </div>
+        <p>And then some <strong>other</strong> Markdown</p>
+      EXPECTED_HTML
+
+      assert_match(expected, template.render)
+    end
+
+    test "All CommonMarker parse options are available to users" do
+      assert_empty(CommonMarker::Config::Parse.keys - (Tilt::CommonMarkerTemplate::PARSE_OPTIONS + [:DEFAULT]))
+    end
+
+    test "All CommonMarker render options are available to users" do
+      assert_empty(CommonMarker::Config::Render.keys - (Tilt::CommonMarkerTemplate::RENDER_OPTIONS + [:DEFAULT]))
+    end
+
   end
 rescue LoadError
   warn "Tilt::CommonMarkerTemplate (disabled)"

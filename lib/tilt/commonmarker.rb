@@ -9,21 +9,31 @@ module Tilt
       :smartypants => :SMART
     }
     PARSE_OPTIONS = [
+      :FOOTNOTES,
+      :LIBERAL_HTML_TAG,
       :SMART,
       :smartypants,
+      :STRIKETHROUGH_DOUBLE_TILDE,
+      :UNSAFE,
+      :VALIDATE_UTF8,
     ].freeze
     RENDER_OPTIONS = [
+      :FOOTNOTES,
+      :FULL_INFO_STRING,
       :GITHUB_PRE_LANG,
       :HARDBREAKS,
       :NOBREAKS,
-      :SAFE,
+      :SAFE, # Removed in v0.18.0 (2018-10-17)
       :SOURCEPOS,
+      :TABLE_PREFER_STYLE_ATTRIBUTES,
+      :UNSAFE,
     ].freeze
     EXTENSIONS = [
       :autolink,
       :strikethrough,
       :table,
       :tagfilter,
+      :tasklist,
     ].freeze
 
     def extensions

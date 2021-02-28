@@ -463,9 +463,7 @@ Markdown formatted texts are converted to HTML with one of these libraries:
   * Kramdown - `Tilt::KramdownTemplate`
   * Pandoc - `Tilt::PandocTemplate`
   * Maruku - `Tilt::MarukuTemplate`
-
-Tilt will use fallback mode (as documented in the README) for determining which
-library to use. RDiscount has highest priority - Maruku has lowest.
+  * CommonMarker - `Tilt::CommonMarkerTemplate`
 
 ### Example
 
