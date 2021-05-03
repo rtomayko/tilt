@@ -39,6 +39,7 @@ end
 
 group :secondary do
   gem 'creole'
+  gem 'hamdown-engine'
   gem 'kramdown'
   gem 'rdoc'
   gem 'radius'
