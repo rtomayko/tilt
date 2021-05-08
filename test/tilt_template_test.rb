@@ -253,6 +253,24 @@ class TiltTemplateTest < Minitest::Test
     assert_nil Tilt.current_template
   end
 
+  if RUBY_VERSION >= '2.3'
+    class FrozenStringMockTemplate < PreparingMockTemplate
+      def freeze_string_literals?
+        true
+      end
+      def precompiled_template(locals)
+        "'bar'"
+      end
+    end
+
+    test "uses frozen literal strings if freeze_literal_strings? is true" do
+      inst = FrozenStringMockTemplate.new{|d| 'a'}
+      assert_equal "bar", inst.render
+      assert_equal true, inst.render.frozen?
+      assert inst.prepared?
+    end
+  end
+
   ##
   # Encodings
 
