@@ -87,6 +87,7 @@ These template engines ship with their own Tilt integration:
 | Embedded CoffeeScript |                  | sprockets           |
 | JST                   |                  | sprockets           |
 | Org-mode              | .org             | org-ruby (>= 0.6.2) |
+| Emacs Org             | .org             | tilt-emacs_org      |
 | Handlebars            | .hbs, handlebars | tilt-handlebars     |
 | Jbuilder              | .jbuilder        | tilt-jbuilder       |
 
