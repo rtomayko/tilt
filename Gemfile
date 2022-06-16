@@ -18,10 +18,13 @@ group :primary do
   gem 'erubis'
   gem 'markaby'
 
-  if ENV['OLD_SASS']
+  case ENV['SASS_IMPLEMENTATION']
+  when 'sass'
     gem 'sass'
-  else
+  when 'sassc'
     gem 'sassc'
+  else
+    gem 'sass-embedded'
   end
 
   if can_execjs
