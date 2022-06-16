@@ -1,6 +1,7 @@
 ## master
 
 * Fix #extensions\_for for RedcarpetTemplate (judofyr)
+* Support the new sass-embedded gem (#367, ntkme)
 
 ## 2.0.10 (2019-09-23)
 

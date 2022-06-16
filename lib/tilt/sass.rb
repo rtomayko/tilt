@@ -9,23 +9,35 @@ module Tilt
     self.default_mime_type = 'text/css'
 
     begin
-      require 'sassc'
-      Sass = ::SassC
+      require 'sass-embedded'
+      require 'uri'
+      Engine = nil
     rescue LoadError => err
       begin
-        require 'sass'
-        Sass = ::Sass
+        require 'sassc'
+        Engine = ::SassC::Engine
       rescue LoadError
-        raise err
+        begin
+          require 'sass'
+          Engine = ::Sass::Engine
+        rescue LoadError
+          raise err
+        end
       end
     end
 
     def prepare
-      @engine = Sass::Engine.new(data, sass_options)
+      @engine = unless Engine.nil?
+                  Engine.new(data, sass_options)
+                end
     end
 
     def evaluate(scope, locals, &block)
-      @output ||= @engine.render
+      @output ||= if @engine.nil?
+                    ::Sass.compile_string(data, **sass_embedded_options).css
+                  else
+                    @engine.render
+                  end
     end
 
     def allows_script?
@@ -33,6 +45,16 @@ module Tilt
     end
 
   private
+    def eval_file_url
+      path = File.absolute_path(eval_file)
+      path = '/' + path unless path.start_with?('/')
+      ::URI::File.build([nil, ::URI::DEFAULT_PARSER.escape(path)]).to_s
+    end
+
+    def sass_embedded_options
+      options.merge(:url => eval_file_url, :syntax => :indented)
+    end
+
     def sass_options
       options.merge(:filename => eval_file, :line => line, :syntax => :sass)
     end
@@ -43,6 +65,10 @@ module Tilt
     self.default_mime_type = 'text/css'
 
   private
+    def sass_embedded_options
+      options.merge(:url => eval_file_url, :syntax => :scss)
+    end
+
     def sass_options
       options.merge(:filename => eval_file, :line => line, :syntax => :scss)
     end
