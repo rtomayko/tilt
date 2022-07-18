@@ -44,15 +44,6 @@ begin
 
       assert_match(expected, template.render)
     end
-
-    test "All CommonMarker parse options are available to users" do
-      assert_empty(CommonMarker::Config::Parse.keys - (Tilt::CommonMarkerTemplate::PARSE_OPTIONS + [:DEFAULT]))
-    end
-
-    test "All CommonMarker render options are available to users" do
-      assert_empty(CommonMarker::Config::Render.keys - (Tilt::CommonMarkerTemplate::RENDER_OPTIONS + [:DEFAULT]))
-    end
-
   end
 rescue LoadError
   warn "Tilt::CommonMarkerTemplate (disabled)"
