@@ -1,18 +1,23 @@
 require 'tilt/template'
-require 'tilt/pandoc'
+require 'pandoc'
 
 module Tilt
   # Pandoc reStructuredText implementation. See:
   # http://pandoc.org/
-  # Use PandocTemplate and specify input format
   class RstPandocTemplate < PandocTemplate
-    def tilt_to_pandoc_mapping
-      { :smartypants => :smart }
+    self.default_mime_type = 'text/html'
+
+    def prepare
+      @engine = PandocRuby.new(data, :f => "rst")
+      @output = nil
     end
 
-    def pandoc_options
-      options.merge!(f: 'rst')
-      super
+    def evaluate(scope, locals, &block)
+      @output ||= @engine.to_html.strip
+    end
+
+    def allows_script?
+      false
     end
   end
 end
