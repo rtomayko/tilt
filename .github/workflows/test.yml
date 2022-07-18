@@ -1,0 +1,42 @@
+name: "Test suite"
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          # We test on all stable versions of Ruby
+          - "2.7"
+          - "3.0"
+          - "3.1"
+          - "jruby"
+        # … but only the primary templates
+        bundle_without: ["secondary:development"]
+
+        # In addition we test for the secondary templates on the latest version of Ruby
+        include:
+          - ruby: "3.1"
+            bundle_without: "primary:development"
+
+    env:
+      BUNDLE_WITHOUT: ${{matrix.bundle_without}}
+    name: Ruby ${{ matrix.ruby }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        # WikiCloth needs IDN
+        # Pandoc needs Pandoc
+        run: sudo apt-get install -y libidn11-dev pandoc
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Run test suite
+        run: bundle exec rake
