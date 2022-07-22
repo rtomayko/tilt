@@ -56,6 +56,7 @@ class EtanniTemplateTest < Minitest::Test
       line = boom.backtrace.grep(/^test\.etn:/).first
       assert line, "Backtrace didn't contain test.etn"
       _file, line, _meth = line.split(":")
+      skip if heredoc_line_number_bug?
       assert_equal '13', line
     end
   end
@@ -72,6 +73,7 @@ class EtanniTemplateTest < Minitest::Test
       line = boom.backtrace.first
       file, line, _meth = line.split(":")
       assert_equal 'test.etn', file
+      skip if heredoc_line_number_bug?
       assert_equal '6', line
     end
   end
@@ -142,6 +144,7 @@ class CompiledEtanniTemplateTest < Minitest::Test
       line = boom.backtrace.grep(/^test\.etn:/).first
       assert line, "Backtrace didn't contain test.etn"
       _file, line, _meth = line.split(":")
+      skip if heredoc_line_number_bug?
       assert_equal '13', line
     end
   end
@@ -158,6 +161,7 @@ class CompiledEtanniTemplateTest < Minitest::Test
       line = boom.backtrace.first
       file, line, _meth = line.split(":")
       assert_equal 'test.etn', file
+      skip if heredoc_line_number_bug?
       assert_equal '6', line
     end
   end

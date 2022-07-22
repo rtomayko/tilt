@@ -52,6 +52,7 @@ class StringTemplateTest < Minitest::Test
       line = boom.backtrace.grep(/^test\.str:/).first
       assert line, "Backtrace didn't contain test.str"
       _file, line, _meth = line.split(":")
+      skip if heredoc_line_number_bug?
       assert_equal '13', line
     end
   end
@@ -68,6 +69,7 @@ class StringTemplateTest < Minitest::Test
       line = boom.backtrace.first
       file, line, _meth = line.split(":")
       assert_equal 'test.str', file
+      skip if heredoc_line_number_bug?
       assert_equal '6', line
     end
   end
@@ -139,6 +141,7 @@ class CompiledStringTemplateTest < Minitest::Test
       line = boom.backtrace.grep(/^test\.str:/).first
       assert line, "Backtrace didn't contain test.str"
       _file, line, _meth = line.split(":")
+      skip if heredoc_line_number_bug?
       assert_equal '13', line
     end
   end
@@ -155,6 +158,7 @@ class CompiledStringTemplateTest < Minitest::Test
       line = boom.backtrace.first
       file, line, _meth = line.split(":")
       assert_equal 'test.str', file
+      skip if heredoc_line_number_bug?
       assert_equal '6', line
     end
   end
