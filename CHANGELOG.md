@@ -2,6 +2,9 @@
 
 * Fix #extensions\_for for RedcarpetTemplate (judofyr)
 * Support the new sass-embedded gem (#367, ntkme)
+* Add Tilt::EmacsOrg support (#366, hacktivista)
+* Improve rendering of BasicObject instances (#348, jeremyevans)
+* Fix Ruby 3.0 compatibility (#360, voxik)
 
 ## 2.0.10 (2019-09-23)
 
