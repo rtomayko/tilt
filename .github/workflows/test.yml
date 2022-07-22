@@ -16,15 +16,17 @@ jobs:
           - "jruby"
         # … but only the primary templates
         bundle_without: ["secondary:development"]
+        title: ["primary templates"]
 
         # In addition we test for the secondary templates on the latest version of Ruby
         include:
           - ruby: "3.1"
             bundle_without: "primary:development"
+            title: "secondary templates"
 
     env:
       BUNDLE_WITHOUT: ${{matrix.bundle_without}}
-    name: Ruby ${{ matrix.ruby }}
+    name: Ruby ${{ matrix.ruby }} (${{ matrix.title }})
     steps:
       - uses: actions/checkout@v2
 
