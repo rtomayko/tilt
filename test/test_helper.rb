@@ -42,6 +42,12 @@ class Minitest::Test
     alias_method :describe, :context
   end
 
+  # Returns true if line numbers are reported incorrectly in heredocs.
+  def heredoc_line_number_bug?
+    # https://github.com/jruby/jruby/issues/7272
+    RUBY_PLATFORM == "java"
+  end
+
 private
 
   def self.context_name(name)
