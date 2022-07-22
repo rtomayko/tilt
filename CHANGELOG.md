@@ -1,5 +1,7 @@
 ## master
 
+## 2.0.11 (2022-07-22)
+
 * Fix #extensions\_for for RedcarpetTemplate (judofyr)
 * Support the new sass-embedded gem (#367, ntkme)
 * Add Tilt::EmacsOrg support (#366, hacktivista)
