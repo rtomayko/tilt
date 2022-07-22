@@ -53,19 +53,24 @@ group :secondary do
 
   gem 'nokogiri'
 
+  # Both rdiscount and bluecloth embeds Discount and loading
+  # both at the same time causes strange issues.
+  discount_gem = ENV["DISCOUNT_GEM"] || "rdiscount"
+  raise "DISCOUNT_GEM must be set to 'rdiscount' or 'bluecloth'" if !%w[rdiscount bluecloth].include?(discount_gem)
+
   platform :ruby do
     gem 'wikicloth'
     gem 'rinku' # dependency for wikicloth for handling links
 
     gem 'yajl-ruby'
     gem 'redcarpet'
-    gem 'rdiscount', '>= 2.1.6'
+    gem 'rdiscount', '>= 2.1.6' if discount_gem == "rdiscount"
     gem 'RedCloth'
     gem 'commonmarker'
   end
 
   platform :mri do
-    gem 'bluecloth'
+    gem 'bluecloth' if discount_gem == "bluecloth"
   end
 end
 
