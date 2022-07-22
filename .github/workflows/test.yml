@@ -25,7 +25,7 @@ jobs:
             title: "secondary templates"
 
     env:
-      BUNDLE_WITHOUT: ${{matrix.bundle_without}}
+      BUNDLE_WITHOUT: ${{ matrix.bundle_without }}
     name: Ruby ${{ matrix.ruby }} (${{ matrix.title }})
     steps:
       - uses: actions/checkout@v2
