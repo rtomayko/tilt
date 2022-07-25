@@ -27,6 +27,12 @@ module Tilt
     # interface.
     attr_reader :options
 
+    # A path ending in .rb that the template code will be written to, then
+    # required, instead of being evaled.  This is useful for determining
+    # coverage of compiled template code, or to use static analysis tools
+    # on the compiled template code.
+    attr_reader :compiled_path
+
     class << self
       # An empty Hash that the template engine can populate with various
       # metadata.
@@ -128,6 +134,17 @@ module Tilt
       else
         self.class.metadata
       end
+    end
+
+    # Set the prefix to use for compiled paths.
+    def compiled_path=(path)
+      if path
+        # Use expanded paths when loading, since that is helpful
+        # for coverage.  Remove any .rb suffix, since that will
+        # be added back later.
+        path = File.expand_path(path.sub(/\.rb\z/i, ''))
+      end
+      @compiled_path = path
     end
 
     protected
@@ -259,16 +276,51 @@ module Tilt
         method_source.force_encoding(source.encoding)
       end
 
-      method_source << <<-RUBY
-        TOPOBJECT.class_eval do
-          def #{method_name}(locals)
-            #{local_code}
-      RUBY
+      # Don't indent method source, to avoid indentation warnings when using compiled paths
+      method_source << "::Tilt::TOPOBJECT.class_eval do\ndef #{method_name}(locals)\n#{local_code}\n"
       offset += method_source.count("\n")
       method_source << source
       method_source << "\nend;end;"
-      (scope_class || Object).class_eval(method_source, eval_file, line - offset)
+
+      bind_compiled_method(method_source, offset, scope_class, local_keys)
       unbind_compiled_method(method_name)
+    end
+
+    def bind_compiled_method(method_source, offset, scope_class, local_keys)
+      path = compiled_path
+      if path && scope_class.name
+        path = path.dup
+
+        if defined?(@compiled_path_counter)
+          path << '-' << @compiled_path_counter.succ!
+        else
+          @compiled_path_counter = "0".dup
+        end
+        path << ".rb"
+
+        # Wrap method source in a class block for the scope, so constant lookup works
+        method_source = "class #{scope_class.name}\n#{method_source}\nend"
+
+        load_compiled_method(path, method_source)
+      else
+        if path
+          warn "compiled_path (#{compiled_path.inspect}) ignored on template with anonymous scope_class (#{scope_class.inspect})"
+        end
+
+        eval_compiled_method(method_source, offset, scope_class)
+      end
+    end
+
+    def eval_compiled_method(method_source, offset, scope_class)
+      (scope_class || Object).class_eval(method_source, eval_file, line - offset)
+    end
+
+    def load_compiled_method(path, method_source)
+      File.binwrite(path, method_source)
+
+      # Use load and not require, so unbind_compiled_method does not
+      # break if the same path is used more than once.
+      load path
     end
 
     def unbind_compiled_method(method_name)

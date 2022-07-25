@@ -1,5 +1,6 @@
 require_relative 'test_helper'
 require 'tempfile'
+require 'tmpdir'
 require 'pathname'
 
 _MockTemplate = Class.new(Tilt::Template) do
@@ -146,6 +147,69 @@ describe "tilt/template" do
     inst = _SourceGeneratingMockTemplate.new { |t| 'Hey' }
     assert_equal 'Hey', inst.render(Object.new, nil)
     assert inst.prepared?
+  end
+
+  it "template with compiled_path" do
+    Dir.mktmpdir('tilt') do |dir|
+      base = File.join(dir, 'template')
+      inst = _SourceGeneratingMockTemplate.new { |t| 'Hey' }
+      inst.compiled_path = base
+
+      tempfile = "#{base}.rb"
+      assert_equal false, File.file?(tempfile)
+      assert_equal 'Hey', inst.render
+      assert_equal true, File.file?(tempfile)
+      assert_match(/\Aclass Object/, File.read(tempfile))
+
+      tempfile = "#{base}-1.rb"
+      assert_equal false, File.file?(tempfile)
+      assert_equal 'Hey', inst.render("")
+      assert_equal true, File.file?(tempfile)
+      assert_match(/\Aclass String/, File.read(tempfile))
+
+      tempfile = "#{base}-2.rb"
+      assert_equal false, File.file?(tempfile)
+      assert_equal 'Hey', inst.render(Tilt::Mapping.new)
+      assert_equal true, File.file?(tempfile)
+      assert_match(/\Aclass Tilt::Mapping/, File.read(tempfile))
+    end
+  end
+
+  it "template with compiled_path and with anonymous scope_class" do
+    Dir.mktmpdir('tilt') do |dir|
+      base = File.join(dir, 'template')
+      inst = _SourceGeneratingMockTemplate.new { |t| 'Hey' }
+      inst.compiled_path = base
+
+      message = nil
+      inst.define_singleton_method(:warn) { |msg| message = msg }
+      scope_class = Class.new
+      assert_equal 'Hey', inst.render(scope_class.new)
+      assert_equal "compiled_path (#{base.inspect}) ignored on template with anonymous scope_class (#{scope_class.inspect})", message
+      assert_equal [], Dir.new(dir).children
+    end
+  end
+
+  it "template with compiled_path with locals" do
+    Dir.mktmpdir('tilt') do |dir|
+      base = File.join(dir, 'template')
+      inst = _SourceGeneratingMockTemplate.new { |t| 'Hey' }
+      inst.compiled_path = base + '.rb'
+
+      tempfile = "#{base}.rb"
+      assert_equal false, File.file?(tempfile)
+      assert_equal 'Hey', inst.render(Object.new, 'a' => 1)
+      content = File.read(tempfile)
+      assert_match(/\Aclass Object/, content)
+      assert_includes(content, "\na = locals[\"a\"]\n")
+
+      tempfile = "#{base}-1.rb"
+      assert_equal false, File.file?(tempfile)
+      assert_equal 'Hey', inst.render(Object.new, 'b' => 1, 'a' => 1)
+      content = File.read(tempfile)
+      assert_match(/\Aclass Object/, content)
+      assert_includes(content, "\na = locals[\"a\"]\nb = locals[\"b\"]\n")
+    end
   end
 
   _CustomGeneratingMockTemplate = Class.new(_PreparingMockTemplate) do
