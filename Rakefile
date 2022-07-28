@@ -56,7 +56,7 @@ if defined?(Gem)
   end
 
   desc 'Build packages'
-  task :package => %w[.gem .tar.gz].map {|e| package(e)}
+  task :package => package('.gem')
 
   desc 'Build and install as local gem'
   task :install => package('.gem') do
@@ -68,18 +68,6 @@ if defined?(Gem)
   file package('.gem') => %w[pkg/ tilt.gemspec] + SPEC.files do |f|
     sh "gem build tilt.gemspec"
     mv File.basename(f.name), f.name
-  end
-
-  file package('.tar.gz') => %w[pkg/] + SPEC.files do |f|
-    sh "git archive --format=tar HEAD | gzip > #{f.name}"
-  end
-
-  desc 'Upload gem and tar.gz distributables to rubyforge'
-  task :release => [package('.gem'), package('.tar.gz')] do |t|
-    sh <<-SH
-      rubyforge add_release sinatra tilt #{SPEC.version} #{package('.gem')} &&
-      rubyforge add_file    sinatra tilt #{SPEC.version} #{package('.tar.gz')}
-    SH
   end
 end
 
