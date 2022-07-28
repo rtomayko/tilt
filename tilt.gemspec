@@ -1,7 +1,4 @@
 Gem::Specification.new do |s|
-  s.specification_version = 2 if s.respond_to? :specification_version=
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-
   s.name = 'tilt'
   s.version = '2.0.11'
   s.date = '2022-07-22'
@@ -64,5 +61,5 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/rtomayko/tilt/"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Tilt", "--main", "Tilt"]
   s.require_paths = %w[lib]
-  s.rubygems_version = '1.1.1'
+  s.required_ruby_version = ">= 2.0"
 end
