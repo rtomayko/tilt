@@ -1,10 +1,5 @@
 require 'tilt/template'
-
-if RUBY_VERSION >= '1.9.0'
-  require 'csv'
-else
-  require 'fastercsv'
-end
+require 'csv'
 
 module Tilt
 
@@ -36,21 +31,13 @@ module Tilt
   class CSVTemplate < Template
     self.default_mime_type = 'text/csv'
 
-    def self.engine
-      if RUBY_VERSION >= '1.9.0' && defined? ::CSV
-        ::CSV
-      elsif defined? ::FasterCSV
-        ::FasterCSV 
-      end
-    end
-
     def prepare
       @outvar = options.delete(:outvar) || '_csvout'
     end
 
     def precompiled_template(locals)
       <<-RUBY
-        #{@outvar} = #{self.class.engine}.generate(**#{options}) do |csv|
+        #{@outvar} = CSV.generate(**#{options}) do |csv|
           #{data}
         end
       RUBY

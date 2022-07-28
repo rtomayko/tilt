@@ -33,11 +33,9 @@ module Tilt
 
     # Erubis doesn't have ERB's line-off-by-one under 1.9 problem.
     # Override and adjust back.
-    if RUBY_VERSION >= '1.9.0'
-      def precompiled(locals)
-        source, offset = super
-        [source, offset - 1]
-      end
+    def precompiled(locals)
+      source, offset = super
+      [source, offset - 1]
     end
   end
 end
