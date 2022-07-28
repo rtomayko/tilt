@@ -2,16 +2,12 @@ require 'thread'
 
 module Tilt
   # @private
-  TOPOBJECT = if RUBY_VERSION >= '2.0'
-    # @private
-    module CompiledTemplates
-      self
-    end
-  elsif RUBY_VERSION >= '1.9'
-    BasicObject
-  else
-    Object
+  module CompiledTemplates
   end
+
+  # @private
+  TOPOBJECT = CompiledTemplates
+
   # @private
   LOCK = Mutex.new
 
@@ -172,11 +168,7 @@ module Tilt
       when Object
         method = compiled_method(locals_keys, Module === scope ? scope : scope.class)
       else
-        if RUBY_VERSION >= '2'
-          method = compiled_method(locals_keys, CLASS_METHOD.bind(scope).call)
-        else
-          method = compiled_method(locals_keys, Object)
-        end
+        method = compiled_method(locals_keys, CLASS_METHOD.bind(scope).call)
       end
       method.bind(scope).call(locals, &block)
     end

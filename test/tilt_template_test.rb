@@ -224,11 +224,9 @@ class TiltTemplateTest < Minitest::Test
     assert_equal "Hey Joe!", inst.render(BasicObject.new){ 'Joe' }
   end
 
-  if RUBY_VERSION >= '2'
-    test "template which accesses a BasicObject constant" do
-      inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
-      assert_equal "Hey Bob!", inst.render(BasicPerson.new("Joe"))
-    end
+  test "template which accesses a BasicObject constant" do
+    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
+    assert_equal "Hey Bob!", inst.render(BasicPerson.new("Joe"))
   end
 
   test "template which accesses a constant using BasicObject scope class" do

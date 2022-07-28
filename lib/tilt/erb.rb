@@ -52,11 +52,9 @@ module Tilt
 
     # ERB generates a line to specify the character coding of the generated
     # source in 1.9. Account for this in the line offset.
-    if RUBY_VERSION >= '1.9.0'
-      def precompiled(locals)
-        source, offset = super
-        [source, offset + 1]
-      end
+    def precompiled(locals)
+      source, offset = super
+      [source, offset + 1]
     end
   end
 end
