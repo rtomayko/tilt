@@ -257,11 +257,6 @@ module Tilt
       LOCK.exit if entered
     end
 
-    # This is due to a bug in JRuby (see GH issue jruby/jruby#3585)
-    Tilt.autoload :Dummy, "tilt/dummy"
-    require "tilt/dummy"
-    AUTOLOAD_IS_BROKEN = Tilt.autoload?(:Dummy)
-
     # The proper behavior (in MRI) for autoload? is to
     # return `false` when the constant/file has been
     # explicitly required.
@@ -276,16 +271,7 @@ module Tilt
 
     def constant_defined?(name)
       name.split('::').inject(Object) do |scope, n|
-        if scope.autoload?(n)
-          if !AUTOLOAD_IS_BROKEN
-            return false
-          end
-
-          if eval("!defined?(scope::#{n})")
-            return false
-          end
-        end
-        return false if !scope.const_defined?(n)
+        return false if scope.autoload?(n) || !scope.const_defined?(n)
         scope.const_get(n)
       end
     end
