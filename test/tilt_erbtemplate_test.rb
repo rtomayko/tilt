@@ -56,7 +56,7 @@ class ERBTemplateTest < Minitest::Test
   end
 
   test "backtrace file and line reporting without locals" do
-    data = File.read(__FILE__).split("\n__END__\n").last
+    data = File.read(__FILE__, :encoding=>'UTF-8').split("\n__END__\n").last
     fail unless data[0] == ?<
     template = Tilt::ERBTemplate.new('test.erb', 11) { data }
     begin
@@ -72,7 +72,7 @@ class ERBTemplateTest < Minitest::Test
   end
 
   test "backtrace file and line reporting with locals" do
-    data = File.read(__FILE__).split("\n__END__\n").last
+    data = File.read(__FILE__, :encoding=>'UTF-8').split("\n__END__\n").last
     fail unless data[0] == ?<
     template = Tilt::ERBTemplate.new('test.erb', 1) { data }
     begin
@@ -158,7 +158,7 @@ class CompiledERBTemplateTest < Minitest::Test
   end
 
   test "backtrace file and line reporting without locals" do
-    data = File.read(__FILE__).split("\n__END__\n").last
+    data = File.read(__FILE__, encoding: 'UTF-8').split("\n__END__\n").last
     fail unless data[0] == ?<
     template = Tilt::ERBTemplate.new('test.erb', 11) { data }
     begin
@@ -174,7 +174,7 @@ class CompiledERBTemplateTest < Minitest::Test
   end
 
   test "backtrace file and line reporting with locals" do
-    data = File.read(__FILE__).split("\n__END__\n").last
+    data = File.read(__FILE__, encoding: 'UTF-8').split("\n__END__\n").last
     fail unless data[0] == ?<
     template = Tilt::ERBTemplate.new('test.erb') { data }
     begin

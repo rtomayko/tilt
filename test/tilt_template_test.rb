@@ -306,6 +306,7 @@ class TiltTemplateTest < Minitest::Test
     end
 
     test "uses the template from the generated source code" do
+      Encoding.default_external = 'UTF-8'
       tmpl = "ふが"
       code = tmpl.inspect.encode('Shift_JIS')
       inst = DynamicMockTemplate.new(:code => code) { '' }
@@ -315,6 +316,7 @@ class TiltTemplateTest < Minitest::Test
     end
 
     test "uses the magic comment from the generated source code" do
+      Encoding.default_external = 'UTF-8'
       tmpl = "ふが"
       code = ("# coding: Shift_JIS\n" + tmpl.inspect).encode('Shift_JIS')
       # Set it to an incorrect encoding
