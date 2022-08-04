@@ -48,6 +48,22 @@ class Minitest::Test
     RUBY_PLATFORM == "java"
   end
 
+  def with_default_encoding(encoding)
+    prev = Encoding.default_external
+
+    begin
+      Encoding.default_external = encoding
+
+      yield
+    ensure
+      Encoding.default_external = prev
+    end
+  end
+
+  def with_utf8_default_encoding(&block)
+    with_default_encoding('UTF-8', &block)
+  end
+
 private
 
   def self.context_name(name)

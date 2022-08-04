@@ -17,13 +17,17 @@ begin
     end
 
     test "basic ES6 features" do
-      template = Tilt::BabelTemplate.new { "square = (x) => x * x" }
-      assert_match "function", template.render
+      with_utf8_default_encoding do
+        template = Tilt::BabelTemplate.new { "square = (x) => x * x" }
+        assert_match "function", template.render
+      end
     end
 
     test "JSX support" do
-      template = Tilt::BabelTemplate.new { "<Awesome ness={true} />" }
-      assert_match "React.createElement", template.render
+      with_utf8_default_encoding do
+        template = Tilt::BabelTemplate.new { "<Awesome ness={true} />" }
+        assert_match "React.createElement", template.render
+      end
     end
   end
 rescue LoadError => boom
