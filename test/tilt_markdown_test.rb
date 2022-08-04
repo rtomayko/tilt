@@ -1,6 +1,4 @@
-# coding: UTF-8
-require 'tilt'
-require 'test_helper'
+require_relative 'test_helper'
 
 begin
 require 'nokogiri'

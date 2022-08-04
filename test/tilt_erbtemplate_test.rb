@@ -1,6 +1,4 @@
-# coding: utf-8
-require 'test_helper'
-require 'tilt'
+require_relative 'test_helper'
 require 'tilt/erb'
 require 'tempfile'
 

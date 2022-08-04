@@ -1,5 +1,4 @@
-require 'test_helper'
-require 'tilt'
+require_relative 'test_helper'
 require 'tilt/string'
 
 class StringTemplateTest < Minitest::Test

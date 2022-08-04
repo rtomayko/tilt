@@ -1,8 +1,6 @@
-# coding: utf-8
-require 'test_helper'
-require 'tilt'
-require 'tilt/template'
+require_relative 'test_helper'
 require 'tempfile'
+require 'pathname'
 
 class TiltTemplateTest < Minitest::Test
 

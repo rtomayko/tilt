@@ -1,5 +1,4 @@
-require 'test_helper'
-require 'tilt'
+require_relative 'test_helper'
 require 'tilt/etanni'
 
 class EtanniTemplateTest < Minitest::Test
