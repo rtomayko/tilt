@@ -38,7 +38,9 @@ class ERBTemplateTest < Minitest::Test
   end
 
   test "exposing the buffer to the template by default" do
+    verbose = $VERBOSE
     begin
+      $VERBOSE = nil
       Tilt::ERBTemplate.default_output_variable = '@_out_buf'
       template = Tilt::ERBTemplate.new { '<% self.exposed_buffer = @_out_buf %>hey' }
       scope = MockOutputVariableScope.new
@@ -47,6 +49,7 @@ class ERBTemplateTest < Minitest::Test
       assert_equal scope.exposed_buffer, 'hey'
     ensure
       Tilt::ERBTemplate.default_output_variable = '_erbout'
+      $VERBOSE = verbose
     end
   end
 
