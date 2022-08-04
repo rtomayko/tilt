@@ -1,5 +1,4 @@
-require 'test_helper'
-require 'tilt'
+require_relative 'test_helper'
 
 class TiltTest < Minitest::Test
   class MockTemplate

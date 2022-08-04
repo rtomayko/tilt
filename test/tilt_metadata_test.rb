@@ -1,5 +1,4 @@
-require 'test_helper'
-require 'tilt/template'
+require_relative 'test_helper'
 
 module Tilt
   class TemplateMetadataTest < Minitest::Test

@@ -1,6 +1,4 @@
-require 'test_helper'
-require 'tilt'
-require 'thread'
+require_relative 'test_helper'
 
 class CompileSiteTest < Minitest::Test
   def setup

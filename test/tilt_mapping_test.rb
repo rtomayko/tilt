@@ -1,6 +1,4 @@
-require 'test_helper'
-require 'tilt'
-require 'tilt/mapping'
+require_relative 'test_helper'
 
 module Tilt
 
@@ -100,8 +98,13 @@ module Tilt
       end
 
       test "doesn't require when the template class is autoloaded, and then defined" do
-        Object.autoload :MyTemplate, 'mytemplate'
-        did_load = require 'mytemplate'
+        $LOAD_PATH << __dir__
+        begin
+          Object.autoload :MyTemplate, 'mytemplate'
+          did_load = require 'mytemplate'
+        ensure
+          $LOAD_PATH.delete(__dir__)
+        end
         assert did_load, "mytemplate wasn't freshly required"
 
         req = proc do |file|

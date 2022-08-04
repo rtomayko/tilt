@@ -1,5 +1,5 @@
-require 'tilt/mapping'
-require 'tilt/template'
+require_relative 'tilt/mapping'
+require_relative 'tilt/template'
 
 # Namespace for Tilt. This module is not intended to be included anywhere.
 module Tilt

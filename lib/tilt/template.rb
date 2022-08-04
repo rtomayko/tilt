@@ -1,5 +1,3 @@
-require 'thread'
-
 module Tilt
   # @private
   module CompiledTemplates
