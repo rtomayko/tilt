@@ -20,11 +20,18 @@ module Tilt
 
     def prepare
       @outvar = options[:outvar] || self.class.default_output_variable
-      options[:trim] = '<>' if !(options[:trim] == false) && (options[:trim].nil? || options[:trim] == true)
-      @engine = if SUPPORTS_KVARGS
-        ::ERB.new(data, trim_mode: options[:trim], eoutvar: @outvar)
+      trim = case options[:trim]
+      when false
+        nil
+      when nil, true
+        '<>'
       else
-        ::ERB.new(data, options[:safe], options[:trim], @outvar)
+        options[:trim]
+      end
+      @engine = if SUPPORTS_KVARGS
+        ::ERB.new(data, trim_mode: trim, eoutvar: @outvar)
+      else
+        ::ERB.new(data, options[:safe], trim, @outvar)
       end
     end
 
