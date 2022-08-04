@@ -204,14 +204,13 @@ class CompiledERBTemplateTest < Minitest::Test
     assert_equal "\nhello\n", template.render(Scope.new)
   end
 
-  test "encoding with magic comment" do
+  test "encoding with source_encoding" do
     f = Tempfile.open("template")
-    f.puts('<%# coding: UTF-8 %>')
     f.puts('ふが <%= @hoge %>')
     f.close()
     @hoge = "ほげ"
-    erb = Tilt::ERBTemplate.new(f.path)
-    3.times { erb.render(self) }
+    erb = Tilt::ERBTemplate.new(f.path){File.read(f.path, encoding: 'UTF-8')}
+    3.times { assert_equal 'UTF-8', erb.render(self).encoding.to_s }
     f.delete
   end
 
@@ -221,7 +220,7 @@ class CompiledERBTemplateTest < Minitest::Test
     f.close()
     @hoge = "ほげ"
     erb = Tilt::ERBTemplate.new(f.path, :default_encoding => 'UTF-8')
-    3.times { erb.render(self) }
+    3.times { assert_equal 'UTF-8', erb.render(self).encoding.to_s }
     f.delete
   end
 end
