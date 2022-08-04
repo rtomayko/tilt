@@ -15,6 +15,14 @@ describe 'tilt/mapping' do
     refute @mapping.registered?('baz')
   end
 
+  it "unregister" do
+    @mapping.register(_Stub, 'foo', 'bar', 'baz')
+    @mapping.unregister('baz')
+    assert @mapping.registered?('foo')
+    assert @mapping.registered?('bar')
+    refute @mapping.registered?('baz')
+  end
+
   it "lookups on registered" do
     @mapping.register(_Stub, 'foo', 'bar')
     assert_equal _Stub, @mapping['foo']
@@ -60,6 +68,11 @@ describe 'tilt/mapping' do
 
     it "registered?" do
       assert @mapping.registered?('mt')
+    end
+
+    it "unregister" do
+      @mapping.unregister('mt')
+      refute @mapping.registered?('mt')
     end
 
     it "#extensions_for" do

@@ -148,6 +148,27 @@ module Tilt
       klass
     end
 
+    # Unregisters an extension. This removes the both normal registrations
+    # and lazy registrations.
+    #
+    # @param extensions [Array<String>] List of extensions.
+    # @return nil
+    #
+    # @example
+    #   mapping.register MyEngine::Template, 'mt'
+    #   mapping['index.mt'] # => MyEngine::Template
+    #   mapping.unregister('mt')
+    #   mapping['index.mt'] # => nil
+    def unregister(*extensions)
+      extensions.each do |ext|
+        ext = ext.to_s
+        @template_map.delete(ext)
+        @lazy_map.delete(ext)
+      end
+
+      nil
+    end
+
     # Checks if a file extension is registered (either eagerly or
     # lazily) in this mapping.
     #
