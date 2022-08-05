@@ -3,27 +3,27 @@ require_relative 'test_helper'
 begin
   require 'tilt/babel'
 
-  class BabelTemplateTest < Minitest::Test
-    test "registered for '.es6' files" do
+  describe 'tilt/babel' do
+    it "registered for '.es6' files" do
       assert_equal Tilt::BabelTemplate, Tilt['es6']
     end
 
-    test "registered for '.babel' files" do
+    it "registered for '.babel' files" do
       assert_equal Tilt::BabelTemplate, Tilt['babel']
     end
 
-    test "registered for '.jsx' files" do
+    it "registered for '.jsx' files" do
       assert_equal Tilt::BabelTemplate, Tilt['jsx']
     end
 
-    test "basic ES6 features" do
+    it "basic ES6 features" do
       with_utf8_default_encoding do
         template = Tilt::BabelTemplate.new { "square = (x) => x * x" }
         assert_match "function", template.render
       end
     end
 
-    test "JSX support" do
+    it "JSX support" do
       with_utf8_default_encoding do
         template = Tilt::BabelTemplate.new { "<Awesome ness={true} />" }
         assert_match "React.createElement", template.render

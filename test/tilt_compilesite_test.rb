@@ -1,11 +1,11 @@
 require_relative 'test_helper'
 
-class CompileSiteTest < Minitest::Test
-  def setup
+describe 'tilt compile site' do
+  before do
     GC.start
   end
 
-  class CompilingTemplate < Tilt::Template
+  _CompilingTemplate = Class.new(Tilt::Template) do
     def prepare
     end
 
@@ -14,20 +14,19 @@ class CompileSiteTest < Minitest::Test
     end
   end
 
-  class Scope
-  end
+  _Scope = Class.new
 
-  test "compiling template source to a method" do
-    template = CompilingTemplate.new { |t| "Hello World!" }
-    template.render(Scope.new)
+  it "compiling template source to a method" do
+    template = _CompilingTemplate.new { |t| "Hello World!" }
+    template.render(_Scope.new)
     method = template.send(:compiled_method, [])
     assert_kind_of UnboundMethod, method
   end
 
-  # This test attempts to surface issues with compiling templates from
+  # This it attempts to surface issues with compiling templates from
   # multiple threads.
-  test "using compiled templates from multiple threads" do
-    template = CompilingTemplate.new { 'template' }
+  it "using compiled templates from multiple threads" do
+    template = _CompilingTemplate.new { 'template' }
     main_thread = Thread.current
     10.times do |i|
       threads =

@@ -2,13 +2,14 @@ require_relative 'test_helper'
 
 begin
   require 'tilt/erubi'
-  class ErubiTemplateTest < Minitest::Test
-    test "registered for '.erubi' files" do
+
+  describe 'tilt/erubi' do
+    it "registered for '.erubi' files" do
       assert_equal Tilt::ErubiTemplate, Tilt['test.erubi']
       assert_equal Tilt::ErubiTemplate, Tilt['test.html.erubi']
     end
 
-    test "registered above ERB and Erubis" do
+    it "registered above ERB and Erubis" do
       %w[erb rhtml].each do |ext|
         lazy = Tilt.lazy_map[ext]
         erubi_idx = lazy.index { |klass, file| klass == 'Tilt::ErubiTemplate' }
@@ -21,22 +22,22 @@ begin
       end
     end
 
-    test "preparing and evaluating templates on #render" do
+    it "preparing and evaluating templates on #render" do
       template = Tilt::ErubiTemplate.new { |t| "Hello World!" }
       assert_equal "Hello World!", template.render
     end
 
-    test "can be rendered more than once" do
+    it "can be rendered more than once" do
       template = Tilt::ErubiTemplate.new { |t| "Hello World!" }
       3.times { assert_equal "Hello World!", template.render }
     end
 
-    test "passing locals" do
+    it "passing locals" do
       template = Tilt::ErubiTemplate.new { 'Hey <%= name %>!' }
       assert_equal "Hey Joe!", template.render(Object.new, :name => 'Joe')
     end
 
-    test "evaluating in an object scope" do
+    it "evaluating in an object scope" do
       template = Tilt::ErubiTemplate.new { 'Hey <%= @name %>!' }
       scope = Object.new
       scope.instance_variable_set :@name, 'Joe'
@@ -47,7 +48,7 @@ begin
       attr_accessor :exposed_buffer
     end
 
-    test "exposing the buffer to the template by default" do
+    it "exposing the buffer to the template by default" do
       template = Tilt::ErubiTemplate.new(nil, :bufvar=>'@_out_buf') { '<% self.exposed_buffer = @_out_buf %>hey' }
       scope = MockOutputVariableScope.new
       template.render(scope)
@@ -55,12 +56,12 @@ begin
       assert_equal scope.exposed_buffer, 'hey'
     end
 
-    test "passing a block for yield" do
+    it "passing a block for yield" do
       template = Tilt::ErubiTemplate.new { 'Hey <%= yield %>!' }
       assert_equal "Hey Joe!", template.render { 'Joe' }
     end
 
-    test "backtrace file and line reporting without locals" do
+    it "backtrace file and line reporting without locals" do
       data = File.read(__FILE__).split("\n__END__\n").last
       fail unless data[0] == ?<
       template = Tilt::ErubiTemplate.new('test.erubis', 11) { data }
@@ -76,7 +77,7 @@ begin
       end
     end
 
-    test "backtrace file and line reporting with locals" do
+    it "backtrace file and line reporting with locals" do
       data = File.read(__FILE__).split("\n__END__\n").last
       fail unless data[0] == ?<
       template = Tilt::ErubiTemplate.new('test.erubis', 1) { data }
@@ -92,7 +93,7 @@ begin
       end
     end
 
-    test "erubis template options" do
+    it "erubis template options" do
       template = Tilt::ErubiTemplate.new(nil, :escapefunc=> 'h') { 'Hey <%== @name %>!' }
       scope = Object.new
       def scope.h(s) s * 2 end
@@ -100,7 +101,7 @@ begin
       assert_equal "Hey JoeJoe!", template.render(scope)
     end
 
-    test "using an instance variable as the outvar" do
+    it "using an instance variable as the outvar" do
       template = Tilt::ErubiTemplate.new(nil, :outvar => '@buf') { "<%= 1 + 1 %>" }
       scope = Object.new
       scope.instance_variable_set(:@buf, 'original value')
@@ -108,7 +109,7 @@ begin
       assert_equal 'original value', scope.instance_variable_get(:@buf)
     end
 
-    test "using Erubi::CaptureEndEngine subclass via :engine_class option" do
+    it "using Erubi::CaptureEndEngine subclass via :engine_class option" do
       require 'erubi/capture_end'
       def self.bar
         @a << "a"
@@ -120,22 +121,22 @@ begin
       assert_equal "cADBe", template.render(self)
     end
 
-    test "using :escape_html => true option" do
+    it "using :escape_html => true option" do
       template = Tilt::ErubiTemplate.new(nil, :escape_html => true) { |t| %(<%= "<p>Hello World!</p>" %>) }
       assert_equal "&lt;p&gt;Hello World!&lt;/p&gt;", template.render
     end
 
-    test "using :escape_html => false option" do
+    it "using :escape_html => false option" do
       template = Tilt::ErubiTemplate.new(nil, :escape_html => false) { |t| %(<%= "<p>Hello World!</p>" %>) }
       assert_equal "<p>Hello World!</p>", template.render
     end
 
-    test "erubi default does not escape html" do
+    it "erubi default does not escape html" do
       template = Tilt::ErubiTemplate.new { |t| %(<%= "<p>Hello World!</p>" %>) }
       assert_equal "<p>Hello World!</p>", template.render
     end
 
-    test "does not modify options argument" do
+    it "does not modify options argument" do
       options_hash = {:escape_html => true}
       Tilt::ErubiTemplate.new(nil, options_hash) { |t| "Hello World!" }
       assert_equal({:escape_html => true}, options_hash)

@@ -2,78 +2,77 @@ require_relative 'test_helper'
 require 'tempfile'
 require 'pathname'
 
-class TiltTemplateTest < Minitest::Test
-
-  class MockTemplate < Tilt::Template
-    def prepare
-    end
+_MockTemplate = Class.new(Tilt::Template) do
+  def prepare
   end
+end
 
-  test "needs a file or block" do
+describe "tilt/template" do
+  it "needs a file or block" do
     assert_raises(ArgumentError) { Tilt::Template.new }
   end
 
-  test "initializing with a file" do
-    inst = MockTemplate.new('foo.erb') {}
+  it "initializing with a file" do
+    inst = _MockTemplate.new('foo.erb') {}
     assert_equal 'foo.erb', inst.file
   end
 
-  test "initializing with a file and line" do
-    inst = MockTemplate.new('foo.erb', 55) {}
+  it "initializing with a file and line" do
+    inst = _MockTemplate.new('foo.erb', 55) {}
     assert_equal 'foo.erb', inst.file
     assert_equal 55, inst.line
   end
 
-  test "initializing with a tempfile" do
+  it "initializing with a tempfile" do
     tempfile = Tempfile.new('tilt_template_test')
-    inst = MockTemplate.new(tempfile)
+    inst = _MockTemplate.new(tempfile)
     assert_equal File.basename(tempfile.path), inst.basename
   end
 
-  test "initializing with a pathname" do
+  it "initializing with a pathname" do
     tempfile = Tempfile.new('tilt_template_test')
     pathname = Pathname.new(tempfile.path)
-    inst = MockTemplate.new(pathname)
+    inst = _MockTemplate.new(pathname)
     assert_equal File.basename(tempfile.path), inst.basename
   end
 
-  class SillyHash < Hash
-    def path(arg)
+  it "initialize with hash that implements #path" do
+    _SillyHash = Class.new(Hash) do
+      def path(arg)
+      end
     end
-  end
 
-  test "initialize with hash that implements #path" do
-    options = SillyHash[:key => :value]
-    inst = MockTemplate.new(options) {}
+    options = _SillyHash[:key => :value]
+    inst = _MockTemplate.new(options) {}
     assert_equal :value, inst.options[:key]
   end
 
-  test "uses correct eval_file" do
-    inst = MockTemplate.new('foo.erb', 55) {}
+  it "uses correct eval_file" do
+    inst = _MockTemplate.new('foo.erb', 55) {}
     assert_equal 'foo.erb', inst.eval_file
   end
 
-  test "uses a default filename for #eval_file when no file provided" do
-    inst = MockTemplate.new { 'Hi' }
+  it "uses a default filename for #eval_file when no file provided" do
+    inst = _MockTemplate.new { 'Hi' }
     refute_nil inst.eval_file
     assert !inst.eval_file.include?("\n")
   end
 
-  test "calculating template's #basename" do
-    inst = MockTemplate.new('/tmp/templates/foo.html.erb') {}
+  it "calculating template's #basename" do
+    inst = _MockTemplate.new('/tmp/templates/foo.html.erb') {}
     assert_equal 'foo.html.erb', inst.basename
   end
 
-  test "calculating the template's #name" do
-    inst = MockTemplate.new('/tmp/templates/foo.html.erb') {}
+  it "calculating the template's #name" do
+    inst = _MockTemplate.new('/tmp/templates/foo.html.erb') {}
     assert_equal 'foo', inst.name
   end
 
-  test "initializing with a data loading block" do
-    MockTemplate.new { |template| "Hello World!" }
+  it "initializing with a data loading block" do
+    _MockTemplate.new { |template| "Hello World!" }
   end
 
-  class PreparingMockTemplate < Tilt::Template
+  _PreparingMockTemplate = Class.new(Tilt::Template) do
     def prepare
       raise "data must be set" if data.nil?
       @prepared = true
@@ -81,17 +80,17 @@ class TiltTemplateTest < Minitest::Test
     def prepared? ; @prepared ; end
   end
 
-  test "raises NotImplementedError when #prepare not defined" do
+  it "raises NotImplementedError when #prepare not defined" do
     assert_raises(NotImplementedError) { Tilt::Template.new { |template| "Hello World!" } }
   end
 
-  test "raises NotImplementedError when #evaluate or #template_source not defined" do
-    inst = PreparingMockTemplate.new { |t| "Hello World!" }
+  it "raises NotImplementedError when #evaluate or #template_source not defined" do
+    inst = _PreparingMockTemplate.new { |t| "Hello World!" }
     assert_raises(NotImplementedError) { inst.render }
     assert inst.prepared?
   end
 
-  class SimpleMockTemplate < PreparingMockTemplate
+  _SimpleMockTemplate = Class.new(_PreparingMockTemplate) do
     def evaluate(scope, locals, &block)
       raise "should be prepared" unless prepared?
       raise "scope should be present" if scope.nil?
@@ -100,56 +99,56 @@ class TiltTemplateTest < Minitest::Test
     end
   end
 
-  test "prepares and evaluates the template on #render" do
-    inst = SimpleMockTemplate.new { |t| "Hello World!" }
+  it "prepares and evaluates the template on #render" do
+    inst = _SimpleMockTemplate.new { |t| "Hello World!" }
     assert_equal "<em>Hello World!</em>", inst.render
     assert inst.prepared?
   end
 
-  test 'prepares and evaluates the template on #render with nil arg' do
-    inst = SimpleMockTemplate.new { |t| "Hello World!" }
+  it 'prepares and evaluates the template on #render with nil arg' do
+    inst = _SimpleMockTemplate.new { |t| "Hello World!" }
     assert_equal '<em>Hello World!</em>', inst.render(nil)
     assert inst.prepared?
   end
 
-  class SourceGeneratingMockTemplate < PreparingMockTemplate
+  _SourceGeneratingMockTemplate = Class.new(_PreparingMockTemplate) do
     def precompiled_template(locals)
       "foo = [] ; foo << %Q{#{data}} ; foo.join"
     end
   end
 
-  test "template_source with locals" do
-    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{name}!' }
+  it "template_source with locals" do
+    inst = _SourceGeneratingMockTemplate.new { |t| 'Hey #{name}!' }
     assert_equal "Hey Joe!", inst.render(Object.new, :name => 'Joe')
     assert inst.prepared?
   end
 
-  test "template_source with locals of strings" do
-    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{name}!' }
+  it "template_source with locals of strings" do
+    inst = _SourceGeneratingMockTemplate.new { |t| 'Hey #{name}!' }
     assert_equal "Hey Joe!", inst.render(Object.new, 'name' => 'Joe')
     assert inst.prepared?
   end
 
-  test "template_source with locals of strings" do
-    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{name}!' }
+  it "template_source with locals of strings" do
+    inst = _SourceGeneratingMockTemplate.new { |t| 'Hey #{name}!' }
     assert_equal "Hey Joe!", inst.render(Object.new, 'name' => 'Joe', :name=>'Joe')
     assert inst.prepared?
   end
 
-  test "template_source with locals having non-variable keys raises error" do
-    inst = SourceGeneratingMockTemplate.new { |t| '1 + 2 = #{_answer}' }
+  it "template_source with locals having non-variable keys raises error" do
+    inst = _SourceGeneratingMockTemplate.new { |t| '1 + 2 = #{_answer}' }
     err = assert_raises(RuntimeError) { inst.render(Object.new, 'ANSWER' => 3) }
     assert_equal "invalid locals key: \"ANSWER\" (keys must be variable names)", err.message
     assert_equal "1 + 2 = 3", inst.render(Object.new, '_answer' => 3)
   end
 
-  test "template_source with nil locals" do
-    inst = SourceGeneratingMockTemplate.new { |t| 'Hey' }
+  it "template_source with nil locals" do
+    inst = _SourceGeneratingMockTemplate.new { |t| 'Hey' }
     assert_equal 'Hey', inst.render(Object.new, nil)
     assert inst.prepared?
   end
 
-  class CustomGeneratingMockTemplate < PreparingMockTemplate
+  _CustomGeneratingMockTemplate = Class.new(_PreparingMockTemplate) do
     def precompiled_template(locals)
       data
     end
@@ -163,8 +162,8 @@ class TiltTemplateTest < Minitest::Test
     end
   end
 
-  test "supports pre/postamble" do
-    inst = CustomGeneratingMockTemplate.new(
+  it "supports pre/postamble" do
+    inst = _CustomGeneratingMockTemplate.new(
       :preamble => 'buf = []',
       :postamble => 'buf.join'
     ) { 'buf << 1' }
@@ -172,8 +171,8 @@ class TiltTemplateTest < Minitest::Test
     assert_equal "1", inst.render
   end
 
-  class Person
-    CONSTANT = "Bob"
+  _Person = Class.new do
+    self::CONSTANT = "Bob"
 
     attr_accessor :name
     def initialize(name)
@@ -181,29 +180,29 @@ class TiltTemplateTest < Minitest::Test
     end
   end
 
-  test "template_source with an object scope" do
-    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{@name}!' }
-    scope = Person.new('Joe')
+  it "template_source with an object scope" do
+    inst = _SourceGeneratingMockTemplate.new { |t| 'Hey #{@name}!' }
+    scope = _Person.new('Joe')
     assert_equal "Hey Joe!", inst.render(scope)
   end
 
-  test "template_source with a block for yield" do
-    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{yield}!' }
+  it "template_source with a block for yield" do
+    inst = _SourceGeneratingMockTemplate.new { |t| 'Hey #{yield}!' }
     assert_equal "Hey Joe!", inst.render(Object.new){ 'Joe' }
   end
 
-  test "template which accesses a constant" do
-    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
-    assert_equal "Hey Bob!", inst.render(Person.new("Joe"))
+  it "template which accesses a constant" do
+    inst = _SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
+    assert_equal "Hey Bob!", inst.render(_Person.new("Joe"))
   end
 
-  test "template which accesses a constant using scope class" do
-    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
-    assert_equal "Hey Bob!", inst.render(Person)
+  it "template which accesses a constant using scope class" do
+    inst = _SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
+    assert_equal "Hey Bob!", inst.render(_Person)
   end
 
-  class BasicPerson < BasicObject
-    CONSTANT = "Bob"
+  _BasicPerson = Class.new(BasicObject) do
+    self::CONSTANT = "Bob"
 
     attr_accessor :name
     def initialize(name)
@@ -211,37 +210,37 @@ class TiltTemplateTest < Minitest::Test
     end
   end
 
-  test "template_source with an BasicObject scope" do
-    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{@name}!' }
-    scope = BasicPerson.new('Joe')
+  it "template_source with an BasicObject scope" do
+    inst = _SourceGeneratingMockTemplate.new { |t| 'Hey #{@name}!' }
+    scope = _BasicPerson.new('Joe')
     assert_equal "Hey Joe!", inst.render(scope)
   end
 
-  test "template_source with a block for yield using BasicObject instance" do
-    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{yield}!' }
+  it "template_source with a block for yield using BasicObject instance" do
+    inst = _SourceGeneratingMockTemplate.new { |t| 'Hey #{yield}!' }
     assert_equal "Hey Joe!", inst.render(BasicObject.new){ 'Joe' }
   end
 
-  test "template which accesses a BasicObject constant" do
-    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
-    assert_equal "Hey Bob!", inst.render(BasicPerson.new("Joe"))
+  it "template which accesses a BasicObject constant" do
+    inst = _SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
+    assert_equal "Hey Bob!", inst.render(_BasicPerson.new("Joe"))
   end
 
-  test "template which accesses a constant using BasicObject scope class" do
-    inst = SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
-    assert_equal "Hey Bob!", inst.render(BasicPerson)
+  it "template which accesses a constant using BasicObject scope class" do
+    inst = _SourceGeneratingMockTemplate.new { |t| 'Hey #{CONSTANT}!' }
+    assert_equal "Hey Bob!", inst.render(_BasicPerson)
   end
 
-  test "populates Tilt.current_template during rendering" do
-    inst = SourceGeneratingMockTemplate.new { '#{$inst = Tilt.current_template}' }
+  it "populates Tilt.current_template during rendering" do
+    inst = _SourceGeneratingMockTemplate.new { '#{$inst = Tilt.current_template}' }
     inst.render
     assert_equal inst, $inst
     assert_nil Tilt.current_template
   end
 
-  test "populates Tilt.current_template in nested rendering" do
-    inst1 = SourceGeneratingMockTemplate.new { '#{$inst.render; $inst1 = Tilt.current_template}' }
-    inst2 = SourceGeneratingMockTemplate.new { '#{$inst2 = Tilt.current_template}' }
+  it "populates Tilt.current_template in nested rendering" do
+    inst1 = _SourceGeneratingMockTemplate.new { '#{$inst.render; $inst1 = Tilt.current_template}' }
+    inst2 = _SourceGeneratingMockTemplate.new { '#{$inst2 = Tilt.current_template}' }
     $inst = inst2
     inst1.render
     assert_equal inst1, $inst1
@@ -250,51 +249,49 @@ class TiltTemplateTest < Minitest::Test
   end
 end
 
-class TiltTemplateEncodingTest < Minitest::Test
-  MockTemplate = TiltTemplateTest::MockTemplate
-
-  class DynamicMockTemplate < MockTemplate
+describe "tilt/template (encoding)" do
+  _DynamicMockTemplate = Class.new(_MockTemplate) do
     def precompiled_template(locals)
       options[:code]
     end
   end
 
-  class UTF8Template < MockTemplate
+  _UTF8Template = Class.new(_MockTemplate) do
     def default_encoding
       Encoding::UTF_8
     end
   end
 
-  setup do
+  before do
     @file = Tempfile.open('template')
     @file.puts "stuff"
     @file.close
     @template = @file.path
   end
 
-  teardown do
+  after do
     @file.delete
   end
 
-  test "reading from file assumes default external encoding" do
+  it "reading from file assumes default external encoding" do
     with_default_encoding('Big5') do
-      inst = MockTemplate.new(@template)
+      inst = _MockTemplate.new(@template)
       assert_equal 'Big5', inst.data.encoding.to_s
     end
   end
 
-  test "reading from file with a :default_encoding overrides default external" do
+  it "reading from file with a :default_encoding overrides default external" do
     with_default_encoding('Big5') do
-      inst = MockTemplate.new(@template, :default_encoding => 'GBK')
+      inst = _MockTemplate.new(@template, :default_encoding => 'GBK')
       assert_equal 'GBK', inst.data.encoding.to_s
     end
   end
 
-  test "reading from file with default_internal set does no transcoding" do
+  it "reading from file with default_internal set does no transcoding" do
     begin
       Encoding.default_internal = 'utf-8'
       with_default_encoding('Big5') do
-        inst = MockTemplate.new(@template)
+        inst = _MockTemplate.new(@template)
         assert_equal 'Big5', inst.data.encoding.to_s
       end
     ensure
@@ -302,54 +299,54 @@ class TiltTemplateEncodingTest < Minitest::Test
     end
   end
 
-  test "using provided template data verbatim when given as string" do
+  it "using provided template data verbatim when given as string" do
     with_default_encoding('Big5') do
-      inst = MockTemplate.new(@template) { "blah".force_encoding('GBK') }
+      inst = _MockTemplate.new(@template) { "blah".force_encoding('GBK') }
       assert_equal 'GBK', inst.data.encoding.to_s
     end
   end
 
-  test "uses the template from the generated source code" do
+  it "uses the template from the generated source code" do
     with_utf8_default_encoding do
       tmpl = "ふが"
       code = tmpl.inspect.encode('Shift_JIS')
-      inst = DynamicMockTemplate.new(:code => code) { '' }
+      inst = _DynamicMockTemplate.new(:code => code) { '' }
       res = inst.render
       assert_equal 'Shift_JIS', res.encoding.to_s
       assert_equal tmpl, res.encode(tmpl.encoding)
     end
   end
 
-  test "uses the magic comment from the generated source code" do
+  it "uses the magic comment from the generated source code" do
     with_utf8_default_encoding do
       tmpl = "ふが"
       code = ("# coding: Shift_JIS\n" + tmpl.inspect).encode('Shift_JIS')
       # Set it to an incorrect encoding
       code.force_encoding('UTF-8')
 
-      inst = DynamicMockTemplate.new(:code => code) { '' }
+      inst = _DynamicMockTemplate.new(:code => code) { '' }
       res = inst.render
       assert_equal 'Shift_JIS', res.encoding.to_s
       assert_equal tmpl, res.encode(tmpl.encoding)
     end
   end
 
-  test "uses #default_encoding instead of default_external" do
+  it "uses #default_encoding instead of default_external" do
     with_default_encoding('Big5') do
-      inst = UTF8Template.new(@template)
+      inst = _UTF8Template.new(@template)
       assert_equal 'UTF-8', inst.data.encoding.to_s
     end
   end
 
-  test "uses #default_encoding instead of current encoding" do
+  it "uses #default_encoding instead of current encoding" do
     tmpl = "".force_encoding('Big5')
-    inst = UTF8Template.new(@template) { tmpl }
+    inst = _UTF8Template.new(@template) { tmpl }
     assert_equal 'UTF-8', inst.data.encoding.to_s
   end
 
-  test "raises error if the encoding is not valid" do
+  it "raises error if the encoding is not valid" do
     assert_raises(Encoding::InvalidByteSequenceError) do
-      UTF8Template.new(@template) { "\xe4" }
+      _UTF8Template.new(@template) { "\xe4" }
     end
   end
 end

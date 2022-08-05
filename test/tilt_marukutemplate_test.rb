@@ -3,8 +3,8 @@ require_relative 'test_helper'
 begin
   require 'tilt/maruku'
 
-  class MarukuTemplateTest < Minitest::Test
-    test "registered below Kramdown" do
+  describe 'tilt/maruku' do
+    it "registered below Kramdown" do
       %w[md mkd markdown].each do |ext|
         lazy = Tilt.lazy_map[ext]
         kram_idx = lazy.index { |klass, file| klass == 'Tilt::KramdownTemplate' }
@@ -14,17 +14,17 @@ begin
       end
     end
 
-    test "preparing and evaluating templates on #render" do
+    it "preparing and evaluating templates on #render" do
       template = Tilt::MarukuTemplate.new { |t| "# Hello World!" }
       assert_equal "<h1 id=\"hello_world\">Hello World!</h1>", template.render.strip
     end
 
-    test "can be rendered more than once" do
+    it "can be rendered more than once" do
       template = Tilt::MarukuTemplate.new { |t| "# Hello World!" }
       3.times { assert_equal "<h1 id=\"hello_world\">Hello World!</h1>", template.render.strip }
     end
 
-    test "removes HTML when :filter_html is set" do
+    it "removes HTML when :filter_html is set" do
       template = Tilt::MarukuTemplate.new(:filter_html => true) { |t|
         "HELLO <blink>WORLD</blink>" }
       assert_equal "<p>HELLO</p>", template.render.strip

@@ -3,7 +3,9 @@ require_relative 'test_helper'
 begin
 require 'nokogiri'
 
-module MarkdownTests
+_MarkdownTests = Module.new do
+  extend Minitest::Spec::DSL
+
   def self.included(mod)
     class << mod
       def template(t = nil)
@@ -26,57 +28,57 @@ module MarkdownTests
     normalize(html)
   end
 
-  def test_escape_html
+  it "should not escape html by default" do
     html = nrender "Hello <b>World</b>"
     assert_equal "<p>Hello <b>World</b></p>", html
   end
 
-  def test_escape_html_false
+  it "should not escape html for :escape_html => false" do
     html = nrender "Hello <b>World</b>", :escape_html => false
     assert_equal "<p>Hello <b>World</b></p>", html
   end
 
-  def test_escape_html_true
+  it "should escape html for :escape_html => true" do
     html = nrender "Hello <b>World</b>", :escape_html => true
     assert_equal "<p>Hello &lt;b&gt;World&lt;/b&gt;</p>", html
   end
 
-  def test_smart_quotes
+  it "should not use smart quotes by default" do
     html = nrender 'Hello "World"'
     assert_equal '<p>Hello "World"</p>', html
   end
 
-  def test_smart_quotes_false
+  it "should not use smart quotes if :smartypants => false" do
     html = nrender 'Hello "World"', :smartypants => false
     assert_equal '<p>Hello "World"</p>', html
   end
 
-  def test_smart_quotes_true
+  it "should use smart quotes if :smartypants => true" do
     html = nrender 'Hello "World"', :smartypants => true
     assert_equal '<p>Hello “World”</p>', html
   end
 
-  def test_smarty_pants
-    html = nrender "Hello ``World'' -- This is --- a test ..."
-    assert_equal "<p>Hello ``World'' -- This is --- a test ...</p>", html
+  it "should not use smartypants by default" do
+    html = nrender "Hello ``World'' -- This is --- a it ..."
+    assert_equal "<p>Hello ``World'' -- This is --- a it ...</p>", html
   end
 
-  def test_smarty_pants_false
-    html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => false
-    assert_equal "<p>Hello ``World'' -- This is --- a test ...</p>", html
+  it "should not use smartypants if :smartypants => false" do
+    html = nrender "Hello ``World'' -- This is --- a it ...", :smartypants => false
+    assert_equal "<p>Hello ``World'' -- This is --- a it ...</p>", html
   end
 end
 
 begin
   require 'tilt/rdiscount'
 
-  class MarkdownRDiscountTest < Minitest::Test
-    include MarkdownTests
+  describe 'tilt/rdiscount (markdown)' do
+    include _MarkdownTests
     template Tilt::RDiscountTemplate
 
-    def test_smarty_pants_true
-      html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
-      assert_equal "<p>Hello “World” – This is — a test …</p>", html
+    it "should use smartypants if :smartypants => true" do
+      html = nrender "Hello ``World'' -- This is --- a it ...", :smartypants => true
+      assert_equal "<p>Hello “World” – This is — a it …</p>", html
     end
   end
 rescue LoadError => boom
@@ -86,22 +88,22 @@ end
 begin
   require 'tilt/redcarpet'
 
-  class MarkdownRedcarpetTest < Minitest::Test
-    include MarkdownTests
+  describe 'tilt/redcarpet (markdown)' do
+    include _MarkdownTests
     template Tilt::RedcarpetTemplate
 
-    def test_smarty_pants_true
+    it "should use smartypants if :smartypants => true" do
       # Various versions of Redcarpet support various versions of Smart pants.
-      html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
-      assert_match %r!<p>Hello “World(''|”) – This is — a test …<\/p>!, html
+      html = nrender "Hello ``World'' -- This is --- a it ...", :smartypants => true
+      assert_match %r!<p>Hello “World(''|”) – This is — a it …<\/p>!, html
     end
 
-    def test_renderer_options
+    it "should support :no_links option" do
       html = nrender "Hello [World](http://example.com)", :smartypants => true, :no_links => true
       assert_equal "<p>Hello [World](http://example.com)</p>", html
     end
 
-    def test_fenced_code_blocks_with_lang
+    it "should support fenced code blocks with lang" do
       code = <<-COD.gsub(/^\s+/,"")
       ```ruby
       puts "hello world"
@@ -119,13 +121,13 @@ end
 begin
   require 'tilt/bluecloth'
 
-  class MarkdownBlueClothTest < Minitest::Test
-    include MarkdownTests
+  describe 'tilt/bluecloth (markdown)' do
+    include _MarkdownTests
     template Tilt::BlueClothTemplate
 
-    def test_smarty_pants_true
-      html = nrender "Hello ``World'' -- This is --- a test ...", :smartypants => true
-      assert_equal "<p>Hello “World” — This is —– a test …</p>", html
+    it "should use smartypants if :smartypants => true" do
+      html = nrender "Hello ``World'' -- This is --- a it ...", :smartypants => true
+      assert_equal "<p>Hello “World” — This is —– a it …</p>", html
     end
   end
 rescue LoadError => boom
@@ -135,14 +137,17 @@ end
 begin
   require 'tilt/kramdown'
 
-  class MarkdownKramdownTest < Minitest::Test
-    include MarkdownTests
+  describe 'tilt/kramdown (markdown)' do
+    include _MarkdownTests
     template Tilt::KramdownTemplate
-    # Doesn't support escaping
-    undef test_escape_html_true
-    # Smarty Pants is *always* on, but doesn't support it fully
-    undef test_smarty_pants
-    undef test_smarty_pants_false
+    skip_tests = [
+      ':escape_html => true',
+      'smartypants by default',
+      'smartypants if :smartypants => false',
+    ]
+    instance_methods.grep(/#{Regexp.union(skip_tests)}\z/).each do |method|
+      undef_method method
+    end
   end
 rescue LoadError => boom
   # It should already be warned in the main tests
@@ -152,17 +157,30 @@ end
 begin
   require 'tilt/maruku'
 
-  class MarkdownMarukuTest < Minitest::Test
-    include MarkdownTests
+  describe 'tilt/maruku (markdown)' do
+    include _MarkdownTests
     template Tilt::MarukuTemplate
-    # Doesn't support escaping
-    undef test_escape_html_true
-    # Doesn't support Smarty Pants, and even fails on ``Foobar''
-    undef test_smarty_pants
-    undef test_smarty_pants_false
-    # Smart Quotes is always on
-    undef test_smart_quotes
-    undef test_smart_quotes_false
+    skip_tests = [
+      ':escape_html => true',
+      'smartypants by default',
+      'smartypants if :smartypants => false',
+      'smart quotes by default',
+      'smart quotes if :smartypants => false',
+    ]
+    instance_methods.grep(/#{Regexp.union(skip_tests)}\z/).each do |method|
+      undef_method method
+    end
+  end
+rescue LoadError => boom
+  # It should already be warned in the main tests
+end
+
+begin
+  require 'tilt/pandoc'
+
+  describe 'tilt/pandoc (markdown)' do
+    include _MarkdownTests
+    template Tilt::PandocTemplate
   end
 rescue LoadError => boom
   # It should already be warned in the main tests
@@ -170,15 +188,4 @@ end
 
 rescue LoadError
   warn "Markdown tests need Nokogiri"
-end
-
-begin
-  require 'tilt/pandoc'
-
-  class MarkdownPandocTest < Minitest::Test
-    include MarkdownTests
-    template Tilt::PandocTemplate
-  end
-rescue LoadError => boom
-  # It should already be warned in the main tests
 end

@@ -1,9 +1,9 @@
 require_relative 'test_helper'
 
-class TiltCacheTest < Minitest::Test
-  setup { @cache = Tilt::Cache.new }
+describe 'Tilt::Cache' do
+  before { @cache = Tilt::Cache.new }
 
-  test "caching with single simple argument to #fetch" do
+  it "caching with single simple argument to #fetch" do
     template = nil
     result = @cache.fetch('hello') { template = Tilt::StringTemplate.new {''} }
     assert_same template, result
@@ -11,7 +11,7 @@ class TiltCacheTest < Minitest::Test
     assert_same template, result
   end
 
-  test "caching with multiple complex arguments to #fetch" do
+  it "caching with multiple complex arguments to #fetch" do
     template = nil
     result = @cache.fetch('hello', {:foo => 'bar', :baz => 'bizzle'}) { template = Tilt::StringTemplate.new {''} }
     assert_same template, result
@@ -19,7 +19,7 @@ class TiltCacheTest < Minitest::Test
     assert_same template, result
   end
 
-  test "caching nil" do
+  it "caching nil" do
     called = false
     result = @cache.fetch("blah") {called = true; nil}
     assert_equal true, called
@@ -30,7 +30,7 @@ class TiltCacheTest < Minitest::Test
     assert_nil result
   end
 
-  test "clearing the cache with #clear" do
+  it "clearing the cache with #clear" do
     template, other = nil
     result = @cache.fetch('hello') { template = Tilt::StringTemplate.new {''} }
     assert_same template, result
