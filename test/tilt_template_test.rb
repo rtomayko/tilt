@@ -248,9 +248,10 @@ class TiltTemplateTest < Minitest::Test
     assert_equal inst2, $inst2
     assert_nil Tilt.current_template
   end
+end
 
-  ##
-  # Encodings
+class TiltTemplateEncodingTest < Minitest::Test
+  MockTemplate = TiltTemplateTest::MockTemplate
 
   class DynamicMockTemplate < MockTemplate
     def precompiled_template(locals)
@@ -264,93 +265,91 @@ class TiltTemplateTest < Minitest::Test
     end
   end
 
-  if ''.respond_to?(:encoding)
-    setup do
-      @file = Tempfile.open('template')
-      @file.puts "stuff"
-      @file.close
-      @template = @file.path
-    end
+  setup do
+    @file = Tempfile.open('template')
+    @file.puts "stuff"
+    @file.close
+    @template = @file.path
+  end
 
-    teardown do
-      @file.delete
-    end
+  teardown do
+    @file.delete
+  end
 
-    test "reading from file assumes default external encoding" do
+  test "reading from file assumes default external encoding" do
+    with_default_encoding('Big5') do
+      inst = MockTemplate.new(@template)
+      assert_equal 'Big5', inst.data.encoding.to_s
+    end
+  end
+
+  test "reading from file with a :default_encoding overrides default external" do
+    with_default_encoding('Big5') do
+      inst = MockTemplate.new(@template, :default_encoding => 'GBK')
+      assert_equal 'GBK', inst.data.encoding.to_s
+    end
+  end
+
+  test "reading from file with default_internal set does no transcoding" do
+    begin
+      Encoding.default_internal = 'utf-8'
       with_default_encoding('Big5') do
         inst = MockTemplate.new(@template)
         assert_equal 'Big5', inst.data.encoding.to_s
       end
+    ensure
+      Encoding.default_internal = nil
     end
+  end
 
-    test "reading from file with a :default_encoding overrides default external" do
-      with_default_encoding('Big5') do
-        inst = MockTemplate.new(@template, :default_encoding => 'GBK')
-        assert_equal 'GBK', inst.data.encoding.to_s
-      end
+  test "using provided template data verbatim when given as string" do
+    with_default_encoding('Big5') do
+      inst = MockTemplate.new(@template) { "blah".force_encoding('GBK') }
+      assert_equal 'GBK', inst.data.encoding.to_s
     end
+  end
 
-    test "reading from file with default_internal set does no transcoding" do
-      begin
-        Encoding.default_internal = 'utf-8'
-        with_default_encoding('Big5') do
-          inst = MockTemplate.new(@template)
-          assert_equal 'Big5', inst.data.encoding.to_s
-        end
-      ensure
-        Encoding.default_internal = nil
-      end
+  test "uses the template from the generated source code" do
+    with_utf8_default_encoding do
+      tmpl = "ふが"
+      code = tmpl.inspect.encode('Shift_JIS')
+      inst = DynamicMockTemplate.new(:code => code) { '' }
+      res = inst.render
+      assert_equal 'Shift_JIS', res.encoding.to_s
+      assert_equal tmpl, res.encode(tmpl.encoding)
     end
+  end
 
-    test "using provided template data verbatim when given as string" do
-      with_default_encoding('Big5') do
-        inst = MockTemplate.new(@template) { "blah".force_encoding('GBK') }
-        assert_equal 'GBK', inst.data.encoding.to_s
-      end
+  test "uses the magic comment from the generated source code" do
+    with_utf8_default_encoding do
+      tmpl = "ふが"
+      code = ("# coding: Shift_JIS\n" + tmpl.inspect).encode('Shift_JIS')
+      # Set it to an incorrect encoding
+      code.force_encoding('UTF-8')
+
+      inst = DynamicMockTemplate.new(:code => code) { '' }
+      res = inst.render
+      assert_equal 'Shift_JIS', res.encoding.to_s
+      assert_equal tmpl, res.encode(tmpl.encoding)
     end
+  end
 
-    test "uses the template from the generated source code" do
-      with_utf8_default_encoding do
-        tmpl = "ふが"
-        code = tmpl.inspect.encode('Shift_JIS')
-        inst = DynamicMockTemplate.new(:code => code) { '' }
-        res = inst.render
-        assert_equal 'Shift_JIS', res.encoding.to_s
-        assert_equal tmpl, res.encode(tmpl.encoding)
-      end
-    end
-
-    test "uses the magic comment from the generated source code" do
-      with_utf8_default_encoding do
-        tmpl = "ふが"
-        code = ("# coding: Shift_JIS\n" + tmpl.inspect).encode('Shift_JIS')
-        # Set it to an incorrect encoding
-        code.force_encoding('UTF-8')
-
-        inst = DynamicMockTemplate.new(:code => code) { '' }
-        res = inst.render
-        assert_equal 'Shift_JIS', res.encoding.to_s
-        assert_equal tmpl, res.encode(tmpl.encoding)
-      end
-    end
-
-    test "uses #default_encoding instead of default_external" do
-      with_default_encoding('Big5') do
-        inst = UTF8Template.new(@template)
-        assert_equal 'UTF-8', inst.data.encoding.to_s
-      end
-    end
-
-    test "uses #default_encoding instead of current encoding" do
-      tmpl = "".force_encoding('Big5')
-      inst = UTF8Template.new(@template) { tmpl }
+  test "uses #default_encoding instead of default_external" do
+    with_default_encoding('Big5') do
+      inst = UTF8Template.new(@template)
       assert_equal 'UTF-8', inst.data.encoding.to_s
     end
+  end
 
-    test "raises error if the encoding is not valid" do
-      assert_raises(Encoding::InvalidByteSequenceError) do
-        UTF8Template.new(@template) { "\xe4" }
-      end
+  test "uses #default_encoding instead of current encoding" do
+    tmpl = "".force_encoding('Big5')
+    inst = UTF8Template.new(@template) { tmpl }
+    assert_equal 'UTF-8', inst.data.encoding.to_s
+  end
+
+  test "raises error if the encoding is not valid" do
+    assert_raises(Encoding::InvalidByteSequenceError) do
+      UTF8Template.new(@template) { "\xe4" }
     end
   end
 end
