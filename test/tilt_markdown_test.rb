@@ -22,7 +22,7 @@ module MarkdownTests
 
   def nrender(text, options = {})
     html = render(text, options)
-    html.encode!("UTF-8") if html.respond_to?(:encode)
+    html.encode!("UTF-8")
     normalize(html)
   end
 

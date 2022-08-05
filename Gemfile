@@ -45,12 +45,8 @@ group :secondary do
   gem 'liquid'
   gem 'maruku'
   gem 'pandoc-ruby'
-
-  if RUBY_VERSION > '1.9.3'
-    gem 'prawn', '>= 2.0.0'
-    gem 'pdf-reader', '~> 1.3.3'
-  end
-
+  gem 'prawn', '>= 2.0.0'
+  gem 'pdf-reader', '~> 1.3.3'
   gem 'nokogiri'
 
   # Both rdiscount and bluecloth embeds Discount and loading
