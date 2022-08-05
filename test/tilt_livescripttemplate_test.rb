@@ -3,23 +3,23 @@ require_relative 'test_helper'
 begin
   require 'tilt/livescript'
 
-  class LiveScriptTemplateTest < Minitest::Test
-    setup do
+  describe 'tilt/livescript' do
+    before do
       @code_without_variables = "puts 'Hello, World!'\n"
       @renderer = Tilt::LiveScriptTemplate
     end
 
-    test "compiles and evaluates the template on #render" do
+    it "compiles and evaluates the template on #render" do
       template = @renderer.new { |t| @code_without_variables }
       assert_match "puts('Hello, World!');", template.render
     end
 
-    test "can be rendered more than once" do
+    it "can be rendered more than once" do
       template = @renderer.new { |t| @code_without_variables }
       3.times { assert_match "puts('Hello, World!');", template.render }
     end
 
-    test "supports bare-option" do
+    it "supports bare-option" do
       template = @renderer.new(:bare => false) { |t| @code_without_variables }
       assert_match "function", template.render
 
@@ -27,7 +27,7 @@ begin
       refute_match "function", template.render
     end
 
-    test "is registered for '.ls' files" do
+    it "is registered for '.ls' files" do
       assert_equal @renderer, Tilt['test.ls']
     end
   end

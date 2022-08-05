@@ -4,26 +4,26 @@ begin
   require 'pathname'
   require 'tilt/less'
 
-  class LessTemplateTest < Minitest::Test
+  describe 'tilt/less' do
     def assert_similar(a, b)
       assert_equal a.gsub(/\s+/m, ' '), b.gsub(/\s+/m, ' ')
     end
 
-    test "is registered for '.less' files" do
+    it "is registered for '.less' files" do
       assert_equal Tilt::LessTemplate, Tilt['test.less']
     end
 
-    test "compiles and evaluates the template on #render" do
+    it "compiles and evaluates the template on #render" do
       template = Tilt::LessTemplate.new { |t| ".bg { background-color: #0000ff; } \n#main\n { .bg; }\n" }
       assert_similar ".bg {\n  background-color: #0000ff;\n}\n#main {\n  background-color: #0000ff;\n}\n", template.render
     end
 
-    test "can be rendered more than once" do
+    it "can be rendered more than once" do
       template = Tilt::LessTemplate.new { |t| ".bg { background-color: #0000ff; } \n#main\n { .bg; }\n" }
       3.times { assert_similar ".bg {\n  background-color: #0000ff;\n}\n#main {\n  background-color: #0000ff;\n}\n", template.render }
     end
 
-    test "can be passed a load path" do
+    it "can be passed a load path" do
       template = Tilt::LessTemplate.new({
         :paths => [Pathname(__FILE__).dirname]
       }) {

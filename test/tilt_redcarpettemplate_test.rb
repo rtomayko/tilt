@@ -3,13 +3,13 @@ require_relative 'test_helper'
 begin
   require 'tilt/redcarpet'
 
-  class RedcarpetTemplateTest < Minitest::Test
-    test "works correctly with #extensions_for" do
+  describe 'tilt/redcarpet' do
+    it "works correctly with #extensions_for" do
       extensions = Tilt.default_mapping.extensions_for(Tilt::RedcarpetTemplate)
       assert_equal ['markdown', 'mkd', 'md'], extensions
     end
 
-    test "registered above BlueCloth" do
+    it "registered above BlueCloth" do
       %w[md mkd markdown].each do |ext|
         lazy = Tilt.lazy_map[ext]
         blue_idx = lazy.index { |klass, file| klass == 'Tilt::BlueClothTemplate' }
@@ -19,7 +19,7 @@ begin
       end
     end
 
-    test "registered above RDiscount" do
+    it "registered above RDiscount" do
       %w[md mkd markdown].each do |ext|
         lazy = Tilt.lazy_map[ext]
         rdis_idx = lazy.index { |klass, file| klass == 'Tilt::RDiscountTemplate' }
@@ -29,24 +29,24 @@ begin
       end
     end
 
-    test "preparing and evaluating templates on #render" do
+    it "preparing and evaluating templates on #render" do
       template = Tilt::RedcarpetTemplate.new { |t| "# Hello World!" }
       assert_equal "<h1>Hello World!</h1>\n", template.render
     end
 
-    test "can be rendered more than once" do
+    it "can be rendered more than once" do
       template = Tilt::RedcarpetTemplate.new { |t| "# Hello World!" }
       3.times { assert_equal "<h1>Hello World!</h1>\n", template.render }
     end
 
-    test "smartypants when :smart is set" do
+    it "smartypants when :smart is set" do
       template = Tilt::RedcarpetTemplate.new(:smartypants => true) { |t|
         "OKAY -- 'Smarty Pants'" }
       assert_match %r!<p>OKAY &ndash; (&#39;|&lsquo;)Smarty Pants(&#39;|&rsquo;)<\/p>!,
         template.render
     end
 
-    test "smartypants with a rendererer instance" do
+    it "smartypants with a rendererer instance" do
       template = Tilt::RedcarpetTemplate.new(:renderer => Redcarpet::Render::HTML.new(:hard_wrap => true), :smartypants => true) { |t|
         "OKAY -- 'Smarty Pants'" }
       assert_match %r!<p>OKAY &ndash; (&#39;|&lsquo;)Smarty Pants(&#39;|&rsquo;)<\/p>!,

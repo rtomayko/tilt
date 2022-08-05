@@ -3,46 +3,46 @@ require_relative 'test_helper'
 begin
   require 'tilt/asciidoc'
 
-  class AsciidoctorTemplateTest < Minitest::Test
-    HTML5_OUTPUT = "<div class=\"sect1\"><h2 id=\"_hello_world\">Hello World!</h2><div class=\"sectionbody\"></div></div>"
-    DOCBOOK5_OUTPUT = "<section xml:id=\"_hello_world\"><title>Hello World!</title></section>"
+  describe 'tilt/asciidoctor' do
+    html5_output = "<div class=\"sect1\"><h2 id=\"_hello_world\">Hello World!</h2><div class=\"sectionbody\"></div></div>"
+    docbook5_output = "<section xml:id=\"_hello_world\"><title>Hello World!</title></section>"
 
     def strip_space(str)
       str.gsub(/>\s+</, '><').strip
     end
 
-    test "registered for '.ad' files" do
+    it "registered for '.ad' files" do
       assert_equal Tilt::AsciidoctorTemplate, Tilt['ad']
     end
 
-    test "registered for '.adoc' files" do
+    it "registered for '.adoc' files" do
       assert_equal Tilt::AsciidoctorTemplate, Tilt['adoc']
     end
 
-    test "registered for '.asciidoc' files" do
+    it "registered for '.asciidoc' files" do
       assert_equal Tilt::AsciidoctorTemplate, Tilt['asciidoc']
     end
 
-    test "#extensions_for returns a unique list of extensions" do
+    it "#extensions_for returns a unique list of extensions" do
       Tilt.default_mapping.extensions_for(Tilt::AsciidoctorTemplate).each do |ext|
         Tilt[ext]
       end
       assert_equal ['ad', 'adoc', 'asciidoc'], Tilt.default_mapping.extensions_for(Tilt::AsciidoctorTemplate).sort
     end
 
-    test "preparing and evaluating html5 templates on #render" do
+    it "preparing and evaluating html5 templates on #render" do
       template = Tilt::AsciidoctorTemplate.new(:attributes => {"backend" => 'html5'}) { |t| "== Hello World!" } 
-      assert_equal HTML5_OUTPUT, strip_space(template.render)
+      assert_equal html5_output, strip_space(template.render)
     end
 
-    test "preparing and evaluating docbook 5 templates on #render" do
+    it "preparing and evaluating docbook 5 templates on #render" do
       template = Tilt::AsciidoctorTemplate.new(:attributes => {"backend" => 'docbook5'}) { |t| "== Hello World!" }
-      assert_equal DOCBOOK5_OUTPUT, strip_space(template.render)
+      assert_equal docbook5_output, strip_space(template.render)
     end
 
-    test "can be rendered more than once" do
+    it "can be rendered more than once" do
       template = Tilt::AsciidoctorTemplate.new(:attributes => {"backend" => 'html5'}) { |t| "== Hello World!" } 
-      3.times { assert_equal HTML5_OUTPUT, strip_space(template.render) }
+      3.times { assert_equal html5_output, strip_space(template.render) }
     end
   end
 rescue LoadError

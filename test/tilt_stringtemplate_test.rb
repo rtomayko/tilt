@@ -1,45 +1,45 @@
 require_relative 'test_helper'
 require 'tilt/string'
 
-class StringTemplateTest < Minitest::Test
-  test "registered for '.str' files" do
+describe 'tilt/string' do
+  it "registered for '.str' files" do
     assert_equal Tilt::StringTemplate, Tilt['test.str']
   end
 
-  test "loading and evaluating templates on #render" do
+  it "loading and evaluating templates on #render" do
     template = Tilt::StringTemplate.new { |t| "Hello World!" }
     assert_equal "Hello World!", template.render
   end
 
-  test "can be rendered more than once" do
+  it "can be rendered more than once" do
     template = Tilt::StringTemplate.new { |t| "Hello World!" }
     3.times { assert_equal "Hello World!", template.render }
   end
 
-  test "passing locals" do
+  it "passing locals" do
     template = Tilt::StringTemplate.new { 'Hey #{name}!' }
     assert_equal "Hey Joe!", template.render(Object.new, :name => 'Joe')
   end
 
-  test "evaluating in an object scope" do
+  it "evaluating in an object scope" do
     template = Tilt::StringTemplate.new { 'Hey #{@name}!' }
     scope = Object.new
     scope.instance_variable_set :@name, 'Joe'
     assert_equal "Hey Joe!", template.render(scope)
   end
 
-  test "passing a block for yield" do
+  it "passing a block for yield" do
     template = Tilt::StringTemplate.new { 'Hey #{yield}!' }
     assert_equal "Hey Joe!", template.render { 'Joe' }
     assert_equal "Hey Moe!", template.render { 'Moe' }
   end
 
-  test "multiline templates" do
+  it "multiline templates" do
     template = Tilt::StringTemplate.new { "Hello\nWorld!\n" }
     assert_equal "Hello\nWorld!\n", template.render
   end
 
-  test "backtrace file and line reporting without locals" do
+  it "backtrace file and line reporting without locals" do
     data = File.read(__FILE__).split("\n__END__\n").last
     fail unless data[0] == ?<
     template = Tilt::StringTemplate.new('test.str', 11) { data }
@@ -56,7 +56,7 @@ class StringTemplateTest < Minitest::Test
     end
   end
 
-  test "backtrace file and line reporting with locals" do
+  it "backtrace file and line reporting with locals" do
     data = File.read(__FILE__).split("\n__END__\n").last
     fail unless data[0] == ?<
     template = Tilt::StringTemplate.new('test.str', 1) { data }
@@ -74,65 +74,63 @@ class StringTemplateTest < Minitest::Test
   end
 end
 
-
-class CompiledStringTemplateTest < Minitest::Test
-  def teardown
+describe 'tilt/string (compiled)' do
+  after do
     GC.start
   end
 
-  class Scope
-  end
+  _Scope = Class.new
 
-  test "compiling template source to a method" do
+  it "compiling template source to a method" do
     template = Tilt::StringTemplate.new { |t| "Hello World!" }
-    template.render(Scope.new)
+    template.render(_Scope.new)
     method = template.send(:compiled_method, [])
     assert_kind_of UnboundMethod, method
   end
 
-  test "loading and evaluating templates on #render" do
+  it "loading and evaluating templates on #render" do
     template = Tilt::StringTemplate.new { |t| "Hello World!" }
-    assert_equal "Hello World!", template.render(Scope.new)
+    assert_equal "Hello World!", template.render(_Scope.new)
   end
 
-  test "passing locals" do
+  it "passing locals" do
     template = Tilt::StringTemplate.new { 'Hey #{name}!' }
-    assert_equal "Hey Joe!", template.render(Scope.new, :name => 'Joe')
-    assert_equal "Hey Moe!", template.render(Scope.new, :name => 'Moe')
+    assert_equal "Hey Joe!", template.render(_Scope.new, :name => 'Joe')
+    assert_equal "Hey Moe!", template.render(_Scope.new, :name => 'Moe')
   end
 
-  test "evaluating in an object scope" do
+  it "evaluating in an object scope" do
     template = Tilt::StringTemplate.new { 'Hey #{@name}!' }
-    scope = Scope.new
+    scope = _Scope.new
     scope.instance_variable_set :@name, 'Joe'
     assert_equal "Hey Joe!", template.render(scope)
     scope.instance_variable_set :@name, 'Moe'
     assert_equal "Hey Moe!", template.render(scope)
   end
 
-  test "passing a block for yield" do
+  it "passing a block for yield" do
     template = Tilt::StringTemplate.new { 'Hey #{yield}!' }
-    assert_equal "Hey Joe!", template.render(Scope.new) { 'Joe' }
-    assert_equal "Hey Moe!", template.render(Scope.new) { 'Moe' }
+    assert_equal "Hey Joe!", template.render(_Scope.new) { 'Joe' }
+    assert_equal "Hey Moe!", template.render(_Scope.new) { 'Moe' }
   end
 
-  test "multiline templates" do
+  it "multiline templates" do
     template = Tilt::StringTemplate.new { "Hello\nWorld!\n" }
-    assert_equal "Hello\nWorld!\n", template.render(Scope.new)
+    assert_equal "Hello\nWorld!\n", template.render(_Scope.new)
   end
 
 
-  test "template with '}'" do
+  it "template with '}'" do
     template = Tilt::StringTemplate.new { "Hello }" }
     assert_equal "Hello }", template.render
   end
 
-  test "backtrace file and line reporting without locals" do
+  it "backtrace file and line reporting without locals" do
     data = File.read(__FILE__).split("\n__END__\n").last
     fail unless data[0] == ?<
     template = Tilt::StringTemplate.new('test.str', 11) { data }
     begin
-      template.render(Scope.new)
+      template.render(_Scope.new)
       fail 'should have raised an exception'
     rescue => boom
       assert_kind_of NameError, boom
@@ -145,12 +143,12 @@ class CompiledStringTemplateTest < Minitest::Test
     end
   end
 
-  test "backtrace file and line reporting with locals" do
+  it "backtrace file and line reporting with locals" do
     data = File.read(__FILE__).split("\n__END__\n").last
     fail unless data[0] == ?<
     template = Tilt::StringTemplate.new('test.str') { data }
     begin
-      template.render(Scope.new, :name => 'Joe', :foo => 'bar')
+      template.render(_Scope.new, :name => 'Joe', :foo => 'bar')
       fail 'should have raised an exception'
     rescue => boom
       assert_kind_of RuntimeError, boom

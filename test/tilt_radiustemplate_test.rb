@@ -7,49 +7,49 @@ begin
   # Remove when fixed upstream.
   raise LoadError if Radius.version < "0.7"
 
-  class RadiusTemplateTest < Minitest::Test
-    test "registered for '.radius' files" do
+  describe 'tilt/radius' do
+    it "registered for '.radius' files" do
       assert_equal Tilt::RadiusTemplate, Tilt['test.radius']
     end
 
-    test "preparing and evaluating templates on #render" do
+    it "preparing and evaluating templates on #render" do
       template = Tilt::RadiusTemplate.new { |t| "Hello World!" }
       assert_equal "Hello World!", template.render
     end
 
-    test "can be rendered more than once" do
+    it "can be rendered more than once" do
       template = Tilt::RadiusTemplate.new { |t| "Hello World!" }
       3.times { assert_equal "Hello World!", template.render }
     end
 
-    test "passing locals" do
+    it "passing locals" do
       template = Tilt::RadiusTemplate.new { "Hey <r:name />!" }
       assert_equal "Hey Joe!", template.render(nil, :name => 'Joe')
     end
 
-    class ExampleRadiusScope
+    _ExampleRadiusScope = Class.new do
       def beer; 'wet'; end
       def whisky; 'wetter'; end
     end
 
-    test "combining scope and locals when scope responds" do
+    it "combining scope and locals when scope responds" do
       template = Tilt::RadiusTemplate.new {
         'Beer is <r:beer /> but Whisky is <r:whisky />.'
       }
-      scope = ExampleRadiusScope.new
+      scope = _ExampleRadiusScope.new
       assert_equal "Beer is wet but Whisky is wetter.", template.render(scope)
     end
 
-    test "precedence when locals and scope define same variables" do
+    it "precedence when locals and scope define same variables" do
       template = Tilt::RadiusTemplate.new {
         'Beer is <r:beer /> but Whisky is <r:whisky />.'
       }
-      scope = ExampleRadiusScope.new
+      scope = _ExampleRadiusScope.new
       assert_equal "Beer is great but Whisky is greater.",
         template.render(scope, :beer => 'great', :whisky => 'greater')
     end
 
-    #test "handles local scope" do
+    #it "handles local scope" do
     #  beer   = 'wet'
     #  whisky = 'wetter'
     #
@@ -59,7 +59,7 @@ begin
     #  assert_equal "Beer is wet but Whisky is wetter.", template.render(self)
     #end
 
-    test "passing a block for yield" do
+    it "passing a block for yield" do
       template = Tilt::RadiusTemplate.new {
         'Beer is <r:yield /> but Whisky is <r:yield />ter.'
       }
