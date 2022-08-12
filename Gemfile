@@ -49,9 +49,6 @@ group :secondary do
   gem 'pdf-reader'
   gem 'nokogiri'
 
-  gem 'less'
-  gem 'therubyracer'
-
   # Both rdiscount and bluecloth embeds Discount and loading
   # both at the same time causes strange issues.
   discount_gem = ENV["DISCOUNT_GEM"] || "rdiscount"
