@@ -54,8 +54,10 @@ _MarkdownTests = Module.new do
   end
 
   it "should use smart quotes if :smartypants => true" do
-    html = nrender 'Hello "World"', :smartypants => true
-    assert_equal '<p>Hello “World”</p>', html
+    with_utf8_default_encoding do
+      html = nrender 'Hello "World"', :smartypants => true
+      assert_equal '<p>Hello “World”</p>', html
+    end
   end
 
   it "should not use smartypants by default" do

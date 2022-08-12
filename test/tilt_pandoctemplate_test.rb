@@ -15,8 +15,10 @@ begin
     end
 
     it "smartypants when :smartypants is set" do
-      template = Tilt::PandocTemplate.new(:smartypants => true) { |t| "OKAY -- 'Smarty Pants'" }
-      assert_equal "<p>OKAY – ‘Smarty Pants’</p>", template.render
+      with_utf8_default_encoding do
+        template = Tilt::PandocTemplate.new(:smartypants => true) { |t| "OKAY -- 'Smarty Pants'" }
+        assert_equal "<p>OKAY – ‘Smarty Pants’</p>", template.render
+      end
     end
 
     it "stripping HTML when :escape_html is set" do
@@ -29,10 +31,12 @@ begin
     # use markdown_strict => true to disable additional markdown features
     describe "passing in Pandoc options" do
       it "generates footnotes" do
-        template = Tilt::PandocTemplate.new { |t| "Here is an inline note.^[Inlines notes are cool!]" }
-        result = template.render
-        assert_match "Here is an inline note", result
-        assert_match "Inlines notes are cool!", result
+        with_utf8_default_encoding do
+          template = Tilt::PandocTemplate.new { |t| "Here is an inline note.^[Inlines notes are cool!]" }
+          result = template.render
+          assert_match "Here is an inline note", result
+          assert_match "Inlines notes are cool!", result
+        end
       end
 
       it "doesn't generate footnotes with markdown_strict option" do
