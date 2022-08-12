@@ -13,7 +13,7 @@ end
 group :primary do
   gem 'builder'
   gem 'haml', '>= 4'
-  gem 'erubis'
+  gem 'erubi'
   gem 'markaby'
 
   case ENV['SASS_IMPLEMENTATION']
@@ -25,7 +25,6 @@ group :primary do
     gem 'sass-embedded'
   end
 
-  gem 'less'
   gem 'coffee-script'
   gem 'livescript'
   gem 'babel-transpiler'
@@ -38,6 +37,7 @@ end
 
 group :secondary do
   gem 'creole'
+  gem 'erubis'
   gem 'kramdown'
   gem 'rdoc'
   gem 'radius'
@@ -46,8 +46,11 @@ group :secondary do
   gem 'maruku'
   gem 'pandoc-ruby'
   gem 'prawn', '>= 2.0.0'
-  gem 'pdf-reader', '~> 1.3.3'
+  gem 'pdf-reader'
   gem 'nokogiri'
+
+  gem 'less'
+  gem 'therubyracer'
 
   # Both rdiscount and bluecloth embeds Discount and loading
   # both at the same time causes strange issues.
