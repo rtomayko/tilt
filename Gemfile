@@ -49,6 +49,12 @@ group :secondary do
   gem 'pdf-reader'
   gem 'nokogiri'
 
+  if RUBY_VERSION >= '3.1'
+    # Was default library, now bundled gem.
+    # Needed by prawn tests.
+    gem 'matrix'
+  end
+
   # Both rdiscount and bluecloth embeds Discount and loading
   # both at the same time causes strange issues.
   discount_gem = ENV["DISCOUNT_GEM"] || "rdiscount"
