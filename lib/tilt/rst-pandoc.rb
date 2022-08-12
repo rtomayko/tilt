@@ -1,5 +1,5 @@
 require 'tilt/template'
-require 'pandoc'
+require_relative 'pandoc'
 
 module Tilt
   # Pandoc reStructuredText implementation. See:
