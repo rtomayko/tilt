@@ -167,6 +167,7 @@ module Tilt
     end
 
     CLASS_METHOD = Kernel.instance_method(:class)
+    USE_BIND_CALL = RUBY_VERSION >= '2.7'
 
     # Execute the compiled template and return the result string. Template
     # evaluation is guaranteed to be performed in the scope object with the
@@ -177,13 +178,20 @@ module Tilt
     def evaluate(scope, locals, &block)
       locals_keys = locals.keys
       locals_keys.sort!{|x, y| x.to_s <=> y.to_s}
+
       case scope
       when Object
-        method = compiled_method(locals_keys, Module === scope ? scope : scope.class)
+        scope_class = Module === scope ? scope : scope.class
       else
-        method = compiled_method(locals_keys, CLASS_METHOD.bind(scope).call)
+        scope_class = USE_BIND_CALL ? CLASS_METHOD.bind_call(scope) : CLASS_METHOD.bind(scope).call
       end
-      method.bind(scope).call(locals, &block)
+      method = compiled_method(locals_keys, scope_class)
+
+      if USE_BIND_CALL
+        method.bind_call(scope, locals, &block)
+      else
+        method.bind(scope).call(locals, &block)
+      end
     end
 
     # Generates all template source by combining the preamble, template, and
