@@ -8,9 +8,9 @@ module Tilt
 
   @default_mapping = Mapping.new
 
-  # @return [Tilt::Mapping] the main mapping object
-  def self.default_mapping
-    @default_mapping
+  class << self
+    # @return [Tilt::Mapping] the main mapping object
+    attr_reader :default_mapping
   end
 
   # @private
