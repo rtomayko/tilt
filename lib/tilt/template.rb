@@ -155,9 +155,7 @@ module Tilt
     # default_encoding-option if present. You may override this method
     # in your template class if you have a better hint of the data's
     # encoding.
-    def default_encoding
-      @default_encoding
-    end
+    attr_reader :default_encoding
 
     # Do whatever preparation is necessary to setup the underlying template
     # engine. Called immediately after template data is loaded. Instance
