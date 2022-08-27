@@ -1,6 +1,8 @@
 require 'open3'
 require 'shellwords'
 
+warn "Tilt::SigilTemplate is deprecated"
+
 module Tilt
   # Standalone string interpolator and template processor implementation in Go.
   # see: https://github.com/gliderlabs/sigil
