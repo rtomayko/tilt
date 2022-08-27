@@ -1,6 +1,8 @@
 require 'tilt/template'
 require 'bluecloth'
 
+warn "Tilt::BlueClothTemplate is deprecated, please switch to a different markdown implementation"
+
 module Tilt
   # BlueCloth Markdown implementation. See:
   # http://deveiate.org/projects/BlueCloth/

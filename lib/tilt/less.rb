@@ -1,6 +1,8 @@
 require 'tilt/template'
 require 'less'
 
+warn "Tilt::LessTemplate is deprecated, consider switching from LESS to SCSS"
+
 module Tilt
   # Lessscss template implementation. See:
   # http://lesscss.org/
