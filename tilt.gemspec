@@ -48,6 +48,7 @@ Gem::Specification.new do |s|
     lib/tilt/rst-pandoc.rb
     lib/tilt/sass.rb
     lib/tilt/sigil.rb
+    lib/tilt/slim.rb
     lib/tilt/string.rb
     lib/tilt/template.rb
     lib/tilt/typescript.rb

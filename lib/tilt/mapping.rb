@@ -270,7 +270,17 @@ module Tilt
     end
 
     def lookup(ext)
-      @template_map[ext] || lazy_load(ext)
+      template = @template_map[ext] || lazy_load(ext)
+
+      # This is the most reliable place to patch Slim::Embedded::SassEngine as the patch must be
+      # loaded after the Slim::Embedded::SassEngine and Tilt::SassTemplate are loaded and before
+      # Slim::Embedded::SassEngine#tilt_render is called.
+      if constant_defined?('Slim::Embedded::SassEngine') && constant_defined?('Tilt::SassTemplate')
+        # Use require_relative to make sure patch file is only loaded once.
+        require_relative 'slim'
+      end
+
+      template
     end
 
     LOCK = Monitor.new
