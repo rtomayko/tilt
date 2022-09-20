@@ -26,6 +26,7 @@ jobs:
 
     env:
       BUNDLE_WITHOUT: ${{ matrix.bundle_without }}
+      COFFEE_SCRIPT: use
     name: Ruby ${{ matrix.ruby }} (${{ matrix.title }})
     steps:
       - uses: actions/checkout@v2

@@ -25,7 +25,7 @@ group :primary do
     gem 'sass-embedded'
   end
 
-  gem 'coffee-script'
+  gem 'coffee-script' if ENV['COFFEE_SCRIPT']
   gem 'livescript'
   gem 'babel-transpiler'
   gem 'typescript-node'
