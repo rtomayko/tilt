@@ -8,7 +8,7 @@ begin
 
     it "registered for '.haml' files" do
       assert_equal Tilt::HamlTemplate, Tilt['test.haml']
-    end
+    end unless Haml::VERSION >= '6'
 
     it "preparing and evaluating templates on #render" do
       template = Tilt::HamlTemplate.new { |t| "%p Hello World!" }

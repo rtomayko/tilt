@@ -10,7 +10,9 @@ module Tilt
     # `Gem::Version.correct?` may return false because of Haml::VERSION #=> "3.1.8 (Separated Sally)". After Haml 4, it's always correct.
     if Gem::Version.correct?(Haml::VERSION) && Gem::Version.new(Haml::VERSION) >= Gem::Version.new('5.0.0.beta.2')
       def prepare
-        options = {}.update(@options).update(filename: eval_file, line: line)
+        options = Hash[@options]
+        options[:filename] = eval_file
+        options[:line] = line unless Haml::VERSION >= '6'
         if options.include?(:outvar)
           options[:buffer] = options.delete(:outvar)
           options[:save_buffer] = true
