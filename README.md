@@ -1,4 +1,4 @@
-Tilt [![Build Status](https://secure.travis-ci.org/rtomayko/tilt.svg)](http://travis-ci.org/rtomayko/tilt) [![Inline docs](http://inch-ci.org/github/rtomayko/tilt.svg)](http://inch-ci.org/github/rtomayko/tilt)
+Tilt [![Test suite](https://github.com/rtomayko/tilt/actions/workflows/test.yml/badge.svg)](https://github.com/rtomayko/tilt/actions/workflows/test.yml) [![Inline docs](http://inch-ci.org/github/rtomayko/tilt.svg)](http://inch-ci.org/github/rtomayko/tilt)
 ====
 
 **NOTE** The following file documents the current release of Tilt (2.0). See
