@@ -33,7 +33,7 @@ begin
 
     it 'evaluating in invalid, frozen scope' do
       template = Tilt::HamlTemplate.new { |t| '%p Hey unknown!' }
-      assert_raises(ArgumentError) { template.render(Object.new.freeze) }
+      assert_raises(ArgumentError, FrozenError) { template.render(Object.new.freeze) }
     end
 
     it "evaluating in an object scope" do
@@ -104,7 +104,7 @@ begin
 
     it 'evaluating in invalid, frozen scope' do
       template = Tilt::HamlTemplate.new { |t| '%p Hey unknown!' }
-      assert_raises(ArgumentError) { template.render(Object.new.freeze) }
+      assert_raises(ArgumentError, FrozenError) { template.render(Object.new.freeze) }
     end
 
     it "evaluating in an object scope" do
