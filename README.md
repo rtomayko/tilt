@@ -1,9 +1,6 @@
 Tilt [![Test suite](https://github.com/rtomayko/tilt/actions/workflows/test.yml/badge.svg)](https://github.com/rtomayko/tilt/actions/workflows/test.yml) [![Inline docs](http://inch-ci.org/github/rtomayko/tilt.svg)](http://inch-ci.org/github/rtomayko/tilt)
 ====
 
-**NOTE** The following file documents the current release of Tilt (2.0). See
-https://github.com/rtomayko/tilt/tree/tilt-1 for documentation for Tilt 1.4.
-
 Tilt is a thin interface over a bunch of different Ruby template engines in
 an attempt to make their usage as generic as possible. This is useful for web
 frameworks, static site generators, and other systems that support multiple
@@ -34,12 +31,10 @@ Support for these template engines is included with the package:
 | Haml                    | .haml                  | haml                                       | Tilt team   |
 | Sass                    | .sass                  | sass-embedded (>= 1.0) or sassc (>=2.0)    | Tilt team   |
 | Scss                    | .scss                  | sass-embedded (>= 1.0) or sassc (>=2.0)    | Tilt team   |
-| Less CSS                | .less                  | less                                       | Tilt team   |
 | Builder                 | .builder               | builder                                    | Tilt team   |
 | Liquid                  | .liquid                | liquid                                     | Community   |
 | RDiscount               | .markdown, .mkd, .md   | rdiscount                                  | Community   |
 | Redcarpet               | .markdown, .mkd, .md   | redcarpet                                  | Community   |
-| BlueCloth               | .markdown, .mkd, .md   | bluecloth                                  | Community   |
 | Kramdown                | .markdown, .mkd, .md   | kramdown                                   | Community   |
 | Pandoc                  | .markdown, .mkd, .md   | pandoc                                     | Community   |
 | reStructuredText        | .rst                   | pandoc                                     | Community   |
@@ -57,11 +52,10 @@ Support for these template engines is included with the package:
 | Creole (Wiki markup)    | .wiki, .creole         | creole                                     | Community   |
 | WikiCloth (Wiki markup) | .wiki, .mediawiki, .mw | wikicloth                                  | Community   |
 | Yajl                    | .yajl                  | yajl-ruby                                  | Community   |
-| CSV                     | .rcsv                  | none (Ruby >= 1.9), fastercsv (Ruby < 1.9) | Tilt team   |
+| CSV                     | .rcsv                  | none (included ruby stdlib)                | Tilt team   |
 | Prawn                   | .prawn                 | prawn (>= 2.0.0)                           | Community   |
 | Babel                   | .es6, .babel, .jsx     | babel-transpiler                           | Tilt team   |
 | Opal                    | .rb                    | opal                                       | Community   |
-| Sigil                   | .sigil                 | sigil                                      | Community   |
 
 Every supported template engine has a *maintainer*. Note that this is the
 maintainer of the Tilt integration, not the maintainer of the template engine
@@ -69,14 +63,17 @@ itself. The maintainer is responsible for providing an adequate integration and
 keeping backwards compatibility across Tilt version. Some integrations are
 maintained by the *community*, which is handled in the following way:
 
-- The Tilt team will liberally accept pull requests against the template
-  integration. It's up to the community as a whole to make sure the integration
-  stays consistent and backwards compatible over time.
+- The Tilt team will liberally accept pull requests to update existing
+  community-maintained template integrations. It's up to the community as a
+  whole to make sure the integration stays consistent and backwards compatible
+  over time.
 - Test failures in community-maintained integrations will not be prioritized by
   the Tilt team and a new version of Tilt might be released even though these
   tests are failing.
 - Anyone can become a maintainer for a template engine integration they care
   about. Just open an issue and we'll figure it out.
+- The Tilt team is no longer accepting new community-maintained template
+  integrations.
 
 These template engines ship with their own Tilt integration:
 
@@ -243,7 +240,7 @@ it on subsequent template invocations. Benchmarks show this yields a 5x-10x
 performance increase over evaluating the Ruby source on each invocation.
 
 Template compilation is currently supported for these template engines:
-StringTemplate, ERB, Erubis, Haml, Nokogiri, Builder and Yajl.
+StringTemplate, ERB, Erubis, Erubi, Haml, Nokogiri, Builder and Yajl.
 
 LICENSE
 -------
