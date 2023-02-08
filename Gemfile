@@ -48,6 +48,8 @@ group :secondary do
   gem 'prawn', '>= 2.0.0'
   gem 'pdf-reader'
   gem 'nokogiri'
+  gem 'caxlsx'
+  gem 'roo'
 
   if RUBY_VERSION >= '3.1'
     # Was default library, now bundled gem.
