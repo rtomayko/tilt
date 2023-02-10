@@ -13,14 +13,15 @@ jobs:
           - "2.7"
           - "3.0"
           - "3.1"
+          - "3.2"
           - "jruby"
-        # … but only the primary templates
+        # but only the primary templates
         bundle_without: ["secondary:development"]
         title: ["primary templates"]
 
         # In addition we test for the secondary templates on the latest version of Ruby
         include:
-          - ruby: "3.1"
+          - ruby: "3.2"
             bundle_without: "primary:development"
             title: "secondary templates"
 
