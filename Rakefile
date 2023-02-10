@@ -60,25 +60,3 @@ if defined?(Gem)
     mv File.basename(f.name), f.name
   end
 end
-
-# GEMSPEC ===================================================================
-
-file 'tilt.gemspec' => FileList['{lib,test}/**','Rakefile'] do |f|
-  # read version from tilt.rb
-  version = File.read('lib/tilt.rb')[/VERSION = '(.*)'/] && $1
-  # read spec file and split out manifest section
-  spec = File.
-    read(f.name).
-    sub(/s\.version\s*=\s*'.*'/, "s.version = '#{version}'")
-  parts = spec.split("  # = MANIFEST =\n")
-  # determine file list from git ls-files
-  files = `git ls-files -- lib bin COPYING`.
-    split("\n").sort.reject{ |file| file =~ /^\./ }.
-    map{ |file| "    #{file}" }.join("\n")
-  # piece file back together and write...
-  parts[1] = "  s.files = %w[\n#{files}\n  ]\n"
-  spec = parts.join("  # = MANIFEST =\n")
-  spec.sub!(/s.date = '.*'/, "s.date = '#{Time.now.strftime("%Y-%m-%d")}'")
-  File.open(f.name, 'w') { |io| io.write(spec) }
-  puts "updated #{f.name}"
-end

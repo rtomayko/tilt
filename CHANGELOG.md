@@ -1,4 +1,17 @@
-## master
+## 2.1.0 (2023-02-17)
+
+* Use UnboundMethod#bind_call on Ruby 2.7+ for better performance (#380, jeremyevans)
+* Add Tilt::Template#freeze_string_literals? for freezing string literals in compiled templates (#301, jeremyevans)
+* Use Haml::Template for Tilt::HamlTemplate if available (Haml 6+) (#391, ntkme) 
+* Deprecate BlueCloth, Less, and Sigil support (#382, jeremyevans)
+* Add Template#compiled_path accessor to save compiled template output to file (#369, jeremyevans)
+* Add Mapping#unregister to remove registered extensions (#376, jeremyevans)
+* Add Mapping#register_pipeline to register template pipelines (#259, jeremyevans)
+* Remove Tilt::Dummy (#364, jeremyevans)
+* Ensure Mapping#extensions\_for returns unique values (#342, mojavelinux)
+* Remove opal support, since the the opal API changed (#374, jeremyevans)
+* Remove .livescript extension for LiveScript (#374, jeremyevans)
+* Set required\_ruby\_version in gemspec (#371, jeremyevans)
 
 ## 2.0.11 (2022-07-22)
 
