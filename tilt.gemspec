@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.files = %w'COPYING bin/tilt' + Dir["lib/**/*.rb"]
   s.executables = ['tilt']
 
-  s.homepage = "https://github.com/rtomayko/tilt/"
+  s.homepage = "https://github.com/jeremyevans/tilt"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Tilt", "--main", "Tilt"]
   s.require_paths = %w[lib]
   s.required_ruby_version = ">= 2.0"
