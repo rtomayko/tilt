@@ -5,69 +5,47 @@ module Tilt
   class CommonMarkerTemplate < Template
     self.default_mime_type = 'text/html'
 
-    OPTION_ALIAS = {
-      :smartypants => :SMART
-    }
     PARSE_OPTIONS = [
-      :FOOTNOTES,
-      :LIBERAL_HTML_TAG,
-      :SMART,
-      :smartypants,
-      :STRIKETHROUGH_DOUBLE_TILDE,
-      :UNSAFE,
-      :VALIDATE_UTF8,
+      :smart,
+      :default_info_string,
     ].freeze
     RENDER_OPTIONS = [
-      :FOOTNOTES,
-      :FULL_INFO_STRING,
-      :GITHUB_PRE_LANG,
-      :HARDBREAKS,
-      :NOBREAKS,
-      :SAFE, # Removed in v0.18.0 (2018-10-17)
-      :SOURCEPOS,
-      :TABLE_PREFER_STYLE_ATTRIBUTES,
-      :UNSAFE,
+      :hardbreaks,
+      :github_pre_lang,
+      :width,
+      :unsafe,
+      :escape,
+      :sourcepos
     ].freeze
     EXTENSIONS = [
-      :autolink,
       :strikethrough,
-      :table,
       :tagfilter,
+      :table,
+      :autolink,
       :tasklist,
+      :superscript,
+      :header_ids,
+      :footnotes,
+      :description_lists,
+      :front_matter_delimiter,
+      :shortcodes,
     ].freeze
 
     def extensions
-      EXTENSIONS.select do |extension|
-        options[extension]
+      @options.select do |key, _value|
+        EXTENSIONS.include?(key)
       end
     end
 
     def parse_options
-      raw_options = PARSE_OPTIONS.select do |option|
-        options[option]
-      end
-      actual_options = raw_options.map do |option|
-        OPTION_ALIAS[option] || option
-      end
-
-      if actual_options.any?
-        actual_options
-      else
-        :DEFAULT
+      @options.select do |key, _value|
+        PARSE_OPTIONS.include?(key)
       end
     end
 
     def render_options
-      raw_options = RENDER_OPTIONS.select do |option|
-        options[option]
-      end
-      actual_options = raw_options.map do |option|
-        OPTION_ALIAS[option] || option
-      end
-      if actual_options.any?
-        actual_options
-      else
-        :DEFAULT
+      @options.select do |key, _value|
+        RENDER_OPTIONS.include?(key)
       end
     end
 
@@ -77,8 +55,7 @@ module Tilt
     end
 
     def evaluate(scope, locals, &block)
-      doc = CommonMarker.render_doc(data, parse_options, extensions)
-      doc.to_html(render_options, extensions)
+      Commonmarker.to_html(data, options: { parse: parse_options, render: render_options, extension: extensions })
     end
 
     def allows_script?
